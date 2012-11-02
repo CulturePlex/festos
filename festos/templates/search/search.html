@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<!--[if (!IE)|(gte IE 8)]><!-->
+  <link href="{{ STATIC_PREFIX }}css/books/visualsearch-datauri.css" media="screen" rel="stylesheet" type="text/css" />
+<!--<![endif]-->
+<!--[if lte IE 7]><!-->
+  <link href="{{ STATIC_PREFIX }}css/books/visualsearch.css" media="screen" rel="stylesheet" type="text/css" />
+<!--<![endif]-->
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ STATIC_PREFIX }}js/books/visualsearch.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        window.visualSearch = VS.init({
+	      container : $('.visual_search'),
+          query      : 'country: "South Africa" account: 5-samuel "U.S. State": California',
+          showFacets : true,
+          unquotable : [
+            'text',
+            'account',
+            'filter',
+            'access'
+          ],
+          callbacks  : {
+            search : function(query, searchCollection) {
+              var $query = $('#search_query');
+              $query.stop().animate({opacity : 1}, {duration: 300, queue: false});
+              $query.html('<span class="raquo">&raquo;</span> You searched for: <b>' + searchCollection.serialize() + '</b>');
+              clearTimeout(window.queryHideDelay);
+              window.queryHideDelay = setTimeout(function() {
+                $query.animate({
+                  opacity : 0
+                }, {
+                  duration: 1000,
+                  queue: false
+                });
+              }, 2000);
+            },
+            valueMatches : function(category, searchTerm, callback) {
+              switch (category) {
+              case 'account':
+                  callback([
+                    { value: '1-amanda', label: 'Amanda' },
+                    { value: '2-aron',   label: 'Aron' },
+                    { value: '3-eric',   label: 'Eric' },
+                    { value: '4-jeremy', label: 'Jeremy' },
+                    { value: '5-samuel', label: 'Samuel' },
+                    { value: '6-scott',  label: 'Scott' }
+                  ]);
+                  break;
+                case 'filter':
+                  callback(['published', 'unpublished', 'draft']);
+                  break;
+                case 'access':
+                  callback(['public', 'private', 'protected']);
+                  break;
+                case 'title':
+                  callback([
+                    'Pentagon Papers',
+                    'CoffeeScript Manual',
+                    'Laboratory for Object Oriented Thinking',
+                    'A Repository Grows in Brooklyn'
+                  ]);
+                  break;
+                case 'city':
+                  callback([
+                    'Cleveland',
+                    'New York City',
+                    'Brooklyn',
+                    'Manhattan',
+                    'Queens',
+                    'The Bronx',
+                    'Staten Island',
+                    'San Francisco',
+                    'Los Angeles',
+                    'Seattle',
+                    'London',
+                    'Portland',
+                    'Chicago',
+                    'Boston'
+                  ])
+                  break;
+                case 'U.S. State':
+                  callback([
+                    "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+                    "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida",
+                    "Georgia", "Guam", "Hawaii", "Idaho", "Illinois",
+                    "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+                    "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+                    "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+                    "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina",
+                    "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania",
+                    "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+                    "Texas", "Utah", "Vermont", "Virginia", "Virgin Islands",
+                    "Washington", "West Virginia", "Wisconsin", "Wyoming"
+                  ]);
+                  break
+                case 'country':
+                  callback([
+                    "China", "India", "United States", "Indonesia", "Brazil",
+                    "Pakistan", "Bangladesh", "Nigeria", "Russia", "Japan",
+                    "Mexico", "Philippines", "Vietnam", "Ethiopia", "Egypt",
+                    "Germany", "Turkey", "Iran", "Thailand", "D. R. of Congo",
+                    "France", "United Kingdom", "Italy", "Myanmar", "South Africa",
+                    "South Korea", "Colombia", "Ukraine", "Spain", "Tanzania",
+                    "Sudan", "Kenya", "Argentina", "Poland", "Algeria",
+                    "Canada", "Uganda", "Morocco", "Iraq", "Nepal",
+                    "Peru", "Afghanistan", "Venezuela", "Malaysia", "Uzbekistan",
+                    "Saudi Arabia", "Ghana", "Yemen", "North Korea", "Mozambique",
+                    "Taiwan", "Syria", "Ivory Coast", "Australia", "Romania",
+                    "Sri Lanka", "Madagascar", "Cameroon", "Angola", "Chile",
+                    "Netherlands", "Burkina Faso", "Niger", "Kazakhstan", "Malawi",
+                    "Cambodia", "Guatemala", "Ecuador", "Mali", "Zambia",
+                    "Senegal", "Zimbabwe", "Chad", "Cuba", "Greece",
+                    "Portugal", "Belgium", "Czech Republic", "Tunisia", "Guinea",
+                    "Rwanda", "Dominican Republic", "Haiti", "Bolivia", "Hungary",
+                    "Belarus", "Somalia", "Sweden", "Benin", "Azerbaijan",
+                    "Burundi", "Austria", "Honduras", "Switzerland", "Bulgaria",
+                    "Serbia", "Israel", "Tajikistan", "Hong Kong", "Papua New Guinea",
+                    "Togo", "Libya", "Jordan", "Paraguay", "Laos",
+                    "El Salvador", "Sierra Leone", "Nicaragua", "Kyrgyzstan", "Denmark",
+                    "Slovakia", "Finland", "Eritrea", "Turkmenistan"
+                  ], {preserveOrder: true});
+                  break;
+              }
+            },
+            facetMatches : function(callback) {
+              callback([
+                'account', 'filter', 'access', 'title',
+                { label: 'city',    category: 'location' },
+                { label: 'address', category: 'location' },
+                { label: 'country', category: 'location' },
+                { label: 'U.S. State', category: 'location' },
+              ]);
+            }
+          }
+        });
+      });
+    </script>
+
+{% endblock %}
+
+{% block content %}
+<div class="visual_search"></div>
+
+
+
+
+    <h2>Search</h2>
+
+    <form method="get" action=".">
+        <table>
+            {{ form.as_table }}
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="submit" value="Search">
+                </td>
+            </tr>
+        </table>
+
+        {% if query %}
+            <h3>Results</h3>
+
+            {% for result in page.object_list %}
+                <p>
+{% comment %} 
+<!--
+                    <a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a>
+                    <a href="{% url docviewer_viewer_view result.object.id 'demo' %}">{{ result.object }}</a>
+-->
+{% endcomment %} 
+                    <a href="{{ result.object.document.get_absolute_url }}">{{ result.object.document.title }}</a>
+                </p>
+            {% empty %}
+                <p>No results found.</p>
+            {% endfor %}
+
+            {% if page.has_previous or page.has_next %}
+                <div>
+                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                    |
+                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            {# Show some example queries to run, maybe query syntax, something else? #}
+        {% endif %}
+    </form>
+
+{% endblock %}
