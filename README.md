@@ -62,7 +62,7 @@ disable it. The system propmt must change where you have it enable::
 Now, if you didn't get the project yet, clone it in your desired location::
 
   $ cd $HOME
-  $ git clone git@github.com:CulturePlex/festos.git git/festos
+  $ git clone https://github.com/CulturePlex/festos.git git/festos
 
 Enter in the new location and update the virtual environment previously created::
 
