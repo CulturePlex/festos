@@ -9,19 +9,24 @@ Installation:
 -------------
 
 You need to install docsplit. First the dependences::
+
   $ sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr yui-compressor git
 
 Then the docsplit::
+
   $ sudo gem install docsplit
 
 Try it running::
+
   $ docsplit
 
 This is part of the django-docviewer configuration
+
   $ sudo ln -s /usr/local/bin/docsplit /usr/bin/docsplit
   $ sudo ln -s /usr/bin/yui-compressor /usr/local/bin/yuicompressor
 
 Now, the elasticsearch:
+  
   $ sudo apt-get install openjdk-7-jre -y
   $ cd ~
   $ wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.11.deb
