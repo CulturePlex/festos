@@ -71,7 +71,7 @@ Now, if you didn't get the project yet, clone it in your desired location::
 
 Enter in the new location and update the virtual environment previously created::
 
-  $ cd git/festos/web
+  $ cd git/festos/
   $ workon festos
   $ pip install -U -r requirements.txt
 
@@ -84,15 +84,19 @@ Django_, you could be able to access to the URL http://localhost:8000/::
 
   $ python manage.py runserver localhost:8000
 
-To use it, first you have to go to the followin address::
+                                             
+Testing the installation:
+------------------------
 
-  localhost:8000/admin/site/
+To use it, first you have to go to the followin address (login with the password you introduce in the syncdb step)::
+
+  localhost:8000/admin/sites/site/1/
 
 And change the name and default name domain of the site (usually example.com) to 'localhost:8000'. You will need to restart the server to reflex the changes::
 
   $ python manage.py runserver localhost:8000
 
-Then, add a scanned pdf document in the admin interface::
+Then, add a scanned pdf (for convenience, there is one in ~/git/festos/test.pdf) document in the admin interface::
 
   localhost:8000/admin/document/
 
@@ -104,7 +108,7 @@ $INDEX is the index of the document you just added in the interface. Then, you h
 
   $ python manage.py rebuild_index
 
-Now you can search in the following URL
+Now you can search in the following URL::
 
   localhost:8000/search/
 
