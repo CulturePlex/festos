@@ -1,7 +1,8 @@
 Django
 ipdb
--e git+git://github.com/robertour/django-docviewer.git#egg=django-docviewer
+#-e git+git://github.com/robertour/django-docviewer.git#egg=django-docviewer
 #whoosh
 requests
 pyelasticsearch
 simplejson
+django-celery

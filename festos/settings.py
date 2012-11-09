@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'pipeline',
     'docviewer',
     'haystack',
+    'djcelery',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -159,13 +160,16 @@ LOGGING = {
     }
 }
 
-
+# Pipeline configuration
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE = False
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 
-#haystack
+# Celery configuration
+BROKER_URL='amqp://guest:guest@localhost:5672//'
+
+#Haystack configuration
 import os
 HAYSTACK_CONNECTIONS = {
 	#'default': {
@@ -187,6 +191,9 @@ if haystack.__version__[0] == 1:
 	HAYSTACK_WHOOSH_PATH = join(PROJECT_ROOT,'var/')
 
 
-DOCVIEWER_DOCUMENT_ROOT = join(PROJECT_ROOT,'docs/')
-
+# Docviewer Configuration
 from docviewer.pipeline import *
+DOCVIEWER_DOCUMENT_ROOT = join(PROJECT_ROOT,'docs/')
+DOCVIEWER_DOCUMENT_URL = '/docs/'
+DOCVIEWER_IMAGE_FORMAT =  'png'
+
