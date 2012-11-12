@@ -1,0 +1,28 @@
+[
+    {
+        "pk": 1,
+        "model": "sites.site",
+        "fields": {
+            "domain": "localhost:8000",
+            "name": "localhost:8000"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "festos",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2012-11-12T14:43:29.558Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$u4gre8TX75vJ$+t4jaBl/cLrntP3821vv/4AbjlcVV04Clmx/0niuxdM=",
+            "email": "festos@gmail.com",
+            "date_joined": "2012-11-12T14:42:32.173Z"
+        }
+    }
+]

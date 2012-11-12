@@ -5,6 +5,7 @@ PROJECT_ROOT = dirname(abspath(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+ANONYMOUS_USER_ID = -1
 
 ADMINS = (
     ('festos', 'festos@example.com'),
@@ -126,9 +127,11 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'django.contrib.admin',
     'pipeline',
-    'docviewer',
     'haystack',
     'djcelery',
+    'celery_haystack',
+    'docviewer',
+    'books',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -183,12 +186,12 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-import haystack;
-if haystack.__version__[0] == 1:
-	HAYSTACK_CONNECTIONS = None
-	HAYSTACK_SITECONF = 'docviewer.search_indexes'
-	HAYSTACK_SEARCH_ENGINE = 'whoosh'
-	HAYSTACK_WHOOSH_PATH = join(PROJECT_ROOT,'var/')
+#import haystack;
+#if haystack.__version__[0] == 1:
+#	HAYSTACK_CONNECTIONS = None
+#	HAYSTACK_SITECONF = 'docviewer.search_indexes'
+#	HAYSTACK_SEARCH_ENGINE = 'whoosh'
+#	HAYSTACK_WHOOSH_PATH = join(PROJECT_ROOT,'var/')
 
 
 # Docviewer Configuration

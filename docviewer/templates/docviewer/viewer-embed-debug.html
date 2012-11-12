@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="ClearType" content="true">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <title>Document Viewer (Dev Embed)</title>
+
+  {% load compressed %}
+  {% compressed_css 'docviewer-base' %}
+  {% compressed_css 'docviewer-print' %}
+  {% compressed_js 'docviewer-base' %}
+  {% compressed_js 'docviewer-template' %}
+  <script>
+    DV = docviewer;
+  </script>
+
+</head>
+<body>
+
+<div id="doc1" style="margin: 30px; float: left;">
+</div>
+
+<script type="text/javascript">
+  var docUrl = 'http://www.documentcloud.org/documents/7262-gubernatorial-schedules.js';
+  docviewer.load(docUrl, {
+    container: '#doc1',
+    width: 650,
+    height: 500,
+    sidebar: false
+  });
+</script>
+
+<div id="doc2" style="margin: 30px; float: left;">
+</div>
+
+<script type="text/javascript">
+  var docUrl = 'http://www.documentcloud.org/documents/6800-memo-on-alternatives-to-comprehensive-immigration-reform.js';
+  docviewer.load(docUrl, {
+    container: '#doc2',
+    width: 572,
+    height: 500,
+    sidebar: true
+  });
+</script>
+
+<div id="doc3" style="margin: 30px; float: left;">
+</div>
+
+<script type="text/javascript">
+  var docUrl = 'http://www.documentcloud.org/documents/6800-memo-on-alternatives-to-comprehensive-immigration-reform.js';
+  docviewer.load(docUrl, {
+    container: '#doc3',
+    width: 400,
+    height: 500,
+    sidebar: false,
+    text: false
+  });
+</script>
+
+
+<div id="doc4" style="margin: 30px; float: left;">
+</div>
+
+<script type="text/javascript">
+  var docUrl = 'http://www.documentcloud.org/documents/7825-brunswickcommissionersperdiem.js';
+  docviewer.load(docUrl, {
+    container: '#doc4',
+    width: 1100,
+    height: 500,
+    sidebar: true,
+    pdf: false
+  });
+</script>
+
+</body>
+</html>
