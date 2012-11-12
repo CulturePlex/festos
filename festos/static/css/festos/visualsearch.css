@@ -7,7 +7,7 @@
   .VS-search .VS-icon-cancel {
     width: 11px; height: 11px;
     background-position: center 0;
-    background-image: url(../../festos/img/cancel_search.png);
+    background-image: url(../../img/festos/cancel_search.png);
     cursor: pointer;
   }
     .VS-search .VS-icon-cancel:hover {
@@ -15,7 +15,7 @@
     }
   .VS-search .VS-icon-search {
     width: 12px; height: 12px;
-    background-image: url(../../festos/img/search_glyph.png);
+    background-image: url(../../img/festos/search_glyph.png);
   }
 
 /*------------------------------ RESET + DEFAULT STYLES ---------------------------------*/
