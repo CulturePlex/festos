@@ -4,6 +4,7 @@
 *.pyo
 *~
 *.sqlite*
-local_settings.py
-prod_settings.py
+./festos/local_settings.py
+./festos/prod_settings.py
 docs/
+./wsgy.py
