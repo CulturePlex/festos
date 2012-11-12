@@ -10,7 +10,7 @@ Installation:
 
 You need to install docsplit. First the dependences::
 
-  $ sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr yui-compressor git
+  $ sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr yui-compressor git python-pip python-dev build-essential npm openjdk-7-jre -y
 
 Then the docsplit::
 
@@ -25,9 +25,11 @@ This is part of the django-docviewer configuration
   $ sudo ln -s /usr/local/bin/docsplit /usr/bin/docsplit
   $ sudo ln -s /usr/bin/yui-compressor /usr/local/bin/yuicompressor
 
+Install yuglify
+  npm install yuglify
+
 Now, the elasticsearch:
   
-  $ sudo apt-get install openjdk-7-jre -y
   $ cd ~
   $ wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.11.deb
   $ sudo dpkg -i elasticsearch-0.19.11.deb
@@ -35,7 +37,6 @@ Now, the elasticsearch:
 
 You need is to have installed pip_ and virtualenv_ in your machine::
 
-  $ sudo apt-get install python-pip python-dev build-essential 
   $ sudo pip install --upgrade pip 
   $ sudo pip install --upgrade virtualenv 
 
