@@ -20,15 +20,15 @@ Try it running::
 
   $ docsplit
 
-This is part of the django-docviewer configuration
+This is part of the django-docviewer configuration::
 
   $ sudo ln -s /usr/local/bin/docsplit /usr/bin/docsplit
   $ sudo ln -s /usr/bin/yui-compressor /usr/local/bin/yuicompressor
 
-Install yuglify
+Install yuglify::
   npm install yuglify
 
-Now, the elasticsearch:
+Now, the elasticsearch::
   
   $ cd ~
   $ wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.11.deb
