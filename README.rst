@@ -26,6 +26,7 @@ This is part of the django-docviewer configuration::
   $ sudo ln -s /usr/bin/yui-compressor /usr/local/bin/yuicompressor
 
 Install yuglify::
+
   npm install yuglify
 
 Now, the elasticsearch::
