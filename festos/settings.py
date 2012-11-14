@@ -121,15 +121,11 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'django.contrib.admin',
     'pipeline',
-    'haystack',
     'djcelery',
-    'celery_haystack',
     'docviewer',
     'books',
 )
@@ -175,24 +171,12 @@ BROKER_URL='amqp://guest:guest@localhost:5672//'
 #Haystack configuration
 import os
 HAYSTACK_CONNECTIONS = {
-	#'default': {
-	#    'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-	#    'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
-	#},
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'haystack',
     },
 }
-
-#import haystack;
-#if haystack.__version__[0] == 1:
-#	HAYSTACK_CONNECTIONS = None
-#	HAYSTACK_SITECONF = 'docviewer.search_indexes'
-#	HAYSTACK_SEARCH_ENGINE = 'whoosh'
-#	HAYSTACK_WHOOSH_PATH = join(PROJECT_ROOT,'var/')
-
 
 # Docviewer Configuration
 from docviewer.pipeline import *
