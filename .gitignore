@@ -9,3 +9,4 @@ festos/prod_settings.py
 festos/docs/
 wsgy.py
 static/
+docviewer

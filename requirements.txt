@@ -5,5 +5,7 @@ ipdb
 requests
 pyelasticsearch
 simplejson
+####
 django-celery
+####
 celery-haystack
