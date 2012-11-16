@@ -74,7 +74,7 @@ Now, if you didn't get the project yet, clone it in your desired location::
 Enter in the new location and update the virtual environment previously created::
 
   $ cd git/festos/
-  $ git config --global core.excludesfile ~/.gitignore_global
+  $ git config --global core.excludesfile .gitignore_global
   $ workon festos
   $ pip install -U -r requirements.txt
 
