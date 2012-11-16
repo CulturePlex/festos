@@ -6,6 +6,6 @@
 *.sqlite*
 festos/local_settings.py
 festos/prod_settings.py
-festos/docs/
+media/
 static/
 docviewer
