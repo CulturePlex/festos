@@ -12,7 +12,7 @@ Installation of system dependencies:
 
     $ sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr yui-compressor git python-pip python-dev build-essential npm openjdk-7-jre -y
 
-2) You need to install docsplit. Then the docsplit::
+2) You need to install docsplit. Then the docsplit:
 
     a) Install::
 
@@ -40,7 +40,7 @@ Installation of system dependencies:
 Deploy the project:
 -------------------
 
-1) Install the virtual environment::
+1) Install the virtual environment:
 
     a) Install the packages::
 
@@ -77,7 +77,7 @@ Deploy the project:
         $ workon festos
         $ deactivate
 
-2) Install the project::
+2) Install the project:
 
     a) Download it::
 
@@ -97,7 +97,7 @@ Deploy the project:
         $ workon festos
         $ pip install -U -r requirements.txt
 
-3) Create database and launch::
+3) Create database and launch:
 
     a) You must create a database, user and configure the site. If your are in developing stage, you can use the start_all.sh script::
 
