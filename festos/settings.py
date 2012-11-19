@@ -189,6 +189,6 @@ HAYSTACK_CONNECTIONS = {
 # Docviewer Configuration
 from docviewer.pipeline import *
 DOCVIEWER_DOCUMENT_ROOT = join(MEDIA_ROOT,'docs/')
-DOCVIEWER_DOCUMENT_URL = '/docs/'
+DOCVIEWER_DOCUMENT_URL = '/media/docs/'
 DOCVIEWER_IMAGE_FORMAT =  'png'
 

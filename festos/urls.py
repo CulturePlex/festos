@@ -28,3 +28,8 @@ if settings.DEBUG:
             'document_root': settings.DOCVIEWER_DOCUMENT_ROOT,
         }),
    )
+    urlpatterns += patterns('',
+        url(r'^media/(?P<path>.*)$',
+            'django.views.static.serve',
+            {'document_root': settings.MEDIA_ROOT, }),
+    )
