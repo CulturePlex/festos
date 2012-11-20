@@ -175,7 +175,7 @@
                     <a href="{% url docviewer_viewer_view result.object.id 'demo' %}">{{ result.object }}</a>
 -->
 {% endcomment %} 
-                    <a href="{{ result.object.document.get_absolute_url }}">{{ result.object.document.title }}</a>
+                    <a href="{{ result.object.document.get_absolute_url }}#search/p{{ result.object.page }}/state">{{ result.object.document.title }} {{result.object.page}}</a>
                 </p>
             {% empty %}
                 <p>No results found.</p>
