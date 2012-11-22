@@ -1,3 +1,5 @@
 {{ object.document }}
 {{ object.page }}
 {{ object.text }}
+no creo que esto este sirviendo, pero la cosa seria buscar por alguna palabra
+como rara: cultureplex, bueno no tanto

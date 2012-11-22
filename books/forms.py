@@ -13,11 +13,6 @@ class BookForm(DocumentForm):
     file = forms.FileField(
            label=_('Upload Book'), 
            help_text=_('Select your scan book'))
-    source_url = forms.URLField(
-                 required=False,
-                 widget=forms.TextInput(attrs={'class':'vTextField'}),
-                 label = _('Source URL of the book'), 
-                 help_text=_('Where does this book come from?'))
     description = forms.CharField(
             required=False,
             widget=forms.Textarea(attrs={'class':'vLargeTextField'}),

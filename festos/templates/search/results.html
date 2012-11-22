@@ -1,0 +1,76 @@
+
+  <h3>Results</h3>
+
+  {% for result in page.object_list %}
+    {% if forloop.first %}
+      <ul class="media-list">
+    {% endif %}
+
+
+      {% comment %} <!--<a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a>
+      <a href="{% url docviewer_viewer_view result.object.id 'demo' %}">{{ result.object }}</a>-->
+      <a href="{{ result.object.document.get_absolute_url }}#search/p{{ result.object.page }}/{{query}}">
+        {{ result.object.document.title }} {{result.object.page}}
+      </a>
+      {% endcomment %} 
+
+      {% ifchanged result.object.document.pk %}
+        {% if not forloop.first %}
+          </div>
+        </li>
+        {% endif %}
+        <li class="media">
+          <a class="pull-left" href="{{ result.object.document.get_absolute_url }}#search/p{{ result.object.page }}/{{query}}">
+            <img class="media-object" src="{{ result.object.document.get_thumbnail }}">
+          </a>
+
+          <div class="media-body">
+            <h4 class="media-heading">{{ result.object.document.title }}</h4>
+            {{ result.object.document.text|truncatewords:"100" }} 
+      {% endifchanged %}
+
+
+          <!-- Nested pages -->
+          <div class="media">
+            <a class="pull-left" href="{{ result.object.document.get_absolute_url }}#search/p{{ result.object.page }}/{{query}}">
+              <img class="media-object" src="{{ result.object.get_thumbnail }}">
+            </a>
+
+            <div class="media-body">
+              <h4 class="media-heading">Page {{result.object.page}}</h4>
+              {{ result.object.document.text|truncatewords:"100" }} 
+            </div>
+         </div>
+
+
+
+    {% if forloop.last %}
+          </div>
+        </li>
+      </ul>
+    {% endif %}
+  {% empty %}
+    <p>No results found.</p>
+  {% endfor %}
+
+
+  {% if page.has_previous or page.has_next %}
+    <div>
+      {% if page.has_previous %}
+        <a href="?q={{ query }}&amp;page={{ page.previous_page_number }}"> &laquo; Previous </a>
+      {% else %}
+        &laquo; Previous
+      {% endif %}
+      |
+      {% if page.has_next %}
+        <a href="?q={{ query }}&amp;page={{ page.next_page_number }}">Next &raquo;</a>
+      {% else %}
+        Next &raquo;
+      {% endif %}
+      
+    </div>
+  {% endif %}
+  </ul>
+
+
+

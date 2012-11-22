@@ -8,7 +8,7 @@ class BookAdmin(DocumentAdmin):
 
     form = BookForm
     fieldsets = [
-             ('Book details', {'fields': ['file','title','author','source_url',
+             ('Book details', {'fields': ['file','title','author','source',
                                           'description','notes',]}),
     ]
     fieldsets.insert(1, DocumentAdmin.fieldsets[1])
