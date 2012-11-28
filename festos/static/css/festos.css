@@ -1,0 +1,19 @@
+/*Personalization of the project*/
+
+.highlighted{
+  background: #F1E90F url(../img/highlight.gif) repeat-x 0 bottom;
+  padding: 3px 3px 2px;
+  -moz-border-radius: 3px;
+  background-color: white;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-box-shadow: 0 0 5px #666;
+  -webkit-box-shadow: 0 0 5px #666;
+  border: 1px solid #F5E800;
+  padding: 1px;
+  color: black;
+}
+
+.summary{
+  color: #000;
+}

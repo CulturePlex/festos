@@ -2,7 +2,7 @@
 from operator import itemgetter
 from haystack.views import basic_search, SearchView
 from books.models import Book
-
+from django.utils.datastructures import SortedDict 
 
 
 def book_home(request):
@@ -43,8 +43,6 @@ class SearchBookView(SearchView):
 #        if (self.request.GET.get('author')):
 #            filterfields['author'] = self.request.GET.get('author')
 
-#        import ipdb; ipdb.set_trace();
-
         if (self.request.GET.get('author')):
             results = results.filter(author=self.request.GET.get('author'))
         if (self.request.GET.get('title')):
@@ -55,6 +53,8 @@ class SearchBookView(SearchView):
             results = results.filter(description=self.request.GET.get('description'))
         if (self.request.GET.get('notes')):
             results = results.filter(notes=self.request.GET.get('notes'))
+
+        #import ipdb; ipdb.set_trace()
 
         return results
 
@@ -75,6 +75,17 @@ class SearchBookView(SearchView):
             if book.source != '':
                 sources.add(book.source)
 
+        documents = SortedDict()
+        for r in self.results:
+            if r.document_id in documents:
+                documents[r.document_id].append(r)
+            else:
+                documents[r.document_id]=[r]
+
+        #toolbar
+        #import ipdb; ipdb.set_trace()
+
         return {'titles': titles, 
-            'authors': authors, 
-            'sources': sources}
+                'authors': authors, 
+                'sources': sources,
+                'documents': documents}
