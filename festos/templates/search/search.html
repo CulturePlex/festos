@@ -20,7 +20,7 @@
       $(document).ready(function() {
         window.visualSearch = VS.init({
           container : $('.visual_search'),
-          query      : '',
+          query      : "{{ vs_query }}",
           autosearch  : true,
           showFacets : true,
           unquotable : [
@@ -51,13 +51,13 @@
 //                        },
 //                      //dataType: 'json',
 //                      type: 'GET',});
-              url="?"
+              url="?";
               searchCollection.each(function (elem){ 
                   field = elem.toJSON()
-                  if (field['category'] != 'text')
-                    url += field['category']+"="+field['value']+"&"; 
-                  else{
+                  if (field['category'] == 'text')
                     url += "q="+field['value']+"&"; 
+                  else{
+                    url += field['category']+"="+field['value']+"&";
                   }
                 });
 
@@ -105,54 +105,33 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <h2>Search</h2>
-  <div class="visual_search"></div>
+<h2>Search</h2>
+<div class="visual_search"></div>
 
-  {% comment %}
-  <form class="navbar-search pull-left" method="get" action=".">
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td>&nbsp;</td>
-        <td>
-          <input type="submit" value="Search">
-        </td>
-      </tr>
-    </table>
-  </form>
-  {% endcomment %}
-</div>
-
-<div id="search_query"></div>
-
-{% if query %}
-  
-<h2>Results</h2>
+{% if vs_query %}
+<p><small>{{ documents|length }} books found</small></p>
 
 
 {% for id, pages in documents.items %}
   {% if forloop.first %}
     <ul class="media-list">
   {% endif %}
-
-
     <li class="media">
-      <h3 class="media-heading">{{ pages.0.title }}</h3>
+      <h3 class="media-heading">
+        <a href="{{ pages.0.object.document.get_absolute_url }}#search/p{{ pages.0.object }}/{{query}}">
+          {{ pages.0.title }}, {{ pages.0.author }}
+        </a>
+      </h3>
       <a class="pull-left" href="{{ pages.0.object.document.get_absolute_url }}#search/p{{ pages.0.object }}/{{query}}">
         <img class="media-object" src="{{ pages.0.object.document.get_thumbnail }}">
       </a>
-
       <div class="media-body">
-
         <div class="row">
           <div id="avoid-first-child"></div>
           {% for item in pages|slice:":6" %}
             <div class="span3 media">
                 <a class="summary" href="{{ item.object.document.get_absolute_url }}#search/p{{ item.object.page }}/{{query}}">
-                  Page {{item.object.page}}:
-                
-                {% highlight item.object.text with query %}
+                  Page {{item.object.page}}: {% highlight item.object.text with query %}
                 </a>
             </div>
           {% endfor %}

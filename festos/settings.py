@@ -6,6 +6,7 @@ from os.path import abspath, dirname, join, pardir
 # there are two pardir because the first remove the settings.py
 # and the second one got to the actual parent
 PROJECT_ROOT = abspath(join(abspath(__file__), pardir, pardir))
+PROJECT_NAME = u"Festos"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -117,6 +118,22 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     join(dirname(abspath(__file__)), 'templates'),
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    # "django.core.context_processors.auth",
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+    "django.core.context_processors.csrf",
+    "festos.context_processors.project_name",
+    "festos.context_processors.current_date",
+#    "base.context_processors.google_api_key",
+#    "base.context_processors.google_analytics_code",
+    "festos.context_processors.debug",
+    "festos.context_processors.logout",
 )
 
 INSTALLED_APPS = (
