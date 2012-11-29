@@ -5,6 +5,5 @@ pil
 pyelasticsearch
 simplejson
 django-bootstrap-form
-django-crispy-forms
 django-userena
 -e git://github.com/yevgenko/userena-bootstrap.git#egg=userenabootstrap
