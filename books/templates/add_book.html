@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap %}
+
+
+{% block content %}
+<form action="{% url add_book %}" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    <fieldset>
+    <input type="hidden" name="ready{{id}}" value="{{ ready }}">
+    {{ form|bootstrap }}
+    </fieldset>
+
+    <div id="option_form">
+        <input type="submit" value="{% trans "Add Book" %}" class="btn" />
+    </div>
+</form>
+{% endblock %}

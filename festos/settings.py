@@ -1,5 +1,9 @@
+# -*- coding: utf-8 -*-
+
 # Django settings for demoproject project.
 from os.path import abspath, dirname, join, pardir
+
+ugettext = lambda s: s
 
 # the root project should be the folder before so there
 # can be shared statics living in festos site folder
@@ -33,11 +37,16 @@ DATABASES = {
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'America/Toronto'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-ca'
+
+LANGUAGES = (
+  ('en', ugettext('English')),
+  ('es', ugettext('Español')),
+)
 
 SITE_ID = 1
 
@@ -104,6 +113,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'userena.middleware.UserenaLocaleMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -133,7 +143,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 #    "base.context_processors.google_api_key",
 #    "base.context_processors.google_analytics_code",
     "festos.context_processors.debug",
-    "festos.context_processors.logout",
+    "festos.context_processors.accounts",
 )
 
 INSTALLED_APPS = (
@@ -150,10 +160,29 @@ INSTALLED_APPS = (
     'djcelery',        # necessary for python manage.py celery worker
     'celery_haystack', # necessary for automatic rebuild_index
     'haystack',        # necessary for manual rebuild_index
+    'bootstrapform', 
+    'userenabootstrap',
+    'userena',
+    'guardian',
+    'easy_thumbnails',
     'docviewer',
     'books',
-
+    'accounts',
 )
+
+# Userena - Guardian configuration
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+ANONYMOUS_USER_ID = -1
+AUTH_PROFILE_MODULE = 'accounts.Profile'
+USERENA_SIGNIN_REDIRECT_URL = '/books/add/'
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGIN_URL = '/accounts/signin/'
+LOGOUT_URL = '/accounts/signout/'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

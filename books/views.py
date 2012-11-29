@@ -1,9 +1,12 @@
 # Create your views here.
-
+from django.template import RequestContext
+from django.shortcuts import render_to_response
+from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import SortedDict 
 from haystack.views import basic_search, SearchView
 from haystack.query import SearchQuerySet
 from books.models import Book
+from books.forms import BookForm
 
 class SearchBookView(SearchView):
     def get_results(self):
@@ -75,3 +78,18 @@ class SearchBookView(SearchView):
                 'sources': sources,
                 'documents': documents,
                 'vs_query': self.vs_query }
+
+@login_required
+def add_book(request):
+    """ Add a book """
+    form = BookForm()
+    if request.method == 'POST':
+        form = BookForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            file = form.cleaned_data['file']
+            form.instance.set_file(file = file, filename=file.name)
+
+    return render_to_response('add_book.html', {
+                                'form': form,
+                                }, context_instance=RequestContext(request))

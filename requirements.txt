@@ -1,6 +1,10 @@
 Django
 ipdb
+pil
 -e git+git://github.com/robertour/django-docviewer.git#egg=django-docviewer
 pyelasticsearch
 simplejson
+django-bootstrap-form
 django-crispy-forms
+django-userena
+-e git://github.com/yevgenko/userena-bootstrap.git#egg=userenabootstrap

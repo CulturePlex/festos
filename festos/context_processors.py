@@ -22,5 +22,7 @@ def current_date(request):
 def debug(request):
     return {'DEBUG': getattr(settings, "DEBUG", False)}
 
-def logout(request):
-    return {'LOGOUT_URL': getattr(settings, "LOGOUT_URL", "/accounts/logout/")}
+def accounts(request):
+    return {'LOGOUT_URL': getattr(settings, "LOGOUT_URL", "/accounts/logout/"),
+            'LOGIN_REDIRECT_URL': getattr(settings, "LOGIN_REDIRECT_URL", None),
+            'LOGIN_URL': getattr(settings, "LOGIN_URL", "/accounts/signin/")}

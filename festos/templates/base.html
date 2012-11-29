@@ -46,11 +46,18 @@
   <div class="navbar">
   <div class="navbar-inner">
     <ul class="nav">
-      <li class="active">
+      <!--<li class="active">-->
+      <li>
         <a href=".">Home</a>
       </li>
-      <li><a href="#">About Us</a></li>
-      <li><a href="#">Want to clone us?</a></li>
+      <li><a href={{ LOGIN_URL }}>Log In</a></li>
+      {% if user.is_authenticated %}
+        <li><a href={% url userena_profile_detail user %}>Profile</a></li>
+        <li><a href={% url add_book %}>Add Book</a></li>
+        <li><a href={{ LOGOUT_URL }}>Log Out</a></li>
+      {% endif %}
+      <li><a href="http://cultureplex.ca/">About Us</a></li>
+      <li><a href="http://github.com/CulturePlex/festos">Want to clone us?</a></li>
     </ul>
   </div>
 </div>

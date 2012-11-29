@@ -1,12 +1,12 @@
 from django.contrib import admin
 from docviewer.admin import DocumentAdmin
 
-from books.forms import BookForm
+from books.forms import BookAdminForm
 from books.models import Book
 
 class BookAdmin(DocumentAdmin):
 
-    form = BookForm
+    form = BookAdminForm
     fieldsets = [
              ('Book details', {'fields': ['file','title','author','source',
                                           'description','notes',]}),
