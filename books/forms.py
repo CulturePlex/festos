@@ -22,14 +22,38 @@ class BookAdminForm(DocumentForm):
 class BookForm(DocumentForm):
     class Meta:
         model = Book
-        fields = ('title', 'author', 'file', 'description', 'notes', 'source')
+        fields = ('title', 'author', 'file', 'source', 'description', 'notes' )
 
-    title = forms.CharField(
-            help_text=_("The title of the book"))
+    title = forms.CharField(help_text=None)
+    author = forms.CharField(help_text=None)
     file = forms.FileField(
            label=_('Upload Book'), 
-           help_text=_('Select your pdf scanned book'))
+           help_text=None)
     description = forms.CharField(
             required=False,
-            help_text=_('Description of the book'))
+            widget=forms.Textarea(attrs={'class':'vLargeTextField','rows':3}),
+            help_text=None)
+    notes = forms.CharField(
+            required=False,
+            widget=forms.Textarea(attrs={'class':'vLargeTextField','rows':3}),
+            help_text=None)
+    source = forms.CharField(required=False,help_text=None)
+    
+class EditBookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ('title', 'author', 'source', 'description', 'notes' )
+
+    title = forms.CharField(help_text=None)
+    author = forms.CharField(help_text=None)
+    description = forms.CharField(
+            required=False,
+            widget=forms.Textarea(attrs={'class':'vLargeTextField','rows':3}),
+            help_text=None)
+    notes = forms.CharField(
+            required=False,
+            widget=forms.Textarea(attrs={'class':'vLargeTextField','rows':3}),
+            help_text=None)
+    source = forms.CharField(required=False,help_text=None)
+
 

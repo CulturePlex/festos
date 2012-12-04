@@ -7,13 +7,13 @@
 <div class="row">
 <div class="span12"></div>
 <div class="span5 offset1">
-  <form action="{% url add_book %}" enctype="multipart/form-data" method="post" class="form-horizontal">
+  <form action="{% url edit_book book.id %}" enctype="multipart/form-data" method="post" class="form-horizontal">
       {% csrf_token %}
       {% for field in form %}
       {{ field|bootstrap }}
       {% endfor %}
 
-      <input type="submit" value="{% trans "Add Book" %}" class="btn offset2" />
+      <input type="submit" value="{% trans "Edit Book" %}" class="btn offset2" />
   </form>
 </div>
 </div>

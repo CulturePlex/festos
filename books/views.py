@@ -1,4 +1,6 @@
 # Create your views here.
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
@@ -6,7 +8,7 @@ from django.utils.datastructures import SortedDict
 from haystack.views import basic_search, SearchView
 from haystack.query import SearchQuerySet
 from books.models import Book
-from books.forms import BookForm
+from books.forms import BookForm, EditBookForm
 
 class SearchBookView(SearchView):
     def get_results(self):
@@ -80,6 +82,19 @@ class SearchBookView(SearchView):
                 'vs_query': self.vs_query }
 
 @login_required
+def list_books(request):
+    """ Add a book """
+
+    form = BookForm()
+    books = Book.objects.all()
+
+    return render_to_response('list_books.html', {
+                                'books': books,
+                                'form': form,
+                                }, context_instance=RequestContext(request))
+
+
+@login_required
 def add_book(request):
     """ Add a book """
     form = BookForm()
@@ -89,7 +104,32 @@ def add_book(request):
             form.save()
             file = form.cleaned_data['file']
             form.instance.set_file(file = file, filename=file.name)
+            return HttpResponseRedirect(reverse('books.views.list_books'))
 
     return render_to_response('add_book.html', {
                                 'form': form,
                                 }, context_instance=RequestContext(request))
+
+@login_required
+def edit_book(request, pk):
+    """ Edit a book """
+    book = Book.objects.get(pk=pk)
+    form = EditBookForm(instance = book)
+    if request.method == 'POST':
+        form = EditBookForm(request.POST, instance = book)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('books.views.list_books'))
+
+    return render_to_response('edit_book.html', {
+                                'book': book,
+                                'form': form,
+                                }, context_instance=RequestContext(request))
+                                
+@login_required
+def remove_book(request, pk):
+    """ Remove a book """
+
+    book = Book.objects.get(pk=pk)
+    book.delete()
+    return HttpResponseRedirect(reverse('books.views.list_books'))

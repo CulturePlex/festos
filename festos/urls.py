@@ -19,10 +19,10 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^viewer/', include('docviewer.urls')),
-    url(r'^accounts/', include('userena.urls')),
+    url(r'^accounts/', include('accounts.urls')),
     url(r'^books/', include('books.urls')),
     #url(r'^search/', include('haystack.urls')),
-    url(r'^$', SearchBookView(), name='book_search'),
+    url(r'^$', SearchBookView(), name='index'),
     #url(r'^$', include('haystack.urls')),
 )
 

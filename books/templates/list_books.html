@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap %}
+
+
+{% block content %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Title</th>
+      <th>Author</th>
+      <th>State</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for book in books %}
+    <tr>
+      <td>{{ book.id }}</td>
+      <td>{{ book.title }}</td>
+      <td>{{ book.author }}</td>
+      <td>{{ book.status }}</td>
+      <td>
+        <a href="{% url edit_book book.pk %}">
+          <i class="icon-edit"></i> 
+        </a>
+        <a href="{% url remove_book book.pk %}">
+          <i class="icon-remove"></i> 
+        </a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<a href={% url add_book %} class="btn offset4 span3" > Upload a new Book </a>
+
+{% endblock %}

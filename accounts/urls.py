@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
-from books.views import SearchBookView, add_book
+from django.conf.urls import handler403
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -15,10 +15,7 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    url(r'^$', 'books.views.list_books', name='list_books'),
-    url(r'^add/', 'books.views.add_book', name='add_book'),
-    url(r'^edit/(?P<pk>\d+)/', 'books.views.edit_book', name='edit_book'),
-    url(r'^remove/(?P<pk>\d+)/', 'books.views.remove_book', name='remove_book'),
-    url(r'^search/', SearchBookView(), name='book_search'),
+    url(r'^signup/', handler403),
+    url(r'', include('userena.urls')),
 
 )

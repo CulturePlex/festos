@@ -48,16 +48,21 @@
     <ul class="nav">
       <!--<li class="active">-->
       <li>
-        <a href=".">Home</a>
+        <a href="{% url index %}">Home</a>
       </li>
-      <li><a href={{ LOGIN_URL }}>Log In</a></li>
       {% if user.is_authenticated %}
-        <li><a href={% url userena_profile_detail user %}>Profile</a></li>
-        <li><a href={% url add_book %}>Add Book</a></li>
-        <li><a href={{ LOGOUT_URL }}>Log Out</a></li>
+        <li><a href={% url list_books %}>Books</a></li>
       {% endif %}
       <li><a href="http://cultureplex.ca/">About Us</a></li>
       <li><a href="http://github.com/CulturePlex/festos">Want to clone us?</a></li>
+    </ul>
+    <ul class="nav pull-right">
+      {% if user.is_authenticated %}
+        <li><a href={% url userena_profile_detail user %}>Profile</a></li>
+        <li><a href={{ LOGOUT_URL }}>Log Out</a></li>
+      {% else %}
+        <li><a href={{ LOGIN_URL }}>Log In</a></li>
+      {% endif %}
     </ul>
   </div>
 </div>
