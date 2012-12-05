@@ -6,4 +6,5 @@ pyelasticsearch
 simplejson
 django-bootstrap-form
 django-userena
+django-pdb
 -e git://github.com/yevgenko/userena-bootstrap.git#egg=userenabootstrap

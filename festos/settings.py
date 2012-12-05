@@ -113,6 +113,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django_pdb.middleware.PdbMiddleware',
     'userena.middleware.UserenaLocaleMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -160,6 +161,7 @@ INSTALLED_APPS = (
     'djcelery',        # necessary for python manage.py celery worker
     'celery_haystack', # necessary for automatic rebuild_index
     'haystack',        # necessary for manual rebuild_index
+    'django_pdb',
     'bootstrapform', 
     'userenabootstrap',
     'userena',
