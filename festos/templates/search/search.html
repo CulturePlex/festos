@@ -167,14 +167,13 @@
           <div class="row">
             <div id="avoid-first-child"></div>
 
-              {% for page in result.pages|slice:":6" %}
-                <div class="span3 media">
-                  <a class="summary" href="{{ page.document.get_absolute_url }}#search/p{{ page.page }}/{{query}}">
-                    Page {{page.page}}: {% highlight page.text with query %}
-                  </a>
-                </div>
-              {% endfor %}
-            </div>
+            {% for page in result.pages|slice:":6" %}
+              <div class="span3 media">
+                <a class="summary" href="{{ page.document.get_absolute_url }}#search/p{{ page.page }}/{{query}}">
+                  Page {{page.page}}: {% highlight page.text with query %}
+                </a>
+              </div>
+            {% endfor %}
           </div>
         </div>
       {% endif %}
