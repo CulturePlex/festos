@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.template import RequestContext
-from books.views import SearchBookView
+from books.views import SearchBookView, search_books
 
-# Uncomment the next two lines to enable the admin:
-from django.contrib import admin
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('accounts.urls')),
     url(r'^books/', include('books.urls')),
     #url(r'^search/', include('haystack.urls')),
-    url(r'^$', SearchBookView(), name='index'),
+    url(r'^$', search_books(SearchBookView()), name='index'),
     #url(r'^$', include('haystack.urls')),
 )
 

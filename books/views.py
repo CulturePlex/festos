@@ -10,6 +10,8 @@ from haystack.query import SearchQuerySet
 from books.models import Book
 from books.forms import BookForm, EditBookForm
 
+
+
 class SearchBookView(SearchView):
     def get_results(self):
         """
@@ -20,8 +22,10 @@ class SearchBookView(SearchView):
         results = self.form.search()
 
         # if there is no 'q' haystack returns an empty results
-       # import ipdb; ipdb.set_trace()
-        if results.count() == 0 and len(self.request.GET) > 0:
+        #import ipdb; ipdb.set_trace()
+        if results.count() == 0 and \
+                len(self.request.GET) > 0 and not \
+                self.request.GET.get('q'):
             results = SearchQuerySet()
 
         self.vs_query = ""
@@ -53,33 +57,29 @@ class SearchBookView(SearchView):
 
         Must return a dictionary.
         """
-        
-        titles = set()
-        authors = set()
-        sources = set()
-        for book in Book.objects.all():
-            if book.title != '':
-                titles.add(book.title)
-            if book.author != '':
-                authors.add(book.author)
-            if book.source != '':
-                sources.add(book.source)
 
         documents = SortedDict()
+        
         for r in self.results:
             if r.document_id in documents:
-                documents[r.document_id].append(r)
+                documents[r.document_id]['pages'].append(r.object)
             else:
-                documents[r.document_id]=[r]
+                documents[r.document_id]={'document': r.object.document,
+                                          'notes': r.notes,
+                                          'source': r.source,
+                                          'description': r.description,
+                                          'pages': [r.object] }
 
         #toolbar
         #import ipdb; ipdb.set_trace()
 
-        return {'titles': titles, 
-                'authors': authors, 
-                'sources': sources,
-                'documents': documents,
-                'vs_query': self.vs_query }
+        return {'documents': documents,
+                'vs_query': self.vs_query,
+                'query_dict': self.request.GET }
+
+def search_books(search_book_view):
+  return search_book_view;
+
 
 @login_required
 def list_books(request):

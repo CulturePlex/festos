@@ -5,6 +5,7 @@ from docviewer.models import Page
 
 class BookPageIndex(PageIndex, indexes.Indexable):
     title = indexes.CharField(model_attr='document__title')
-    document = indexes.CharField(model_attr='document__description')
+    description = indexes.CharField(model_attr='document__description')
+    source = indexes.CharField(model_attr='document__book__source')
     author = indexes.CharField(model_attr='document__book__author')
     notes = indexes.CharField(model_attr='document__book__notes')

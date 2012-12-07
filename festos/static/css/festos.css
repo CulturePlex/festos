@@ -1,19 +1,53 @@
 /*Personalization of the project*/
 
+
+
 .highlighted{
   background: #F1E90F url(../img/highlight.gif) repeat-x 0 bottom;
-  padding: 3px 3px 2px;
-  -moz-border-radius: 3px;
-  background-color: white;
+  padding: 0;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -moz-box-shadow: 0 0 5px #666;
-  -webkit-box-shadow: 0 0 5px #666;
   border: 1px solid #F5E800;
-  padding: 1px;
   color: black;
 }
 
-.summary{
+div.media-body p{
+  margin-top: 10px;
+}
+
+a.summary{
   color: #000;
+  display: block;
+  border: 2px solid #FFF;
+  padding: 3px;
+  line-height: 1.2em;
+  height: 6em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 767px) {
+  a.summary{
+    height: none;
+  }
+}
+
+a.summary:hover
+{ 
+  text-decoration: none;
+  background-color: #CDE;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border: 2px solid #048;
+}
+
+.thumbnail-doc{
+  border: 2px solid #fff;
+}
+
+.thumbnail-doc:hover{
+  background-color: #CDE;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border: 2px solid #048;
 }

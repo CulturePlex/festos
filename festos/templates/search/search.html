@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-{% load highlight %} 
+{% load highlight %}
+{% load i18n %}  
+{% load pdb %}
 
 {% block extra_css %}
 <!--[if (!IE)|(gte IE 8)]><!-->
@@ -12,7 +14,9 @@
 
 {% block extra_js %}
 <script src="{{ STATIC_PREFIX }}visualsearch/js/visualsearch.js" type="text/javascript"></script>
+<script src="{{ STATIC_PREFIX }}js/jquery.autoellipsis-1.0.10.min.js" type="text/javascript"></script>
 <script src="{{ STATIC_PREFIX }}js/json2.js" type="text/javascript"></script>
+<script src="{{ STATIC_PREFIX }}js/festos.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block extra_scripts %}
@@ -105,44 +109,81 @@
 {% endblock %}
 
 {% block content %}
-<h2>Search</h2>
+<h2>{% trans "Search" %}</h2>
 <div class="visual_search"></div>
 
 {% if vs_query %}
-<p><small>{{ documents|length }} books found</small></p>
+<p><small>{{ documents|length }} {% trans "books found" %}</small></p>
 
 
-{% for id, pages in documents.items %}
+{% for id, result in documents.items %}
   {% if forloop.first %}
     <ul class="media-list">
   {% endif %}
     <li class="media">
       <h3 class="media-heading">
-        <a href="{{ pages.0.object.document.get_absolute_url }}#search/p{{ pages.0.object }}/{{query}}">
-          {{ pages.0.title }}, {{ pages.0.author }}
+        <a href="{{ result.document.get_absolute_url }}}">
+          {% if query_dict.title %}
+            {% highlight result.document.title with query_dict.title css_class "highlighted" max_length 5000000 %},
+          {% else %}
+            {{ result.document.title }},
+          {% endif %}
+          {% if query_dict.author %}
+            {% highlight result.document.book.author with query_dict.author max_length 5000 %}
+          {% else %}
+            {{ result.document.book.author }}
+          {% endif %}
+          {{ query_dict.notes }}
         </a>
       </h3>
-      <a class="pull-left" href="{{ pages.0.object.document.get_absolute_url }}#search/p{{ pages.0.object }}/{{query}}">
-        <img class="media-object" src="{{ pages.0.object.document.get_thumbnail }}">
+      {% if not query_dict.q %}
+      <a class="pull-left thumbnail-doc" href="{{ result.document.get_absolute_url }}">
+          <img class="media-object" src="{{ result.document.get_thumbnail }}">
       </a>
+      {% else %}
+      {% endif %}
       <div class="media-body">
-        <div class="row">
-          <div id="avoid-first-child"></div>
-          {% for item in pages|slice:":6" %}
-            <div class="span3 media">
-                <a class="summary" href="{{ item.object.document.get_absolute_url }}#search/p{{ item.object.page }}/{{query}}">
-                  Page {{item.object.page}}: {% highlight item.object.text with query %}
-                </a>
-            </div>
-          {% endfor %}
-        </div>
+        {% if query_dict.source %}
+          <p>
+           <strong> Source: </strong>{% highlight result.source with query_dict.source  %}
+          </p>
+        {% endif %}
+        {% if query_dict.description %}
+          <p>
+           <strong> Description: </strong>{% highlight result.description with query_dict.description %}
+          </p>
+        {% endif %}
+        {% if query_dict.notes %}
+          <p>
+           <strong> Notes: </strong>{% highlight result.notes with query_dict.notes %}
+          </p>
+        {% endif %}
       </div>
+      {% if query_dict.q %}
+        <a class="pull-left thumbnail-doc" href="{{ result.document.get_absolute_url }}">
+          <img class="media-object" src="{{ result.document.get_thumbnail }}">
+        </a>
+        <div class="media-body">
+          <div class="row">
+            <div id="avoid-first-child"></div>
+
+              {% for page in result.pages|slice:":6" %}
+                <div class="span3 media">
+                  <a class="summary" href="{{ page.document.get_absolute_url }}#search/p{{ page.page }}/{{query}}">
+                    Page {{page.page}}: {% highlight page.text with query %}
+                  </a>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
     </li>
   {% if forloop.last %}
     <ul class="media-list">
   {% endif %}
 {% empty %}
-  <p>No results found.</p>
+  <p>{% trans "No results found." %}</p>
 {% endfor %}
 
 
