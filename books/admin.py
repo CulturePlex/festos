@@ -13,4 +13,8 @@ class BookAdmin(DocumentAdmin):
     ]
     fieldsets.insert(1, DocumentAdmin.fieldsets[1])
 
+    def save_model(self, request, obj, form, change):
+        obj.author = request.user
+        obj.save()
+
 admin.site.register(Book, BookAdmin)

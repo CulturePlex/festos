@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.template import RequestContext
 from books.views import SearchBookView, search_books
-
+from books.forms import BookSearchForm
 
 admin.autodiscover()
 
@@ -22,7 +22,8 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('accounts.urls')),
     url(r'^books/', include('books.urls')),
     #url(r'^search/', include('haystack.urls')),
-    url(r'^$', search_books(SearchBookView()), name='index'),
+    url(r'^$', SearchBookView(form_class=BookSearchForm),
+               name='index'),
     #url(r'^$', include('haystack.urls')),
 )
 

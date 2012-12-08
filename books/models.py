@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext as _
+from django.contrib.auth.models import User
 
 from docviewer.models import Document
 
@@ -12,3 +13,6 @@ class Book(Document):
         help_text='Notes of the book')
     source = models.CharField(_('Source'), blank=True, null=False, 
         max_length=50, help_text='The source of the document')
+    public = models.BooleanField(_('Publicly Available'), blank = False,
+            null=False, help_text='Is this document available to everybody?')
+    owner = models.ForeignKey(User, blank = False, null = False)

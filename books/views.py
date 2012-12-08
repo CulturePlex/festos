@@ -19,35 +19,39 @@ class SearchBookView(SearchView):
 
         Returns an empty list if there's no query to search with.
         """
-        results = self.form.search()
+
+
+        results = self.form.search(self.request)
 
         # if there is no 'q' haystack returns an empty results
         #import ipdb; ipdb.set_trace()
         if results.count() == 0 and \
                 len(self.request.GET) > 0 and not \
-                self.request.GET.get('q'):
+                self.request.GET.has_key('q'):
             results = SearchQuerySet()
 
+
         self.vs_query = ""
-        if (self.request.GET.get('q')):
+        if (self.request.GET.has_key('q')):
             self.vs_query += " text:" + self.request.GET.get('q')
-        if (self.request.GET.get('author')):
+        if (self.request.GET.has_key('author')):
             results = results.filter(author=self.request.GET.get('author'))
             self.vs_query += " author:" + self.request.GET.get('author')
-        if (self.request.GET.get('title')):
+        if (self.request.GET.has_key('title')):
             results = results.filter(title=self.request.GET.get('title'))
             self.vs_query += " title:" + self.request.GET.get('title')
-        if (self.request.GET.get('source')):
+        if (self.request.GET.has_key('source')):
             results = results.filter(source=self.request.GET.get('source'))
             self.vs_query += " source:" + self.request.GET.get('source')
-        if (self.request.GET.get('description')):
+        if (self.request.GET.has_key('description')):
             results = results.filter(description = \
                           self.request.GET.get('description'))
             self.vs_query += " description:" +\
                           self.request.GET.get('description')
-        if (self.request.GET.get('notes')):
+        if (self.request.GET.has_key('notes')):
             results = results.filter(notes=self.request.GET.get('notes'))
             self.vs_query += " notes:" + self.request.GET.get('notes')
+
 
         return results
 
@@ -75,7 +79,8 @@ class SearchBookView(SearchView):
 
         return {'documents': documents,
                 'vs_query': self.vs_query,
-                'query_dict': self.request.GET }
+                'query_dict': self.request.GET,
+                'is_private': self.request.GET.has_key('private') }
 
 def search_books(search_book_view):
   return search_book_view;
@@ -85,21 +90,19 @@ def search_books(search_book_view):
 def list_books(request):
     """ Add a book """
 
-    form = BookForm()
-    books = Book.objects.all()
+    books = Book.objects.filter(owner=request.user)
 
     return render_to_response('list_books.html', {
                                 'books': books,
-                                'form': form,
                                 }, context_instance=RequestContext(request))
 
 
 @login_required
 def add_book(request):
     """ Add a book """
-    form = BookForm()
+    form = BookForm(user=request.user)
     if request.method == 'POST':
-        form = BookForm(request.POST, request.FILES)
+        form = BookForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             form.save()
             file = form.cleaned_data['file']

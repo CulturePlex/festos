@@ -7,9 +7,10 @@
 <table class="table">
   <thead>
     <tr>
-      <th>{% trans "Id" %}</th>
       <th>{% trans "Title" %}</th>
       <th>{% trans "Author" %}</th>
+      <th>{% trans "Is Public?" %}</th>
+      <th>{% trans "Owner" %}</th>
       <th>{% trans "State" %}</th>
       <th>{% trans "Actions" %}</th>
     </tr>
@@ -17,9 +18,16 @@
   <tbody>
   {% for book in books %}
     <tr>
-      <td>{{ book.id }}</td>
       <td>{{ book.title }}</td>
       <td>{{ book.author }}</td>
+      <td>
+        {% if book.public %}
+          <i class="icon-eye-open" title="public"></i>
+        {% else %}
+          <i class="icon-eye-open icon-white" title="private"></i>
+        {% endif %}
+      </td>
+      <td>{{ book.owner }}</td>
       <td>{{ book.status }}</td>
       <td>
         <a href="{% url edit_book book.pk %}">

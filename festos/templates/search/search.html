@@ -32,29 +32,6 @@
           ],
           callbacks  : {
             search : function(query, searchCollection) {
-
-
-                  //data: {},
-                  //data: searchCollection.toJSON(),
-                  //?q="+facets[0]['text']
-                  //
-                  //url: "http://localhost:8000/search/", //data: {},
-//              qdata={}
-//              searchCollection.each(function (elem){ 
-//                  field = elem.toJSON()
-//                  if (field['category'] != 'text')
-//                    qdata[field['category']]=field['value']; 
-//                  else{
-//                    qdata['q']=field['value']; 
-//                  }
-//                });
-//              $.ajax({url: "http://localhost:8000/search/", 
-//                      data: qdata,
-//                      success:   function(payload){ 
-//                          $('#search_query').append(payload)
-//                        },
-//                      //dataType: 'json',
-//                      type: 'GET',});
               url="?";
               searchCollection.each(function (elem){ 
                   field = elem.toJSON()
@@ -67,34 +44,7 @@
 
               window.location = url
             },
-
             valueMatches : function(category, searchTerm, callback) {
-//              switch (category) {
-//              case 'title':
-//                  callback([
-//                    {% for title in titles %}
-//                      '{{ title }}',
-//                    {% endfor %}
-//                    ])
-//                    ;
-//                  break;
-//              case 'author':
-//                  callback([
-//                    {% for author in authors %}
-//                      '{{ author }}',
-//                    {% endfor %}
-//                    ])
-//                    ;
-//                  break;
-//                case 'source':
-//                  callback([
-//                    {% for source in sources %}
-//                      '{{ source }}',
-//                    {% endfor %}
-//                    ])
-//                    ;
-//                  break;
-//              }
             },
             facetMatches : function(callback) {
               callback([
@@ -111,7 +61,6 @@
 {% block content %}
 <h2>{% trans "Search" %}</h2>
 <div class="visual_search"></div>
-
 {% if vs_query %}
 <p><small>{{ documents|length }} {% trans "books found" %}</small></p>
 
@@ -133,8 +82,10 @@
           {% else %}
             {{ result.document.book.author }}
           {% endif %}
-          {{ query_dict.notes }}
         </a>
+        <small>
+          @{{ result.document.book.owner }}
+        </small>
       </h3>
       {% if not query_dict.q %}
       <a class="pull-left thumbnail-doc" href="{{ result.document.get_absolute_url }}">

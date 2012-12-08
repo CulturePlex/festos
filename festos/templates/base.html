@@ -58,7 +58,7 @@
     </ul>
     <ul class="nav pull-right">
       {% if user.is_authenticated %}
-        <li><a href={% url userena_profile_detail user %}>{% trans "Profile" %}</a></li>
+        <li><a href={% url userena_profile_detail user %}>@{{ user }}</a></li>
         <li><a href={{ LOGOUT_URL }}>{% trans "Log Out" %}</a></li>
       {% else %}
         <li><a href={{ LOGIN_URL }}>{% trans "Log In" %}</a></li>

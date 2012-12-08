@@ -6,7 +6,7 @@
 {% block content %}
 <div class="row">
 <div class="span12"></div>
-<div class="span5 offset1">
+<div class="span8 offset1">
   <form action="{% url edit_book book.id %}" enctype="multipart/form-data" method="post" class="form-horizontal">
       {% csrf_token %}
       {% for field in form %}
