@@ -30,6 +30,9 @@
       <td>{{ book.owner }}</td>
       <td>{{ book.status }}</td>
       <td>
+        <a href="{{ book.get_absolute_url }}">
+          <i class="icon-file"></i>
+        </a>
         <a href="{% url edit_book book.pk %}">
           <i class="icon-edit"></i> 
         </a>
