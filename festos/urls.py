@@ -2,9 +2,9 @@ from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.generic import TemplateView
 from django.template import RequestContext
-from books.views import SearchBookView, search_books
-from books.forms import BookSearchForm
+from books.views import search_book
 
 admin.autodiscover()
 
@@ -22,8 +22,9 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('accounts.urls')),
     url(r'^books/', include('books.urls')),
     #url(r'^search/', include('haystack.urls')),
-    url(r'^$', SearchBookView(form_class=BookSearchForm),
-               name='index'),
+    url(r'^about/', TemplateView.as_view(template_name="about.html"),
+              name='about'),
+    url(r'^$', search_book, name='index'),
     #url(r'^$', include('haystack.urls')),
 )
 

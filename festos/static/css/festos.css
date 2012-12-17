@@ -35,10 +35,13 @@ a.summary{
 a.summary:hover
 { 
   text-decoration: none;
-  background-color: #CDE;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  border: 2px solid #048;
+  border: 2px solid #acf;
+  border-radius: 16px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-box-shadow: inset 0px 0px 3px #acf;
+  -moz-box-shadow: inset 0px 0px 3px #acf;
+  box-shadow: inset 0px 0px 3px #acf;
 }
 
 .thumbnail-doc{

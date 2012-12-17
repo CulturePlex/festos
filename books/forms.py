@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from haystack.forms import SearchForm
 from haystack.query import SearchQuerySet
@@ -46,7 +47,10 @@ class BookForm(DocumentForm):
               help_text=None)
 
     def __init__(self, *args, **kwargs):
-        self._user = kwargs.pop('user')
+        try:
+            self._user = kwargs.pop('user')
+        except:
+            self._user = User.objects.get(username="festos")
         super(BookForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):

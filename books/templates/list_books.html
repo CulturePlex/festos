@@ -21,11 +21,13 @@
       <td>{{ book.title }}</td>
       <td>{{ book.author }}</td>
       <td>
-        {% if book.public %}
-          <i class="icon-eye-open" title="public"></i>
-        {% else %}
-          <i class="icon-eye-open icon-white" title="private"></i>
-        {% endif %}
+        <a href="{% url change_privacy_book book.pk %}">
+          {% if book.public %}
+            <i class="icon-eye-open" title="public"></i>
+          {% else %}
+            <i class="icon-eye-open icon-white" title="private"></i>
+          {% endif %}
+        </a>
       </td>
       <td>{{ book.owner }}</td>
       <td>{{ book.status }}</td>

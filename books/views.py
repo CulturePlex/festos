@@ -5,10 +5,11 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import SortedDict 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from haystack.views import basic_search, SearchView
 from haystack.query import SearchQuerySet
 from books.models import Book
-from books.forms import BookForm, EditBookForm
+from books.forms import BookForm, EditBookForm, BookSearchForm
 
 
 
@@ -30,8 +31,10 @@ class SearchBookView(SearchView):
                 self.request.GET.has_key('q'):
             results = SearchQuerySet()
 
-
+        url_query = ""
         self.vs_query = ""
+
+#        import ipdb; ipdb.set_trace()
         if (self.request.GET.has_key('q')):
             self.vs_query += " text:" + self.request.GET.get('q')
         if (self.request.GET.has_key('author')):
@@ -63,28 +66,43 @@ class SearchBookView(SearchView):
         """
 
         documents = SortedDict()
-        
         for r in self.results:
             if r.document_id in documents:
                 documents[r.document_id]['pages'].append(r.object)
             else:
-                documents[r.document_id]={'document': r.object.document,
+                documents[r.document_id]={'id': r.object.document.id,
+                                          'document': r.object.document,
                                           'notes': r.notes,
                                           'source': r.source,
                                           'description': r.description,
                                           'pages': [r.object] }
 
-        #toolbar
-        #import ipdb; ipdb.set_trace()
 
-        return {'documents': documents,
+        paginator =  Paginator(documents.items(), 5)
+        try:
+            page = self.request.GET.get('pag')
+            docs = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            docs = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), 
+            # deliver last page of   results.
+            docs = paginator.page(paginator.num_pages)
+
+        cp = self.request.GET.copy()
+        if cp.has_key('pag'):
+            cp.pop('pag')
+
+        return {'docs': docs,
+                'total': len(documents),
                 'vs_query': self.vs_query,
-                'query_dict': self.request.GET,
-                'is_private': self.request.GET.has_key('private') }
+                'url_query': cp.urlencode }
 
-def search_books(search_book_view):
-  return search_book_view;
+#def search_books(search_book_view):
+#  return search_book_view;
 
+search_book = SearchBookView(form_class=BookSearchForm)
 
 @login_required
 def list_books(request):
@@ -135,4 +153,13 @@ def remove_book(request, pk):
 
     book = Book.objects.get(pk=pk)
     book.delete()
+    return HttpResponseRedirect(reverse('books.views.list_books'))
+
+@login_required
+def change_privacy_book(request, pk):
+    """ Remove a book """
+
+    book = Book.objects.get(pk=pk)
+    book.public = not book.public
+    book.save()
     return HttpResponseRedirect(reverse('books.views.list_books'))

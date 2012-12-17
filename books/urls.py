@@ -20,5 +20,7 @@ urlpatterns = patterns('',
     url(r'^add/', 'books.views.add_book', name='add_book'),
     url(r'^edit/(?P<pk>\d+)/', 'books.views.edit_book', name='edit_book'),
     url(r'^remove/(?P<pk>\d+)/', 'books.views.remove_book', name='remove_book'),
+        url(r'^change/(?P<pk>\d+)/', 'books.views.change_privacy_book', 
+        name='change_privacy_book'),
 
 )

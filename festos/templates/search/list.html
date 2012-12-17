@@ -62,64 +62,63 @@
 <h2>{% trans "Search" %}</h2>
 <div class="visual_search"></div>
 {% if vs_query %}
-<p><small>{{ total }} {% trans "books found" %}</small></p>
+<p><small>{{ paginator.object_list|length }} {% trans "books found" %}</small></p>
 
 
 {% for result in docs %}
-
   {% if forloop.first %}
     <ul class="media-list">
   {% endif %}
     <li class="media">
       <h3 class="media-heading">
-        <a href="{{ result.1.document.get_absolute_url }}}">
-          {% if request.GET.title %}
-            {% highlight result.1.document.title with request.GET.title css_class "highlighted" max_length 5000000 %},
+        <a href="{{ result.document.get_absolute_url }}}">
+          {% if query_dict.title %}
+            {% highlight result.document.title with query_dict.title css_class "highlighted" max_length 5000000 %},
           {% else %}
-            {{ result.1.document.title }},
+            {{ result.document.title }},
           {% endif %}
-          {% if request.GET.author %}
-            {% highlight result.1.document.book.author with request.GET.author max_length 5000 %}
+          {% if query_dict.author %}
+            {% highlight result.document.book.author with query_dict.author max_length 5000 %}
           {% else %}
-            {{ result.1.document.book.author }}
+            {{ result.document.book.author }}
           {% endif %}
         </a>
         <small>
-          @{{ result.1.document.book.owner }}
+          @{{ result.document.book.owner }}
         </small>
       </h3>
-      {% if not request.GET.q %}
-      <a class="pull-left thumbnail-doc" href="{{ result.1.document.get_absolute_url }}">
-          <img class="media-object" src="{{ result.1.document.get_thumbnail }}">
+      {% if not query_dict.q %}
+      <a class="pull-left thumbnail-doc" href="{{ result.document.get_absolute_url }}">
+          <img class="media-object" src="{{ result.document.get_thumbnail }}">
       </a>
       {% else %}
       {% endif %}
       <div class="media-body">
-        {% if request.GET.source %}
+        {% if query_dict.source %}
           <p>
-           <strong> Source: </strong>{% highlight result.1.source with request.GET.source  %}
+           <strong> Source: </strong>{% highlight result.source with query_dict.source  %}
           </p>
         {% endif %}
-        {% if request.GET.description %}
+        {% if query_dict.description %}
           <p>
-           <strong> Description: </strong>{% highlight result.1.description with request.GET.description %}
+           <strong> Description: </strong>{% highlight result.description with query_dict.description %}
           </p>
         {% endif %}
-        {% if request.GET.notes %}
+        {% if query_dict.notes %}
           <p>
-           <strong> Notes: </strong>{% highlight result.1.notes with request.GET.notes %}
+           <strong> Notes: </strong>{% highlight result.notes with query_dict.notes %}
           </p>
         {% endif %}
       </div>
-      {% if request.GET.q %}
-        <a class="pull-left thumbnail-doc" href="{{ result.1.document.get_absolute_url }}">
-          <img class="media-object" src="{{ result.1.document.get_thumbnail }}">
+      {% if query_dict.q %}
+        <a class="pull-left thumbnail-doc" href="{{ result.document.get_absolute_url }}">
+          <img class="media-object" src="{{ result.document.get_thumbnail }}">
         </a>
         <div class="media-body">
           <div class="row">
             <div id="avoid-first-child"></div>
 
-            {% for page in result.1.pages|slice:":6" %}
+            {% for page in result.pages|slice:":6" %}
               <div class="span3 media">
                 <a class="summary" href="{{ page.document.get_absolute_url }}#search/p{{ page.page }}/{{query}}">
                   Page {{page.page}}: {% highlight page.text with query %}
@@ -140,7 +139,7 @@
 <div class="pagination">
     <span class="step-links">
         {% if docs.has_previous %}
-            <a href="?pag={{ docs.previous_page_number }}&{{ url_query }}">previous</a>
+            <a href="?page={{ docs.previous_page_number }}&q="{{query}}>previous</a>
         {% endif %}
 
         <span class="current">
@@ -148,8 +147,7 @@
         </span>
 
         {% if docs.has_next %}
-
-            <a href="?pag={{ docs.next_page_number }}&{{ url_query }}"> next </a>
+            <a href="?page={{ docs.next_page_number }}&q={{query}}">next</a>
         {% endif %}
     </span>
 </div>

@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
-
 from docviewer.models import Document
+
 
 
 # Create your models here.
@@ -16,3 +16,4 @@ class Book(Document):
     public = models.BooleanField(_('Publicly Available'), blank = False,
             null=False, help_text='Is this document available to everybody?')
     owner = models.ForeignKey(User, blank = False, null = False)
+

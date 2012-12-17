@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap %}
+{% load pdb %}
+
+
+{% block content %}
+<div class="page-header">
+<h1>{% trans "Festos" %}</h1>
+</div>
+<p>
+{% blocktrans %}
+Festos is an infrastructure for OCR'ing, indexing and searching documents.
+{% endblocktrans %}
+</p>
+<h2>{% trans "Credits" %}</h2>
+<p>
+{% blocktrans %}
+This project uses the icons provide by <a href="http://glyphicons.com/"> Glyphicons</a> under the arragment between them and <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>. 
+{% endblocktrans %}
+</p>
+{% endblock %}
+
