@@ -37,8 +37,8 @@ a.summary:hover
   text-decoration: none;
   border: 2px solid #acf;
   border-radius: 16px;
-  -webkit-border-radius: 8px;
-  -moz-border-radius: 8px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
   -webkit-box-shadow: inset 0px 0px 3px #acf;
   -moz-box-shadow: inset 0px 0px 3px #acf;
   box-shadow: inset 0px 0px 3px #acf;
@@ -49,8 +49,11 @@ a.summary:hover
 }
 
 .thumbnail-doc:hover{
-  background-color: #CDE;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  border: 2px solid #048;
+  border: 2px solid #acf;
+  border-radius: 16px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-box-shadow: inset 0px 0px 3px #acf;
+  -moz-box-shadow: inset 0px 0px 3px #acf;
+  box-shadow: inset 0px 0px 3px #acf;
 }
