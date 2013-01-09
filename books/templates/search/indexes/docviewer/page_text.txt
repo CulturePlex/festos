@@ -1,7 +1,1 @@
-{{ object.document.title }}
-{{ object.document.description }}
-{{ object.document.book.author }}
-{{ object.document.book.notes }}
-{{ object.document.book.source }}
 {{ object.text }}
-Cultureplex
