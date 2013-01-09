@@ -76,9 +76,6 @@ class SearchBookView(SearchView):
             else:
                 documents[r.document_id]={'id': r.object.document.id,
                                           'document': r.object.document,
-                                          'notes': r.notes,
-                                          'source': r.source,
-                                          'description': r.description,
                                           'pages': [r.object] }
 
 
