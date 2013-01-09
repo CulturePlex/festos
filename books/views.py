@@ -1,4 +1,5 @@
 # Create your views here.
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
@@ -8,8 +9,9 @@ from django.utils.datastructures import SortedDict
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from haystack.views import basic_search, SearchView
 from haystack.query import SearchQuerySet
+from haystack.forms import SearchForm
 from books.models import Book
-from books.forms import BookForm, EditBookForm, BookSearchForm
+from books.forms import BookForm, EditBookForm, SearchBookForm
 
 
 
@@ -21,8 +23,7 @@ class SearchBookView(SearchView):
         Returns an empty list if there's no query to search with.
         """
 
-
-        results = self.form.search(self.request)
+        results = self.form.search()
 
         # if there is no 'q' haystack returns an empty results
         #import ipdb; ipdb.set_trace()
@@ -34,27 +35,30 @@ class SearchBookView(SearchView):
         url_query = ""
         self.vs_query = ""
 
-#        import ipdb; ipdb.set_trace()
+        books = Book.objects.all()
+        if self.request.user.is_authenticated():
+            books = books.filter(Q(owner_id = self.request.user.id) | 
+                                 Q(public = True))
+        else:
+            books = books.filter(public = True)
+
+
         if (self.request.GET.has_key('q')):
             self.vs_query += " text:" + self.request.GET.get('q')
-        if (self.request.GET.has_key('author')):
-            results = results.filter(author=self.request.GET.get('author'))
-            self.vs_query += " author:" + self.request.GET.get('author')
-        if (self.request.GET.has_key('title')):
-            results = results.filter(title=self.request.GET.get('title'))
-            self.vs_query += " title:" + self.request.GET.get('title')
-        if (self.request.GET.has_key('source')):
-            results = results.filter(source=self.request.GET.get('source'))
-            self.vs_query += " source:" + self.request.GET.get('source')
-        if (self.request.GET.has_key('description')):
-            results = results.filter(description = \
-                          self.request.GET.get('description'))
-            self.vs_query += " description:" +\
-                          self.request.GET.get('description')
-        if (self.request.GET.has_key('notes')):
-            results = results.filter(notes=self.request.GET.get('notes'))
-            self.vs_query += " notes:" + self.request.GET.get('notes')
 
+
+        form=SearchBookForm(self.request.GET)        
+        if form.is_valid():
+            opts = {}
+            for key in form.cleaned_data:
+                if form.cleaned_data[key] != '':
+                    opts[key+'__icontains'] = form.cleaned_data[key]
+                    self.vs_query += " " + key + ":" + form.cleaned_data[key]
+            books = books.filter(**opts)
+
+
+        results = results.filter(document_id__in = \
+            books.values_list('id', flat=True))
 
         return results
 
@@ -102,7 +106,7 @@ class SearchBookView(SearchView):
 #def search_books(search_book_view):
 #  return search_book_view;
 
-search_book = SearchBookView(form_class=BookSearchForm)
+search_book = SearchBookView(form_class=SearchForm)
 
 @login_required
 def list_books(request):

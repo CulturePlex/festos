@@ -81,25 +81,14 @@ class EditBookForm(forms.ModelForm):
               help_text=None)
 
 
-class BookSearchForm(SearchForm):
-    def search(self, request):
-        if not self.is_valid():
-            return self.no_query_found()
-
-        if not self.cleaned_data.get('q'):
-            return self.no_query_found()
-
-        sqs = SearchQuerySet()
-        if request.user.is_authenticated():
-            sqs =sqs.filter_or(owner_id=request.user.id).filter_or(public=True)
-        else:
-            sqs = sqs.filter(public=True)
-
-        sqs = sqs.auto_query(self.cleaned_data['q'])
-
-        if self.load_all:
-            sqs = sqs.load_all()
-
-        return sqs
-        
+class SearchBookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ('title', 'author', 'source', 
+                  'description', 'notes')
+    title = forms.CharField(required=False)
+    author = forms.CharField(required=False)
+    description = forms.CharField(required=False)
+    notes = forms.CharField(required=False)
+    source = forms.CharField(required=False)
 
