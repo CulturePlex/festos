@@ -5,6 +5,23 @@ from docviewer.models import Document as Docviewer_Document
 
 
 
+"""A good idea is to use a big form for filtering the query"""
+
+class Reference(models.Model):
+
+#    def get_annotation(self):
+#        raise NotImplementedError("You have to define the get_annotation " + 
+#                                  "method in the child class!")
+
+#class Book(Reference):
+    editorial = models.CharField(_('Editorial'), blank=False, null=False, 
+        max_length=100, help_text='Editorial')
+
+
+
+    def get_annotation(self):
+        return "Editorial:" + self.editorial
+
 # Create your models here.
 class Document(Docviewer_Document):
     author = models.CharField(_('Author'), blank=False, null=False, 
@@ -16,4 +33,9 @@ class Document(Docviewer_Document):
     public = models.BooleanField(_('Publicly Available'), blank = False,
             null=False, help_text='Is this document available to everybody?')
     owner = models.ForeignKey(User, blank = False, null = False)
+    reference = models.OneToOneField(Reference,
+                                      unique=False, blank = False, null = True,
+                                      verbose_name=_('reference'),
+                                      related_name='document')
+
 

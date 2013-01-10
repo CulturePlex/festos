@@ -10,8 +10,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from haystack.views import basic_search, SearchView
 from haystack.query import SearchQuerySet
 from haystack.forms import SearchForm
-from models import Document
-from forms import DocumentForm, EditDocumentForm, SearchDocumentForm
+from models import Document, Reference
+from forms import DocumentForm, EditDocumentForm, SearchDocumentForm, \
+                  SearchReferenceForm
 
 
 
@@ -47,7 +48,7 @@ class SearchDocumentView(SearchView):
             self.vs_query += " text:" + self.request.GET.get('q')
 
 
-        form=SearchDocumentForm(self.request.GET)        
+        form=SearchDocumentForm(self.request.GET)
         if form.is_valid():
             opts = {}
             for key in form.cleaned_data:
@@ -56,6 +57,17 @@ class SearchDocumentView(SearchView):
                     self.vs_query += " " + key + ":" + form.cleaned_data[key]
             documents = documents.filter(**opts)
 
+        form=SearchReferenceForm(self.request.GET)
+        self.refs_fields = {}
+        if form.is_valid():
+            opts = {}
+            for key in form.cleaned_data:
+                if form.cleaned_data[key] != '':
+                    opts[key+'__icontains'] = form.cleaned_data[key]
+                    self.refs_fields[key.capitalize()] = form.cleaned_data[key]
+                    self.vs_query += " " + key + ":" + form.cleaned_data[key]
+            documents = documents.filter(reference__in = \
+                        Reference.objects.all().filter(**opts))
 
         results = results.filter(document_id__in = \
             documents.values_list('id', flat=True))
@@ -98,6 +110,7 @@ class SearchDocumentView(SearchView):
         return {'docs': docs,
                 'total': len(documents),
                 'vs_query': self.vs_query,
+                'refs_fields': self.refs_fields,
                 'url_query': cp.urlencode }
 
 #def search_documents(search_document_view):

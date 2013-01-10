@@ -28,7 +28,8 @@
           autosearch  : true,
           showFacets : true,
           unquotable : [
-            'text', 'title', 'author', 'source', 'description', 'notes'
+            'text', 'title', 'author', 'source', 'description', 
+            'notes', 'editorial'
           ],
           callbacks  : {
             search : function(query, searchCollection) {
@@ -48,7 +49,8 @@
             },
             facetMatches : function(callback) {
               callback([
-                'text', 'title', 'author', 'source', 'description', 'notes'
+                'text', 'title', 'author', 'source', 'description', 'notes',
+                'editorial'
               ]);
             }
           }
@@ -110,6 +112,11 @@
            <strong> Notes: </strong>{% highlight result.1.document.notes with request.GET.notes %}
           </p>
         {% endif %}
+        {% for key, value in refs_fields.items %}
+          <p>
+          <strong> {{ key }}: </strong>{% highlight value with request.GET.editorial %}
+          </p>
+        {% endfor %}
       </div>
       {% if request.GET.q %}
         <a class="pull-left thumbnail-doc" href="{{ result.1.document.get_absolute_url }}">

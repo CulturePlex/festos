@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from haystack.forms import SearchForm
 from haystack.query import SearchQuerySet
 from docviewer.forms import DocumentForm as Docviewer_DocumentForm
-from models import Document
+from models import Document, Reference
 
 
 class DocumentAdminForm(Docviewer_DocumentForm):
@@ -21,13 +21,15 @@ class DocumentAdminForm(Docviewer_DocumentForm):
             required=False,
             widget=forms.Textarea(attrs={'class':'vLargeTextField'}),
             help_text=_('Description of the document'))
+            
+
 
 
 class DocumentForm(Docviewer_DocumentForm):
     class Meta:
         model = Document
         fields = ('title', 'author', 'file', 'source', 
-                  'description', 'notes', 'public')
+                  'description', 'notes', 'public','reference')
 
     title = forms.CharField(help_text=None)
     author = forms.CharField(help_text=None)
@@ -80,6 +82,11 @@ class EditDocumentForm(forms.ModelForm):
     public = forms.BooleanField(label=_('Publicly available'), required=False,
               help_text=None)
 
+class SearchReferenceForm(forms.ModelForm):
+    class Meta:
+        model = Reference
+        fields = ('editorial',) #the comma is necessary :S
+    editorial = forms.CharField(required=False)
 
 class SearchDocumentForm(forms.ModelForm):
     class Meta:
@@ -91,4 +98,7 @@ class SearchDocumentForm(forms.ModelForm):
     description = forms.CharField(required=False)
     notes = forms.CharField(required=False)
     source = forms.CharField(required=False)
+ 
+    
+
 
