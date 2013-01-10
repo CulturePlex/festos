@@ -3,36 +3,36 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from haystack.forms import SearchForm
 from haystack.query import SearchQuerySet
-from docviewer.forms import DocumentForm
-from books.models import Book
+from docviewer.forms import DocumentForm as Docviewer_DocumentForm
+from models import Document
 
 
-class BookAdminForm(DocumentForm):
+class DocumentAdminForm(Docviewer_DocumentForm):
     class Meta:
-        model = Book
+        model = Document
 
     title = forms.CharField(
             widget=forms.TextInput(attrs={'class':'vTextField'}),
-            help_text=_("The title of the book"))
+            help_text=_("The title of the document"))
     file = forms.FileField(
-           label=_('Upload Book'), 
-           help_text=_('Select your pdf scanned book'))
+           label=_('Upload Document'), 
+           help_text=_('Select your pdf scanned document'))
     description = forms.CharField(
             required=False,
             widget=forms.Textarea(attrs={'class':'vLargeTextField'}),
-            help_text=_('Description of the book'))
+            help_text=_('Description of the document'))
 
 
-class BookForm(DocumentForm):
+class DocumentForm(Docviewer_DocumentForm):
     class Meta:
-        model = Book
+        model = Document
         fields = ('title', 'author', 'file', 'source', 
                   'description', 'notes', 'public')
 
     title = forms.CharField(help_text=None)
     author = forms.CharField(help_text=None)
     file = forms.FileField(
-           label=_('Upload Book'), 
+           label=_('Upload Document'), 
            help_text=None)
     description = forms.CharField(
             required=False,
@@ -51,18 +51,18 @@ class BookForm(DocumentForm):
             self._user = kwargs.pop('user')
         except:
             self._user = User.objects.get(username="festos")
-        super(BookForm, self).__init__(*args, **kwargs)
+        super(DocumentForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
-        inst = super(BookForm, self).save(commit=False)
+        inst = super(DocumentForm, self).save(commit=False)
         inst.owner = self._user
         if commit:
             inst.save()
         return inst
 
-class EditBookForm(forms.ModelForm):
+class EditDocumentForm(forms.ModelForm):
     class Meta:
-        model = Book
+        model = Document
         fields = ('title', 'author', 'source', 
                   'description', 'notes', 'public' )
 
@@ -81,9 +81,9 @@ class EditBookForm(forms.ModelForm):
               help_text=None)
 
 
-class SearchBookForm(forms.ModelForm):
+class SearchDocumentForm(forms.ModelForm):
     class Meta:
-        model = Book
+        model = Document
         fields = ('title', 'author', 'source', 
                   'description', 'notes')
     title = forms.CharField(required=False)

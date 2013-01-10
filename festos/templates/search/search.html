@@ -62,7 +62,7 @@
 <h2>{% trans "Search" %}</h2>
 <div class="visual_search"></div>
 {% if vs_query %}
-<p><small>{{ total }} {% trans "books found" %}</small></p>
+<p><small>{{ total }} {% trans "documents found" %}</small></p>
 
 
 {% for result in docs %}
@@ -79,13 +79,13 @@
             {{ result.1.document.title }},
           {% endif %}
           {% if request.GET.author %}
-            {% highlight result.1.document.book.author with request.GET.author max_length 5000 %}
+            {% highlight result.1.document.author with request.GET.author max_length 5000 %}
           {% else %}
-            {{ result.1.document.book.author }}
+            {{ result.1.document.author }}
           {% endif %}
         </a>
         <small>
-          @{{ result.1.document.book.owner }}
+          @{{ result.1.document.owner }}
         </small>
       </h3>
       {% if not request.GET.q %}
@@ -102,12 +102,12 @@
         {% endif %}
         {% if request.GET.description %}
           <p>
-           <strong> Description: </strong>{% highlight result.1.document.book.description with request.GET.description %}
+           <strong> Description: </strong>{% highlight result.1.document.description with request.GET.description %}
           </p>
         {% endif %}
         {% if request.GET.notes %}
           <p>
-           <strong> Notes: </strong>{% highlight result.1.document.book.notes with request.GET.notes %}
+           <strong> Notes: </strong>{% highlight result.1.document.notes with request.GET.notes %}
           </p>
         {% endif %}
       </div>

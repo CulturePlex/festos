@@ -6,17 +6,17 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
-from models import Book
+from models import Document
 from settings import PROJECT_ROOT
 from os.path import join
 from os import listdir
 
 
 
-class BookTestCase(TestCase):
+class DocumentTestCase(TestCase):
     def test_upload_examples(self):
         path = join(PROJECT_ROOT,tests)
         self.assertEqual(
-          Book.objects.upload_examples(path), 
+          Document.objects.upload_examples(path), 
           len (listdir(path)))
 

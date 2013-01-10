@@ -168,7 +168,7 @@ INSTALLED_APPS = (
     'guardian',
     'easy_thumbnails',
     'docviewer',
-    'books',
+    'documents',
     'accounts',
 )
 
@@ -181,7 +181,7 @@ AUTHENTICATION_BACKENDS = (
 
 ANONYMOUS_USER_ID = -1
 AUTH_PROFILE_MODULE = 'accounts.Profile'
-USERENA_SIGNIN_REDIRECT_URL = '/books/'
+USERENA_SIGNIN_REDIRECT_URL = '/documents/'
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'

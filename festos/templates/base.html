@@ -51,7 +51,7 @@
         <a href="{% url index %}">{% trans "Home" %}</a>
       </li>
       {% if user.is_authenticated %}
-        <li><a href={% url list_books %}>{% trans "Books" %}</a></li>
+        <li><a href={% url list_documents %}>{% trans "Documents" %}</a></li>
       {% endif %}
       <li><a href="{% url about %}" >{% trans "About us" %}</a></li>
       <li><a href="http://github.com/CulturePlex/festos">{% trans "Want to clone us?" %}</a></li>

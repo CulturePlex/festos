@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load bootstrap %}
+
+
+{% block content %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>{% trans "Title" %}</th>
+      <th>{% trans "Author" %}</th>
+      <th>{% trans "Is Public?" %}</th>
+      <th>{% trans "Owner" %}</th>
+      <th>{% trans "State" %}</th>
+      <th>{% trans "Actions" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for document in documents %}
+    <tr>
+      <td>{{ document.title }}</td>
+      <td>{{ document.author }}</td>
+      <td>
+        <a href="{% url change_privacy_document document.pk %}">
+          {% if document.public %}
+            <i class="icon-eye-open" title="Click to make it private"></i>
+          {% else %}
+            <i class="icon-eye-open icon-white" title="Click to make it public"></i>
+          {% endif %}
+        </a>
+      </td>
+      <td>{{ document.owner }}</td>
+      <td>{{ document.status }}</td>
+      <td>
+        <a title="View" href="{{ document.get_absolute_url }}">
+          <i class="icon-file"></i>
+        </a>
+        <a title="Edit" href="{% url edit_document document.pk %}">
+          <i class="icon-edit"></i> 
+        </a>
+        <a title="Remove" href="{% url remove_document document.pk %}">
+          <i class="icon-remove"></i> 
+        </a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<a href={% url add_document %} class="btn offset4 span3" > {% trans "Upload a new Document" %} </a>
+
+{% endblock %}

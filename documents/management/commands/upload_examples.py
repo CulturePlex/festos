@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from os.path import join
 from os import listdir
-from books.forms import BookForm
+from documents.forms import DocumentForm
 
 
 
@@ -18,7 +18,7 @@ class Command(BaseCommand):
               post_dict = {'title': fname, 'author': "Auto Test" }
               file_dict = {'file': SimpleUploadedFile(upload_file.name,
                                   upload_file.read())}
-              form = BookForm(post_dict, file_dict)
+              form = DocumentForm(post_dict, file_dict)
               if form.is_valid():
                   form.save()
                   file = form.cleaned_data['file']
