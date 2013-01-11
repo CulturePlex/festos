@@ -12,7 +12,7 @@ from haystack.query import SearchQuerySet
 from haystack.forms import SearchForm
 from models import Document, Reference
 from forms import DocumentForm, EditDocumentForm, SearchDocumentForm, \
-                  SearchReferenceForm
+                  SearchReferenceForm, ReferenceForm
 
 
 
@@ -139,17 +139,25 @@ def list_documents(request):
 @login_required
 def add_document(request):
     """ Add a document """
-    form = DocumentForm(user=request.user)
+    dform = DocumentForm(user=request.user)
+    rform = ReferenceForm()
     if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES, user=request.user)
-        if form.is_valid():
-            form.save()
-            file = form.cleaned_data['file']
-            form.instance.set_file(file = file, filename=file.name)
+        rform = ReferenceForm(request.POST)
+        dform = DocumentForm(request.POST, request.FILES, user=request.user)
+        #this avoids ignoring the evaluation of the form to show the errors
+        rf_is_valid = rform.is_valid()
+        df_is_valid = dform.is_valid()
+        if rf_is_valid and df_is_valid:
+            rform.save()
+            dform.instance.reference = rform.instance
+            dform.save()
+            file = dform.cleaned_data['file']
+            dform.instance.set_file(file = file, filename=file.name)
             return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
     return render_to_response('add_document.html', {
-                                'form': form,
+                                'dform': dform,
+                                'rform': rform,
                                 }, context_instance=RequestContext(request))
 
 
@@ -157,16 +165,24 @@ def add_document(request):
 def edit_document(request, pk):
     """ Edit a document """
     document = Document.objects.get(pk=pk)
-    form = EditDocumentForm(instance = document)
+    eform = EditDocumentForm(instance = document)
+    rform = ReferenceForm(instance = document.reference)
     if request.method == 'POST':
-        form = EditDocumentForm(request.POST, instance = document)
-        if form.is_valid():
-            form.save()
+        rform = ReferenceForm(request.POST)
+        eform = EditDocumentForm(request.POST, instance=document)
+        #this avoids ignoring the evaluation of the form to show the errors
+        rf_is_valid = rform.is_valid()
+        ef_is_valid = eform.is_valid()
+        if rf_is_valid and ef_is_valid:
+            rform.save()
+            eform.instance.reference = rform.instance
+            eform.save()
             return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
     return render_to_response('edit_document.html', {
                                 'document': document,
-                                'form': form,
+                                'rform': rform,
+                                'eform': eform,
                                 }, context_instance=RequestContext(request))
 
 

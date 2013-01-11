@@ -29,7 +29,7 @@ class DocumentForm(Docviewer_DocumentForm):
     class Meta:
         model = Document
         fields = ('title', 'author', 'file', 'source', 
-                  'description', 'notes', 'public','reference')
+                  'description', 'notes', 'public')
 
     title = forms.CharField(help_text=None)
     author = forms.CharField(help_text=None)
@@ -81,6 +81,12 @@ class EditDocumentForm(forms.ModelForm):
     source = forms.CharField(required=False,help_text=None)
     public = forms.BooleanField(label=_('Publicly available'), required=False,
               help_text=None)
+
+class ReferenceForm(forms.ModelForm):
+    class Meta:
+        model = Reference
+        fields = ('editorial',) #the comma is necessary :S
+    editorial = forms.CharField(required=False)
 
 class SearchReferenceForm(forms.ModelForm):
     class Meta:

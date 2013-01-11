@@ -9,10 +9,12 @@
 <div class="span8 offset1">
   <form action="{% url edit_document document.id %}" enctype="multipart/form-data" method="post" class="form-horizontal">
       {% csrf_token %}
-      {% for field in form %}
+      {% for field in eform %}
       {{ field|bootstrap }}
       {% endfor %}
-
+      {% for field in rform %}
+      {{ field|bootstrap }}
+      {% endfor %}
       <input type="submit" value="{% trans "Save Document" %}" class="btn offset2" />
   </form>
 </div>

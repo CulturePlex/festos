@@ -10,7 +10,10 @@
 <div class="span8 offset1">
   <form action="{% url add_document %}" enctype="multipart/form-data" method="post" class="form-horizontal">
       {% csrf_token %}
-      {% for field in form %}
+      {% for field in dform %}
+      {{ field|bootstrap }}
+      {% endfor %}
+      {% for field in rform %}
       {{ field|bootstrap }}
       {% endfor %}
 
