@@ -27,26 +27,29 @@ class SearchDocumentView(SearchView):
         results = self.form.search()
 
         # if there is no 'q' haystack returns an empty results
-        #import ipdb; ipdb.set_trace()
         if results.count() == 0 and \
                 len(self.request.GET) > 0 and not \
                 self.request.GET.has_key('q'):
             results = SearchQuerySet()
 
-        url_query = ""
         self.vs_query = ""
+        if (self.request.GET.has_key('q')):
+            self.vs_query += " text:" + self.request.GET.get('q')
 
+        documents_ids = self.get_documents().values_list('id', flat=True)
+        results = results.filter(document_id__in = documents_ids)
+
+        return results
+
+
+    def get_documents(self):
+        """ Return the documents accordingly to specific search field """
         documents = Document.objects.all()
         if self.request.user.is_authenticated():
             documents = documents.filter(Q(owner_id = self.request.user.id) | 
                                  Q(public = True))
         else:
             documents = documents.filter(public = True)
-
-
-        if (self.request.GET.has_key('q')):
-            self.vs_query += " text:" + self.request.GET.get('q')
-
 
         form=SearchDocumentForm(self.request.GET)
         if form.is_valid():
@@ -57,6 +60,16 @@ class SearchDocumentView(SearchView):
                     self.vs_query += " " + key + ":" + form.cleaned_data[key]
             documents = documents.filter(**opts)
 
+        references = self.get_references()
+        if references:
+            documents = documents.filter(reference__in = references )
+
+        return documents
+
+
+    def get_references(self):
+        """ Return the references accordingly to specific search fields """
+
         form=SearchReferenceForm(self.request.GET)
         self.refs_fields = {}
         if form.is_valid():
@@ -66,13 +79,10 @@ class SearchDocumentView(SearchView):
                     opts[key+'__icontains'] = form.cleaned_data[key]
                     self.refs_fields[key.capitalize()] = form.cleaned_data[key]
                     self.vs_query += " " + key + ":" + form.cleaned_data[key]
-            documents = documents.filter(reference__in = \
-                        Reference.objects.all().filter(**opts))
+            return Reference.objects.all().filter(**opts)
+        return None
 
-        results = results.filter(document_id__in = \
-            documents.values_list('id', flat=True))
 
-        return results
 
     def extra_context(self):
         """
@@ -89,7 +99,6 @@ class SearchDocumentView(SearchView):
                 documents[r.document_id]={'id': r.object.document.id,
                                           'document': r.object.document.document,
                                           'pages': [r.object] }
-
 
         paginator =  Paginator(documents.items(), 5)
         try:
@@ -113,14 +122,12 @@ class SearchDocumentView(SearchView):
                 'refs_fields': self.refs_fields,
                 'url_query': cp.urlencode }
 
-#def search_documents(search_document_view):
-#  return search_document_view;
 
 search_document = SearchDocumentView(form_class=SearchForm)
 
 @login_required
 def list_documents(request):
-    """ Add a document """
+    """ List the documents for the current user """
 
     documents = Document.objects.filter(owner=request.user)
 
@@ -145,6 +152,7 @@ def add_document(request):
                                 'form': form,
                                 }, context_instance=RequestContext(request))
 
+
 @login_required
 def edit_document(request, pk):
     """ Edit a document """
@@ -160,7 +168,8 @@ def edit_document(request, pk):
                                 'document': document,
                                 'form': form,
                                 }, context_instance=RequestContext(request))
-                                
+
+
 @login_required
 def remove_document(request, pk):
     """ Remove a document """
@@ -169,9 +178,11 @@ def remove_document(request, pk):
     document.delete()
     return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
+
+
 @login_required
 def change_privacy_document(request, pk):
-    """ Remove a document """
+    """ Change the privacy of a document """
 
     document = Document.objects.get(pk=pk)
     document.public = not document.public
