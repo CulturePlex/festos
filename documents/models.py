@@ -17,7 +17,12 @@ class Reference(models.Model):
     editorial = models.CharField(_('Editorial'), blank=False, null=False, 
         max_length=100, help_text='Editorial')
 
-
+    def __unicode__(self):
+        try:
+            return u"%s - Editorial de %s (%s): %s" % \
+                (self.pk, self.document.title, self.document.pk, self.editorial)
+        except:
+            return u"%s - Not Assigned: %s" % (self.pk, self.editorial)
 
     def get_annotation(self):
         return "Editorial:" + self.editorial

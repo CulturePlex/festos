@@ -16,8 +16,10 @@ class DocumentAdmin(Docviewer_DocumentAdmin):
     fieldsets.insert(1, Docviewer_DocumentAdmin.fieldsets[1])
 
     def save_model(self, request, obj, form, change):
-        obj.author = request.user
+        obj.owner = request.user
         obj.save()
+        file = form.cleaned_data['file']
+        obj.set_file(file = file, filename=file.name)
 
 
 admin.site.register(Document, DocumentAdmin)
