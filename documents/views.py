@@ -168,7 +168,7 @@ def edit_document(request, pk):
     eform = EditDocumentForm(instance = document)
     rform = ReferenceForm(instance = document.reference)
     if request.method == 'POST':
-        rform = ReferenceForm(request.POST)
+        rform = ReferenceForm(request.POST, instance = document.reference)
         eform = EditDocumentForm(request.POST, instance=document)
         #this avoids ignoring the evaluation of the form to show the errors
         rf_is_valid = rform.is_valid()
@@ -191,7 +191,8 @@ def remove_document(request, pk):
     """ Remove a document """
 
     document = Document.objects.get(pk=pk)
-    document.delete()
+    # Delete the dependant document first
+    document.reference.delete()
     return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
 

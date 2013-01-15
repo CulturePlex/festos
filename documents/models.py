@@ -39,7 +39,7 @@ class Document(Docviewer_Document):
             null=False, help_text='Is this document available to everybody?')
     owner = models.ForeignKey(User, blank = False, null = False)
     reference = models.OneToOneField(Reference,
-                                      unique=False, blank = False, null = True,
+                                      unique=False, blank = False, null = False,
                                       verbose_name=_('reference'),
                                       related_name='document')
 
