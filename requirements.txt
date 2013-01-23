@@ -7,5 +7,6 @@ pil
 simplejson
 django-bootstrap-form
 django-userena
+-e git+git://github.com/lukaszb/django-guardian.git#egg=django-guardian
 django-pdb
 -e git://github.com/yevgenko/userena-bootstrap.git#egg=userenabootstrap

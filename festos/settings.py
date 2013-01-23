@@ -185,6 +185,7 @@ USERENA_SIGNIN_REDIRECT_URL = '/documents/'
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
+GUARDIAN_RENDER_403=True
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

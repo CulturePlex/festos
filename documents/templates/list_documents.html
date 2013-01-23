@@ -7,10 +7,8 @@
 <table class="table">
   <thead>
     <tr>
-      <th>{% trans "Title" %}</th>
-      <th>{% trans "Author" %}</th>
-      <th>{% trans "Is Public?" %}</th>
-      <th>{% trans "Owner" %}</th>
+      <th>{% trans "Document" %}</th>
+      <th>{% trans "Shared with (* owner) " %}</th>
       <th>{% trans "State" %}</th>
       <th>{% trans "Actions" %}</th>
     </tr>
@@ -18,20 +16,17 @@
   <tbody>
   {% for document in documents %}
     <tr>
-      <td>{{ document.title }}</td>
-      <td>{{ document.author }}</td>
+      <td>{{ document.author }}, {{ document.title }}</td>
+      <td>{{ document.owner }}*, {{ document.get_users_with_perms }}</td>
+      <td>{{ document.status }}</td>
       <td>
         <a href="{% url change_privacy_document document.pk %}">
           {% if document.public %}
             <i class="icon-eye-open" title="Click to make it private"></i>
           {% else %}
-            <i class="icon-eye-open icon-white" title="Click to make it public"></i>
+            <i class="icon-eye-open icon-white" style="background-color:#ccc;" title="Click to make it public"></i>
           {% endif %}
         </a>
-      </td>
-      <td>{{ document.owner }}</td>
-      <td>{{ document.status }}</td>
-      <td>
         <a title="View" href="{{ document.get_absolute_url }}">
           <i class="icon-file"></i>
         </a>

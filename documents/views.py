@@ -3,10 +3,12 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import SortedDict 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render_to_response
+from guardian.shortcuts import assign, get_objects_for_user
+from guardian.decorators import permission_required_or_403
 from haystack.views import basic_search, SearchView
 from haystack.query import SearchQuerySet
 from haystack.forms import SearchForm
@@ -46,7 +48,11 @@ class SearchDocumentView(SearchView):
         """ Return the documents accordingly to specific search field """
         documents = Document.objects.all()
         if self.request.user.is_authenticated():
-            documents = documents.filter(Q(owner_id = self.request.user.id) | 
+            permited_docs = get_objects_for_user(self.request.user,
+                          'documents.access_document',
+                          Document,
+                          use_groups=True).values_list('id', flat=True)
+            documents = documents.filter(Q(id__in = permited_docs) | 
                                  Q(public = True))
         else:
             documents = documents.filter(public = True)
@@ -129,7 +135,10 @@ search_document = SearchDocumentView(form_class=SearchForm)
 def list_documents(request):
     """ List the documents for the current user """
 
-    documents = Document.objects.filter(owner=request.user)
+    documents = get_objects_for_user(request.user,
+                          'documents.access_document',
+                          Document,
+                          use_groups=True)
 
     return render_to_response('list_documents.html', {
                                 'documents': documents,
@@ -153,6 +162,7 @@ def add_document(request):
             dform.save()
             file = dform.cleaned_data['file']
             dform.instance.set_file(file = file, filename=file.name)
+            assign('documents.access_document', request.user, dform.instance)
             return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
     return render_to_response('add_document.html', {
@@ -162,8 +172,10 @@ def add_document(request):
 
 
 @login_required
+@permission_required_or_403('documents.access_document',(Document, 'pk', 'pk'))
 def edit_document(request, pk):
     """ Edit a document """
+
     document = Document.objects.get(pk=pk)
     eform = EditDocumentForm(instance = document)
     rform = ReferenceForm(instance = document.reference)
@@ -187,6 +199,7 @@ def edit_document(request, pk):
 
 
 @login_required
+@permission_required_or_403('documents.access_document',(Document, 'pk', 'pk'))
 def remove_document(request, pk):
     """ Remove a document """
 
@@ -198,6 +211,7 @@ def remove_document(request, pk):
 
 
 @login_required
+@permission_required_or_403('documents.access_document',(Document, 'pk', 'pk'))
 def change_privacy_document(request, pk):
     """ Change the privacy of a document """
 

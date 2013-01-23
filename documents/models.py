@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
 from docviewer.models import Document as Docviewer_Document
-
+from guardian.shortcuts import get_users_with_perms
 
 
 """A good idea is to use a big form for filtering the query"""
@@ -43,4 +43,12 @@ class Document(Docviewer_Document):
                                       verbose_name=_('reference'),
                                       related_name='document')
 
+    def get_users_with_perms(self):
+        return get_users_with_perms(self, attach_perms=False,
+                     with_superusers=False, with_group_users=False)\
+                          .exclude(id=self.owner.id)
 
+    class Meta:
+        permissions = (
+            ('access_document', 'Access Document'),
+        )
