@@ -6,8 +6,10 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import SortedDict 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render_to_response
-from guardian.shortcuts import assign, get_objects_for_user
+from django.shortcuts import render_to_response, HttpResponse
+from django.contrib.auth.models import User
+
+from guardian.shortcuts import assign, get_objects_for_user, remove_perm
 from guardian.decorators import permission_required_or_403
 from haystack.views import basic_search, SearchView
 from haystack.query import SearchQuerySet
@@ -15,6 +17,8 @@ from haystack.forms import SearchForm
 from models import Document, Reference
 from forms import DocumentForm, EditDocumentForm, SearchDocumentForm, \
                   SearchReferenceForm, ReferenceForm
+import simplejson as json
+
 
 
 
@@ -219,3 +223,34 @@ def change_privacy_document(request, pk):
     document.public = not document.public
     document.save()
     return HttpResponseRedirect(reverse('documents.views.list_documents'))
+
+
+@login_required
+def add_sharer(request):
+    doc = Document.objects.get(pk = request.GET['doc_id'])
+    usr = User.objects.get(username = request.GET['username'])
+    assign('documents.access_document', usr, doc)
+    return HttpResponse(json.dumps({'status': 'ok'}), 
+                      content_type="application/json") 
+
+
+@login_required
+def remove_sharer(request,pk,username):
+    doc = Document.objects.get(pk = pk)
+    usr = User.objects.get(username = username)
+    remove_perm('documents.access_document', usr, doc)
+    return HttpResponseRedirect(reverse('documents.views.list_documents'))
+
+@login_required
+def autocomplete_users(request, pk):
+    print pk
+    print request.POST['term']
+    document = Document.objects.get(pk=pk)
+    users = User.objects.exclude(id__in = document.get_users_with_perms())\
+                        .exclude(id=-1)\
+                        .filter(username__contains = request.POST['term'])\
+                        .values_list('username', flat=True)
+
+    return HttpResponse(json.dumps(list(users)))
+    
+

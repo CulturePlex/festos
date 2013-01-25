@@ -26,12 +26,96 @@
         }
     },
     {
+        "pk": 2,
+        "model": "auth.user",
+        "fields": {
+            "username": "fulano",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-01-23T22:10:52Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$wVq1Pr0bWfn7$Sens66kEGUtGXp49+6pBogakncU+PZYXhGxpo/ug5a4=",
+            "email": "",
+            "date_joined": "2013-01-23T19:47:54Z"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "auth.user",
+        "fields": {
+            "username": "sutano",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-01-23T21:14:33Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$K2QFnkwkrcIe$INKGZTIP4THXcA5S1nIHVCfiYf4/fSD5WdxlGPkMqcg=",
+            "email": "",
+            "date_joined": "2013-01-23T19:54:46Z"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "auth.user",
+        "fields": {
+            "username": "mengano",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-01-24T20:08:17.623Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$wXTayoJaOTY2$9Onoyi0Ym7VrqKyD4e2h1H4FpyceZ/cqsVzjJC/Oi7s=",
+            "email": "",
+            "date_joined": "2013-01-24T20:08:17.623Z"
+        }
+    },
+    {
         "pk": 1,
         "model": "accounts.profile",
         "fields": {
             "language": "en",
             "privacy": "open",
             "user": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "accounts.profile",
+        "fields": {
+            "user": 2,
+            "language": "en",
+            "mugshot": "",
+            "privacy": "registered"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "accounts.profile",
+        "fields": {
+            "user": 3,
+            "language": "en",
+            "mugshot": "",
+            "privacy": "registered"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "accounts.profile",
+        "fields": {
+            "user": 4,
+            "language": "en",
+            "mugshot": "",
+            "privacy": "registered"
         }
     }
 ]
