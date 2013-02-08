@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls import handler403
 
@@ -6,7 +5,8 @@ from django.conf.urls import handler403
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     # Examples:
     # url(r'^$', 'books.views.home', name='home'),
     # url(r'^books/', include('books.foo.urls')),

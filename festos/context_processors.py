@@ -1,7 +1,5 @@
 from datetime import datetime
-
 from django.conf import settings
-
 
 
 def project_name(request):
@@ -16,11 +14,14 @@ def project_name(request):
 #    return {'GOOGLE_ANALYTICS_CODE': getattr(settings, "GOOGLE_ANALYTICS_CODE",
 #                                             None)}
 
+
 def current_date(request):
     return {'CURRENT_DATE': datetime.now()}
 
+
 def debug(request):
     return {'DEBUG': getattr(settings, "DEBUG", False)}
+
 
 def accounts(request):
     return {'LOGOUT_URL': getattr(settings, "LOGOUT_URL", "/accounts/logout/"),

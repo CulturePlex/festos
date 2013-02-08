@@ -24,8 +24,10 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': join(PROJECT_ROOT,'festos.sqlite3'),  # Or path to database file if using sqlite3.
+        # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',
+        # Or path to database file if using sqlite3.
+        'NAME': join(PROJECT_ROOT, 'festos.sqlite3'),
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -44,8 +46,8 @@ TIME_ZONE = 'America/Toronto'
 LANGUAGE_CODE = 'en-ca'
 
 LANGUAGES = (
-  ('en', ugettext('English')),
-  ('es', ugettext('Español')),
+    ('en', ugettext('English')),
+    ('es', ugettext('Español')),
 )
 
 SITE_ID = 1
@@ -63,7 +65,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = join(PROJECT_ROOT,'media')
+MEDIA_ROOT = join(PROJECT_ROOT, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -74,7 +76,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = join(PROJECT_ROOT,'static')
+STATIC_ROOT = join(PROJECT_ROOT, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -94,7 +96,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -104,7 +106,7 @@ SECRET_KEY = '91j9vq3vvc%5z3@)(&amp;o@!*tv9pc(@_12^4v@r&amp;l1y5dtivdaos'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -141,8 +143,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.csrf",
     "festos.context_processors.project_name",
     "festos.context_processors.current_date",
-#    "base.context_processors.google_api_key",
-#    "base.context_processors.google_analytics_code",
+    # "base.context_processors.google_api_key",
+    # "base.context_processors.google_analytics_code",
     "festos.context_processors.debug",
     "festos.context_processors.accounts",
 )
@@ -157,12 +159,12 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'pipeline',        # necessary for compression and docviewer templates
-    'djcelery',        # necessary for python manage.py celery worker
-    'celery_haystack', # necessary for automatic rebuild_index
-    'haystack',        # necessary for manual rebuild_index
+    'pipeline',         # necessary for compression and docviewer templates
+    'djcelery',         # necessary for python manage.py celery worker
+    'celery_haystack',  # necessary for automatic rebuild_index
+    'haystack',         # necessary for manual rebuild_index
     'django_pdb',
-    'bootstrapform', 
+    'bootstrapform',
     'userenabootstrap',
     'userena',
     'guardian',
@@ -185,7 +187,7 @@ USERENA_SIGNIN_REDIRECT_URL = '/documents/'
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
-GUARDIAN_RENDER_403=True
+GUARDIAN_RENDER_403 = True
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -223,8 +225,8 @@ PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 
 # Celery configuration
-BROKER_URL='amqp://guest:guest@localhost:5672//'
-CELERYD_TASK_TIME_LIMIT = 86400 #24 hours
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERYD_TASK_TIME_LIMIT = 86400  # 24 hours
 CELERYD_TASK_SOFT_TIME_LIMIT = 86400
 
 #Haystack configuration
@@ -234,15 +236,14 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
         'URL': 'http://127.0.0.1:9200/',
         'INDEX_NAME': 'haystack',
-#        'EXCLUDED_INDEXES': [
-#            'docviewer.search_indexes.PageIndex',
-#        ]
+        # 'EXCLUDED_INDEXES': [
+        # 'docviewer.search_indexes.PageIndex',
+        # ]
     },
 }
 
 # Docviewer Configuration
 from docviewer.pipeline import *
-DOCVIEWER_DOCUMENT_ROOT = join(MEDIA_ROOT,'docs/')
+DOCVIEWER_DOCUMENT_ROOT = join(MEDIA_ROOT, 'docs/')
 DOCVIEWER_DOCUMENT_URL = '/media/docs/'
-DOCVIEWER_IMAGE_FORMAT =  'png'
-
+DOCVIEWER_IMAGE_FORMAT = 'png'
