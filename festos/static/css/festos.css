@@ -1,6 +1,17 @@
 /*Personalization of the project*/
 
+a.nolink{
+  color: rgb(51, 51, 51);
+}
 
+a.nolink:hover{
+  cursor:url(../img/cursor-remove.png), -moz-zoom-in;
+}
+
+#user-trash{
+  vertical-align: top;
+  margin-left: -5px;
+}
 
 .highlighted{
   background: #F1E90F url(../img/highlight.gif) repeat-x 0 bottom;
@@ -33,7 +44,7 @@ a.summary{
 }
 
 a.summary:hover
-{ 
+{
   text-decoration: none;
   border: 2px solid #acf;
   border-radius: 16px;
@@ -62,7 +73,7 @@ input[type="text"]#id_users{
   line-height: 15px;
   height: 15px;
   width: 100px;
-  background: white url(../img/add.gif) right no-repeat;
+  background: white url(../img/add.png) right no-repeat;
 3
   padding-right: 17px;
 

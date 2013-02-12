@@ -14,10 +14,10 @@ $(document).ready(function(){
                 $.ajax({
                  type: "POST",
                  dataType: 'json',
-                 url: $(this).attr('element').data('url'), 
+                 url: $(this).attr('element').data('url'),
                  async: false,
                  data: adata,
-                 success: function(data) {  
+                 success: function(data) {
                       response(data)
                    },
                });
@@ -60,13 +60,11 @@ $(document).ready(function(){
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
       <td>{{ document.author }}, {{ document.title }}</td>
-      <td> <span id="sharers" > 
+      <td> <span id="sharers" >
       {% for sharer in document.get_users_with_perms %}
-          <span class="sharer" data-id="{{ sharer.id }}"> {{ sharer.username }}
-          <a href="{% url remove_sharer document.pk sharer.username %}"><i class="icon-minus-sign"></i></a>
-          </span>
-          {% if not forloop.last %} | {% endif %}
-      {% endfor %} 
+          <a class="nolink" href="{% url remove_sharer document.pk sharer.username %}">
+          <span class="sharer" data-id="{{ sharer.id }}">{{ sharer.username }}</span></a>{% if not forloop.last %},{% endif %}
+      {% endfor %}
       </span>
       <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url autocomplete_users document.pk %}" >
       </td>
@@ -76,7 +74,7 @@ $(document).ready(function(){
         <a href="{% url change_privacy_document document.pk %}">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-open icon-white" style="background-color:#ccc;" title="Click to make it public"></i>{% endif %}</a>
         <a title="View" href="{{ document.get_absolute_url }}"><i class="icon-file"></i></a>
         <a title="Edit" href="{% url edit_document document.pk %}"><i class="icon-edit"></i></a>
-        <a title="Remove" href="{% url remove_document document.pk %}"><i class="icon-trash"></i> 
+        <a title="Remove" href="{% url remove_document document.pk %}"><i class="icon-trash"></i>
         </a>
       </td>
     </tr>
