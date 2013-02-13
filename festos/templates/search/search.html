@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load highlight %}
-{% load i18n %}  
+{% load i18n %}
 {% load pdb %}
 
 {% block extra_css %}
@@ -28,16 +28,16 @@
           autosearch  : true,
           showFacets : true,
           unquotable : [
-            'text', 'title', 'author', 'source', 'description', 
+            'text', 'title', 'author', 'source', 'description',
             'notes', 'editorial'
           ],
           callbacks  : {
             search : function(query, searchCollection) {
               url="?";
-              searchCollection.each(function (elem){ 
+              searchCollection.each(function (elem){
                   field = elem.toJSON()
                   if (field['category'] == 'text')
-                    url += "q="+field['value']+"&"; 
+                    url += "q="+field['value']+"&";
                   else{
                     url += field['category']+"="+field['value']+"&";
                   }
@@ -74,7 +74,7 @@
   {% endif %}
     <li class="media">
       <h3 class="media-heading">
-        <a href="{{ result.1.document.get_absolute_url }}}">
+        <a href="{{ result.1.document.get_absolute_url }}">
           {% if request.GET.title %}
             {% highlight result.1.document.title with request.GET.title css_class "highlighted" max_length 5000000 %},
           {% else %}
