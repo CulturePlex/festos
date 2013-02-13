@@ -1,11 +1,18 @@
 /*Personalization of the project*/
-
+.sharer{
+  display: block;
+  padding-top: 7px;
+  vertical-align: baseline;
+}
 a.nolink{
-  color: rgb(51, 51, 51);
+  display: inline-block;
+  vertical-align: top;
+  height: 25px;
 }
 
 a.nolink:hover{
-  cursor:url(../img/cursor-remove.png), -moz-zoom-in;
+  background: white url(../img/remove.png) no-repeat;
+  background-position:right top;
 }
 
 #user-trash{
