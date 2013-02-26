@@ -117,6 +117,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django_pdb.middleware.PdbMiddleware',
     'userena.middleware.UserenaLocaleMiddleware',
+    'documents.middleware.DocumentGuardianMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )

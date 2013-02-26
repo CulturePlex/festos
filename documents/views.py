@@ -221,6 +221,8 @@ def change_privacy_document(request, pk):
 def add_sharer(request):
     """ Add a user that shares the document """
     doc = Document.objects.get(pk=request.GET['doc_id'])
+    if not (request.user.has_perm('access_document', doc)):
+                raise PermissionDenied
     usr = User.objects.get(username=request.GET['username'])
     assign('documents.access_document', usr, doc)
     return HttpResponse(
@@ -231,6 +233,8 @@ def add_sharer(request):
 def remove_sharer(request, pk, username):
     """ Removes a user that shares the document """
     doc = Document.objects.get(pk=pk)
+    if not (request.user.has_perm('access_document', doc)):
+                raise PermissionDenied
     usr = User.objects.get(username=username)
     remove_perm('documents.access_document', usr, doc)
     return HttpResponseRedirect(reverse('documents.views.list_documents'))
