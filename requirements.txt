@@ -1,4 +1,4 @@
-Django
+Django==1.4
 ipdb
 pil
 -e git+git://github.com/robertour/django-docviewer.git#egg=django-docviewer
