@@ -60,13 +60,16 @@ $(document).ready(function(){
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
       <td>{{ document.author }}, {{ document.title }}</td>
-      <td> <span id="sharers" >
-      {% for sharer in document.get_users_with_perms %}
-          <a class="nolink" href="{% url remove_sharer document.pk sharer.username %}">
-          <span class="sharer" data-id="{{ sharer.id }}">{{ sharer.username }}</span></a>{% if not forloop.last %},{% endif %}
-      {% endfor %}
-      </span>
-      <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url autocomplete_users document.pk %}" >
+      <td>
+      <div id="sharers_cell">
+        <span id="sharers" >
+        {% for sharer in document.get_users_with_perms %}
+            <a class="nolink" href="{% url remove_sharer document.pk sharer.username %}">
+            <span class="sharer" data-id="{{ sharer.id }}">{{ sharer.username }}</span></a>{% if not forloop.last %},{% endif %}
+        {% endfor %}
+        </span>
+        <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url autocomplete_users document.pk %}" >
+      </div>
       </td>
       <td>{{ document.owner }}</td>
       <td>{{ document.status }}</td>

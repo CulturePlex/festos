@@ -245,7 +245,7 @@ def autocomplete_users(request, pk):
     """ Autocomplete for adding sharers """
     document = Document.objects.get(pk=pk)
     users = User.objects.exclude(id__in=document.get_users_with_perms())\
-                        .exclude(id=-1)\
+                        .exclude(id=-1).exclude(id = document.owner.id)\
                         .filter(username__contains=request.POST['term'])\
                         .values_list('username', flat=True)
 
