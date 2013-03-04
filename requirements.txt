@@ -1,4 +1,4 @@
-Django==1.4
+Django
 ipdb
 pil
 -e git+git://github.com/robertour/django-docviewer.git#egg=django-docviewer
@@ -9,4 +9,4 @@ django-bootstrap-form
 django-userena
 -e git+git://github.com/lukaszb/django-guardian.git#egg=django-guardian
 django-pdb
--e git://github.com/yevgenko/userena-bootstrap.git#egg=userenabootstrap
+-e git://github.com/robertour/userena-bootstrap.git#egg=userenabootstrap

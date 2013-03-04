@@ -64,20 +64,20 @@ $(document).ready(function(){
       <div id="sharers_cell">
         <span id="sharers" >
         {% for sharer in document.get_users_with_perms %}
-            <a class="nolink" href="{% url remove_sharer document.pk sharer.username %}">
+            <a class="nolink" href="{% url 'remove_sharer' document.pk sharer.username %}">
             <span class="sharer" data-id="{{ sharer.id }}">{{ sharer.username }}</span></a>{% if not forloop.last %},{% endif %}
         {% endfor %}
         </span>
-        <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url autocomplete_users document.pk %}" >
+        <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_users' document.pk %}" >
       </div>
       </td>
       <td>{{ document.owner }}</td>
       <td>{{ document.status }}</td>
       <td>
-        <a href="{% url change_privacy_document document.pk %}">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-open icon-white" style="background-color:#ccc;" title="Click to make it public"></i>{% endif %}</a>
+        <a href="{% url 'change_privacy_document' document.pk %}">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-open icon-white" style="background-color:#ccc;" title="Click to make it public"></i>{% endif %}</a>
         <a title="View" href="{{ document.get_absolute_url }}"><i class="icon-file"></i></a>
-        <a title="Edit" href="{% url edit_document document.pk %}"><i class="icon-edit"></i></a>
-        <a title="Remove" href="{% url remove_document document.pk %}"><i class="icon-trash"></i>
+        <a title="Edit" href="{% url 'edit_document' document.pk %}"><i class="icon-edit"></i></a>
+        <a title="Remove" href="{% url 'remove_document' document.pk %}"><i class="icon-trash"></i>
         </a>
       </td>
     </tr>
@@ -85,6 +85,6 @@ $(document).ready(function(){
   </tbody>
 </table>
 
-<a href={% url add_document %} class="btn offset4 span3" > {% trans "Upload a new Document" %} </a>
+<a href={% url 'add_document' %} class="btn offset4 span3" > {% trans "Upload a new Document" %} </a>
 
 {% endblock %}

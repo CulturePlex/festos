@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render_to_response, HttpResponse
 from django.contrib.auth.models import User
 
-from guardian.shortcuts import assign, get_objects_for_user, remove_perm
+from guardian.shortcuts import assign_perm, get_objects_for_user, remove_perm
 from guardian.decorators import permission_required_or_403
 from haystack.views import SearchView
 from haystack.query import SearchQuerySet
@@ -161,7 +161,7 @@ def add_document(request):
             dform.save()
             file = dform.cleaned_data['file']
             dform.instance.set_file(file=file, filename=file.name)
-            assign('documents.access_document', request.user, dform.instance)
+            assign_perm('documents.access_document', request.user, dform.instance)
             return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
     return render_to_response('add_document.html', {
@@ -224,7 +224,7 @@ def add_sharer(request):
     if not (request.user.has_perm('access_document', doc)):
                 raise PermissionDenied
     usr = User.objects.get(username=request.GET['username'])
-    assign('documents.access_document', usr, doc)
+    assign_perm('documents.access_document', usr, doc)
     return HttpResponse(
         json.dumps({'status': 'ok'}), content_type="application/json")
 
