@@ -35,7 +35,7 @@ Installation of system dependencies:
   
     $ cd ~
     $ wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.5.deb
-    $ sudo dpkg -i elasticsearch-0.19.11.deb
+    $ sudo dpkg -i elasticsearch-0.20.5.deb
 
 Deploy the project:
 -------------------
