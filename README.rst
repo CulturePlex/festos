@@ -59,11 +59,11 @@ Deploy the project:
     
     d) Add the lines to your .bashrc file so the next time your environment is ready::
 
-      i) Opent the .bashrc::
+      i) Open the .bashrc::
 
             $ pico .bashrc
 
-      ii) Opent the .bashrc::
+      ii) Copy and paste the next lines to the end of the .bashr file::
 
             export WORKON_HOME=~/.venvs
             source /usr/local/bin/virtualenvwrapper.sh
