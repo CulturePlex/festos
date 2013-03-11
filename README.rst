@@ -103,7 +103,7 @@ Deploy the project:
 
         ./start-all.sh
 
-   b) If you want to launch your site again, just use the following one:
+   b) If you want to launch your site again, just use the following one::
 
         python manage.py runserver localhost:8000
 
@@ -191,7 +191,7 @@ PostgreSQL installation and configuration:
 
    f) Create db and owner::
 
-       cREATE DATABASE festos_db OWNER festos ENCODING 'UTF8';
+       CREATE DATABASE festos_db OWNER festos ENCODING 'UTF8';
 
    e) Quit the shell::
 
@@ -199,17 +199,17 @@ PostgreSQL installation and configuration:
 
    f) Edit the Postgres permissions::
 
-         nano  /etc/postgres/9.1/main/pg_hba.conf
+         nano  /etc/postgresql/9.1/main/pg_hba.conf
 
    g) Adding the following line::
 
         local     django_db   django_login   md5
 
-   g) Leave user postgresl, go back to your user account::
+   h) Leave user postgresl, go back to your user account::
 
        exit
 
-   h) Restart the server::
+   i) Restart the server::
 
         sudo /etc/init.d/postgresql-8.4 restart
 
