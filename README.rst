@@ -211,7 +211,7 @@ PostgreSQL installation and configuration:
 
    i) Restart the server::
 
-        sudo /etc/init.d/postgresql-8.4 restart
+        sudo services postgresql restart
 
 
 2) Configure the environment:
