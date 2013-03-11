@@ -33,7 +33,7 @@ Installation of system dependencies:
 
 4) Install the elasticsearch::
   
-   cd ~
+    cd ~
     wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.5.deb
     sudo dpkg -i elasticsearch-0.20.5.deb
 
@@ -157,7 +157,7 @@ Disabling stop words:
 
 3) Delete the haystack index (Warning, this is going to delete all the index)::
 
-   curl -XDELETE 'http://localhost:9200/haystack/'
+    curl -XDELETE 'http://localhost:9200/haystack/'
 
 4) Restart the elasticsearch service::
 
