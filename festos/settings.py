@@ -242,6 +242,7 @@ HAYSTACK_CONNECTIONS = {
         # ]
     },
 }
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 # Docviewer Configuration
 from docviewer.pipeline import *
