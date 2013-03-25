@@ -3,6 +3,7 @@ from docviewer.admin import DocumentAdmin as Docviewer_DocumentAdmin
 
 from forms import DocumentAdminForm
 from models import Document, Reference
+from zotero.admin import GenericTagInline
 
 
 class DocumentInline(admin.StackedInline):
@@ -47,7 +48,7 @@ class ReferenceAdmin(admin.ModelAdmin):
     """
     Inline admin for the reference
     """
-    inlines = (DocumentInline,)
+    inlines = (GenericTagInline,DocumentInline,)
 
     def save_model(self, request, obj, form, change):
         obj.owner = request.user

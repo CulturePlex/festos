@@ -173,6 +173,7 @@ INSTALLED_APPS = (
     'docviewer',
     'documents',
     'accounts',
+    'zotero'
 )
 
 # Userena - Guardian configuration

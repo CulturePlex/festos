@@ -13,6 +13,7 @@ class DocumentAdminForm(Docviewer_DocumentForm):
         widget=forms.TextInput(attrs={'class': 'vTextField'}),
         help_text=_("The title of the document"))
     file = forms.FileField(
+        required=False,
         label=_('Upload Document'),
         help_text=_('Select your pdf scanned document'))
     description = forms.CharField(
