@@ -49,7 +49,7 @@ $(document).ready(function(){
 <table class="table">
   <thead>
     <tr>
-      <th>{% trans "Author, Title" %}</th>
+      <th>{% trans "File Name" %}</th>
       <th>{% trans "Shared with" %}</th>
       <th>{% trans "Owner" %}</th>
       <th>{% trans "State" %}</th>
@@ -59,7 +59,7 @@ $(document).ready(function(){
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td>{{ document.author }}, {{ document.title }}</td>
+      <td>{{ document.title }}</td>
       <td>
       <div id="sharers_cell">
         <span id="sharers" >

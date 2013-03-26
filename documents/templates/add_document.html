@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load bootstrap %}
-{% load pdb %}
 
 
 {% block content %}
@@ -16,7 +15,6 @@
       {% for field in rform %}
       {{ field|bootstrap }}
       {% endfor %}
-
       <input type="submit" value="{% trans "Add Document" %}" class="btn offset2" />
   </form>
 </div>

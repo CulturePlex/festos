@@ -2,7 +2,7 @@ from django.contrib import admin
 from docviewer.admin import DocumentAdmin as Docviewer_DocumentAdmin
 
 from forms import DocumentAdminForm
-from models import Document, Reference
+from models import Document
 from zotero.admin import GenericTagInline
 
 
@@ -31,43 +31,45 @@ class DocumentAdmin(Docviewer_DocumentAdmin):
     Admin for the document
     """
     form = DocumentAdminForm
+    inlines = (GenericTagInline,)
     fieldsets = [
         ('Document details', {'fields': [
-            'file', 'title', 'author', 'source', 'description', 'notes']}),
+            'file', 'public', 'source', 'notes']}),
     ]
     fieldsets.insert(1, Docviewer_DocumentAdmin.fieldsets[1])
 
     def save_model(self, request, obj, form, change):
+        print "check if it is saving or updating... file updated?"
         obj.owner = request.user
         obj.save()
         file = form.cleaned_data['file']
         obj.set_file(file=file, filename=file.name)
 
 
-class ReferenceAdmin(admin.ModelAdmin):
-    """
-    Inline admin for the reference
-    """
-    inlines = (GenericTagInline,DocumentInline,)
+#class ReferenceAdmin(admin.ModelAdmin):
+#    """
+#    Inline admin for the reference
+#    """
+#    inlines = (GenericTagInline,DocumentInline,)
 
-    def save_model(self, request, obj, form, change):
-        obj.owner = request.user
-        obj.save()
+#    def save_model(self, request, obj, form, change):
+#        obj.owner = request.user
+#        obj.save()
 
-    def save_formset(self, request, form, formset, change):
+#    def save_formset(self, request, form, formset, change):
 
-        if formset.model != Document:
-            return super(ReferenceAdmin, self).\
-                save_formset(request, form, formset, change)
+#        if formset.model != Document:
+#            return super(ReferenceAdmin, self).\
+#                save_formset(request, form, formset, change)
 
-        instances = formset.save(commit=False)
-        for (counter, instance) in enumerate(instances):
-            instance.save()
-            file = formset.cleaned_data[counter]['file']
-            instance.set_file(file=file, filename=file.name)
+#        instances = formset.save(commit=False)
+#        for (counter, instance) in enumerate(instances):
+#            instance.save()
+#            file = formset.cleaned_data[counter]['file']
+#            instance.set_file(file=file, filename=file.name)
 
-        formset.save_m2m()
+#        formset.save_m2m()
 
 
-#admin.site.register(Document, DocumentAdmin)
-admin.site.register(Reference, ReferenceAdmin)
+admin.site.register(Document, DocumentAdmin)
+#admin.site.register(Reference, ReferenceAdmin)

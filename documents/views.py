@@ -14,9 +14,8 @@ from guardian.decorators import permission_required_or_403
 from haystack.views import SearchView
 from haystack.query import SearchQuerySet
 from haystack.forms import SearchForm
-from models import Document, Reference
-from forms import DocumentForm, EditDocumentForm, SearchDocumentForm, \
-    SearchReferenceForm, ReferenceForm
+from models import Document
+from forms import DocumentForm, EditDocumentForm, SearchDocumentForm
 import simplejson as json
 
 
@@ -63,27 +62,27 @@ class SearchDocumentView(SearchView):
                     self.vs_query += " " + key + ":" + form.cleaned_data[key]
             documents = documents.filter(**opts)
 
-        references = self.get_references()
-        if references:
-            documents = documents.filter(reference__in=references)
+#        references = self.get_references()
+#        if references:
+#            documents = documents.filter(reference__in=references)
 
         return documents
 
-    def get_references(self):
-        """ Return the references accordingly to specific search fields """
-        form = SearchReferenceForm(self.request.GET)
-        self.refs_fields = {}
-        if form.is_valid():
-            opts = {}
-            for key in form.cleaned_data:
-                if form.cleaned_data[key] != '':
-                    opts[key + '__icontains'] = form.cleaned_data[key]
-                    self.refs_fields[key.capitalize()] =\
-                        form.cleaned_data[key]
-                    self.vs_query += " " + key + ":" +\
-                        form.cleaned_data[key]
-            return Reference.objects.all().filter(**opts)
-        return None
+#    def get_references(self):
+#        """ Return the references accordingly to specific search fields """
+#        form = SearchReferenceForm(self.request.GET)
+#        self.refs_fields = {}
+#        if form.is_valid():
+#            opts = {}
+#            for key in form.cleaned_data:
+#                if form.cleaned_data[key] != '':
+#                    opts[key + '__icontains'] = form.cleaned_data[key]
+#                    self.refs_fields[key.capitalize()] =\
+#                        form.cleaned_data[key]
+#                    self.vs_query += " " + key + ":" +\
+#                        form.cleaned_data[key]
+#            return Reference.objects.all().filter(**opts)
+#        return None
 
     def extra_context(self):
         """
@@ -122,7 +121,7 @@ class SearchDocumentView(SearchView):
             'docs': docs,
             'total': len(documents),
             'vs_query': self.vs_query,
-            'refs_fields': self.refs_fields,
+            'refs_fields': None,
             'url_query': cp.urlencode
         }
 
@@ -148,16 +147,17 @@ def list_documents(request):
 def add_document(request):
     """ Add a document """
     dform = DocumentForm(user=request.user)
-    rform = ReferenceForm()
+#    rform = ReferenceForm()
     if request.method == 'POST':
-        rform = ReferenceForm(request.POST)
+#        rform = ReferenceForm(request.POST)
         dform = DocumentForm(request.POST, request.FILES, user=request.user)
         #this avoids ignoring the evaluation of the form to show the errors
-        rf_is_valid = rform.is_valid()
+#        rf_is_valid = rform.is_valid()
+        rf_is_valid = True
         df_is_valid = dform.is_valid()
         if rf_is_valid and df_is_valid:
-            rform.save()
-            dform.instance.reference = rform.instance
+#            rform.save()
+#            dform.instance.reference = rform.instance
             dform.save()
             file = dform.cleaned_data['file']
             dform.instance.set_file(file=file, filename=file.name)
@@ -166,7 +166,7 @@ def add_document(request):
 
     return render_to_response('add_document.html', {
         'dform': dform,
-        'rform': rform,
+        'rform': None,
     }, context_instance=RequestContext(request))
 
 
@@ -176,22 +176,23 @@ def edit_document(request, pk):
     """ Edit a document """
     document = Document.objects.get(pk=pk)
     eform = EditDocumentForm(instance=document)
-    rform = ReferenceForm(instance=document.reference)
+#    rform = ReferenceForm(instance=document.reference)
     if request.method == 'POST':
-        rform = ReferenceForm(request.POST, instance=document.reference)
+#        rform = ReferenceForm(request.POST, instance=document.reference)
         eform = EditDocumentForm(request.POST, instance=document)
         #this avoids ignoring the evaluation of the form to show the errors
-        rf_is_valid = rform.is_valid()
+#        rf_is_valid = rform.is_valid()
+        rf_is_valid = True
         ef_is_valid = eform.is_valid()
         if rf_is_valid and ef_is_valid:
-            rform.save()
-            eform.instance.reference = rform.instance
+#            rform.save()
+#            eform.instance.reference = rform.instance
             eform.save()
             return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
     return render_to_response('edit_document.html', {
         'document': document,
-        'rform': rform,
+        'rform': None,
         'eform': eform,
     }, context_instance=RequestContext(request))
 
