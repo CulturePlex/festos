@@ -230,6 +230,9 @@ PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERYD_TASK_TIME_LIMIT = 86400  # 24 hours
 CELERYD_TASK_SOFT_TIME_LIMIT = 86400
+CELERYD_LOG_FILE = "celeryd.log"
+CELERYD_LOG_LEVEL = "DEBUG"
+
 
 #Haystack configuration
 import os

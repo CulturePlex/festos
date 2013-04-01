@@ -202,9 +202,7 @@ def edit_document(request, pk):
 def remove_document(request, pk):
     """ Remove a document """
     document = Document.objects.get(pk=pk)
-    reference = document.reference
     document.delete()
-    reference.delete()
     return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
 

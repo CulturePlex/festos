@@ -19,8 +19,8 @@ class DocumentInline(admin.StackedInline):
         'task_start')
     fieldsets = [
         ('Document details', {'fields': [
-            'file', 'title', 'author', 'source', 'description', 'notes',
-            'owner']
+            'file', 'language', 'title', 'author', 'source',
+            'description', 'notes', 'owner']
         }),
     ]
     fieldsets.insert(1, Docviewer_DocumentAdmin.fieldsets[1])
@@ -34,7 +34,7 @@ class DocumentAdmin(Docviewer_DocumentAdmin):
     inlines = (GenericTagInline,)
     fieldsets = [
         ('Document details', {'fields': [
-            'file', 'public', 'source', 'notes']}),
+            'file', 'language', 'public', 'source', 'notes']}),
     ]
     fieldsets.insert(1, Docviewer_DocumentAdmin.fieldsets[1])
 
