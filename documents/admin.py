@@ -39,11 +39,11 @@ class DocumentAdmin(Docviewer_DocumentAdmin):
     fieldsets.insert(1, Docviewer_DocumentAdmin.fieldsets[1])
 
     def save_model(self, request, obj, form, change):
-        print "check if it is saving or updating... file updated?"
         obj.owner = request.user
         obj.save()
-        file = form.cleaned_data['file']
-        obj.set_file(file=file, filename=file.name)
+        if obj.filename == None or obj.filename == "":
+            file = form.cleaned_data['file']
+            obj.set_file(file=file, filename=file.name)
 
 
 #class ReferenceAdmin(admin.ModelAdmin):
