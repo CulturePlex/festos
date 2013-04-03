@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load compressed %}
+{% load url from future %}
+{% load zotero_tags from zotero_extras %}
+
+{% block extra_metas %}
+{{ document.pk }}
+festos
+{% endblock %}
+
+{% block extra_css %}
+  {% compressed_css 'docviewer-base' %}
+  {% compressed_css 'docviewer-print' %}
+{% endblock %}
+{% block extra_js %}
+  <script src="//code.jquery.com/jquery-1.7.1.min.js"></script>
+  <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+  {% compressed_js 'docviewer-template' %}
+  {% compressed_js 'docviewer-base' %}
+  <script src="{{ STATIC_PREFIX }}js/festos.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    var set_bootstrap = partial(set_boostrap_header,
+        '{{ object.get_absolute_url }}', '{{object.title}}',
+        '{{object.document.author}}', '{{ object.document.owner }}'),
+        reload_url = "{% url "docviewer_json_view" pk=document.pk  %}";
+    function load_document(afterLoad){
+      docviewer.History.count = 0; // Bug, does not clear when reloads.
+      mydocviewer = docviewer.load(reload_url,
+        { container: '#documentviewer-container',
+          afterLoad: set_bootstrap
+        });
+    }
+    load_document(null);
+  </script>
+{% endblock %}
+
+
+
+{% block content %}
+<div id="notification-bar" class="container" >&nbsp;<span id="fixed-div" ></span></div>
+<div id="documentviewer-container">
+
+  <div class="documentviewer-loadingDocument"><span>Loading</span></div>
+  <noscript>
+    <div id="documentviewer-noJS">
+      The Document Viewer requires that you enable Javascript.
+    </div>
+  </noscript>
+
+</div>
+{% endblock %}
