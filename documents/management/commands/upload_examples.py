@@ -20,5 +20,5 @@ class Command(BaseCommand):
                 form = DocumentForm(post_dict, file_dict)
                 if form.is_valid():
                     form.save()
-                    file = form.cleaned_data['file']
-                    form.instance.set_file(file=file, filename=file.name)
+#                    file = form.cleaned_data['file']
+#                    form.instance.seet_file(file=file, filename=file.name)

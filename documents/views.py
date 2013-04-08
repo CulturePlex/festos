@@ -159,8 +159,8 @@ def add_document(request):
 #            rform.save()
 #            dform.instance.reference = rform.instance
             dform.save()
-            file = dform.cleaned_data['file']
-            dform.instance.set_file(file=file, filename=file.name)
+#            file = dform.cleaned_data['file']
+#            dform.instance.seet_file(file=file, filename=file.name)
             assign_perm('documents.access_document', request.user, dform.instance)
             return HttpResponseRedirect(reverse('documents.views.list_documents'))
 

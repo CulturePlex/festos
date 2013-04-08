@@ -9,10 +9,6 @@ class DocumentAdminForm(Docviewer_DocumentForm):
     class Meta:
         model = Document
 
-    file = forms.FileField(
-        required=False,
-        label=_('Upload Document'),
-        help_text=_('Select your pdf scanned document'))
     description = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={'class': 'vLargeTextField'}),
@@ -22,11 +18,8 @@ class DocumentAdminForm(Docviewer_DocumentForm):
 class DocumentForm(Docviewer_DocumentForm):
     class Meta:
         model = Document
-        fields = ('file', 'language', 'public', 'source', 'notes')
+        fields = ('docfile', 'language', 'public', 'source', 'notes')
 
-    file = forms.FileField(
-        label=_('Scanned File'),
-        help_text=None)
     notes = forms.CharField(
         required=False,
         widget=forms.Textarea(
@@ -54,8 +47,9 @@ class DocumentForm(Docviewer_DocumentForm):
 class EditDocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ('language', 'source', 'public', 'notes', )
+        fields = ('docfile','language', 'source', 'public', 'notes', )
 
+    docfile = forms.CharField(required=False, help_text=None)
     language = forms.CharField(required=False, help_text=None)
     source = forms.CharField(required=False, help_text=None)
     public = forms.BooleanField(
@@ -71,6 +65,8 @@ class EditDocumentForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['language'].widget.attrs['readonly'] = True
+            self.fields['docfile'].widget.attrs['readonly'] = True
+
 
     def clean_language(self):
         instance = getattr(self, 'instance', None)
@@ -78,6 +74,14 @@ class EditDocumentForm(forms.ModelForm):
             return instance.language
         else:
             return self.cleaned_data['language']
+
+
+    def clean_docfile(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            return instance.docfile
+        else:
+            return self.cleaned_data['docfile']
 
 
 class SearchDocumentForm(forms.ModelForm):

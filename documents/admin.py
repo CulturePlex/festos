@@ -19,7 +19,7 @@ class DocumentInline(admin.StackedInline):
         'task_start')
     fieldsets = [
         ('Document details', {'fields': [
-            'file', 'language', 'title', 'author', 'source',
+            'docfile', 'language', 'title', 'author', 'source',
             'description', 'notes', 'owner']
         }),
     ]
@@ -34,42 +34,12 @@ class DocumentAdmin(Docviewer_DocumentAdmin):
     inlines = (GenericTagInline,)
     fieldsets = [
         ('Document details', {'fields': [
-            'file', 'language', 'public', 'source', 'notes']}),
+            'docfile', 'language', 'public', 'source', 'notes']}),
     ]
     fieldsets.insert(1, Docviewer_DocumentAdmin.fieldsets[1])
 
     def save_model(self, request, obj, form, change):
         obj.owner = request.user
         obj.save()
-        if obj.filename == None or obj.filename == "":
-            file = form.cleaned_data['file']
-            obj.set_file(file=file, filename=file.name)
-
-
-#class ReferenceAdmin(admin.ModelAdmin):
-#    """
-#    Inline admin for the reference
-#    """
-#    inlines = (GenericTagInline,DocumentInline,)
-
-#    def save_model(self, request, obj, form, change):
-#        obj.owner = request.user
-#        obj.save()
-
-#    def save_formset(self, request, form, formset, change):
-
-#        if formset.model != Document:
-#            return super(ReferenceAdmin, self).\
-#                save_formset(request, form, formset, change)
-
-#        instances = formset.save(commit=False)
-#        for (counter, instance) in enumerate(instances):
-#            instance.save()
-#            file = formset.cleaned_data[counter]['file']
-#            instance.set_file(file=file, filename=file.name)
-
-#        formset.save_m2m()
-
 
 admin.site.register(Document, DocumentAdmin)
-#admin.site.register(Reference, ReferenceAdmin)
