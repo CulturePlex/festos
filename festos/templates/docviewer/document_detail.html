@@ -4,7 +4,7 @@
 {% load zotero_tags from zotero_extras %}
 
 {% block extra_metas %}
-zotero tags should be added with the last version
+{% zotero_tags object=object.document vocabulary='dc' output_method='meta' %}
 {% endblock %}
 
 {% block extra_css %}
