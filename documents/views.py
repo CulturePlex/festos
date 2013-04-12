@@ -201,8 +201,11 @@ def edit_document(request, pk):
 @permission_required_or_403('documents.access_document', (Document, 'pk', 'pk'))
 def remove_document(request, pk):
     """ Remove a document """
-    document = Document.objects.get(pk=pk)
-    document.delete()
+    try:
+        document = Document.objects.get(pk=pk)
+        document.delete()
+    except:
+        pass
     return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
 
