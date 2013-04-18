@@ -1,4 +1,21 @@
 /*Personalization of the project*/
+.hero-unit{
+padding: 40px 200px 350px 200px;
+background-color: white;
+text-align: center;
+background: white url(../img/phestos.png) no-repeat center 175px;
+}
+
+.hero-unit h2{
+padding-bottom: 20px;
+font-size: 50px;
+}
+
+.hero-unit .visual_search{
+display: inline-block;
+width: 500px;
+}
+
 #sharers_cell{
   width: 400px;
 }

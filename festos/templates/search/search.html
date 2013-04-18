@@ -59,11 +59,19 @@
 {% endblock %}
 
 {% block content %}
+
+{% if vs_query == "" %}
+<div class="hero-unit">
+<h2>{% trans "Festos" %}</h2>
+<div class="visual_search"></div>
+</div>
+{% endif %}
+
+
+{% if vs_query %}
 <h2>{% trans "Search" %}</h2>
 <div class="visual_search"></div>
-{% if vs_query %}
 <p><small>{{ total }} {% trans "documents found" %}</small></p>
-
 
 {% for result in docs %}
 
