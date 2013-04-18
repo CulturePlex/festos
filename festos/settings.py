@@ -249,7 +249,8 @@ HAYSTACK_CONNECTIONS = {
 HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 # Docviewer Configuration
-from docviewer.pipeline import *
 DOCVIEWER_DOCUMENT_ROOT = join(MEDIA_ROOT, 'docs/')
 DOCVIEWER_DOCUMENT_URL = '/media/docs/'
 DOCVIEWER_IMAGE_FORMAT = 'png'
+
+from docviewer.pipeline import *
