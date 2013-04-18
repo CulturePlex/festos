@@ -9,9 +9,10 @@ class AnchorWidget(forms.Widget):
         final_attrs = self.build_attrs(attrs, name=name)
         if hasattr(self, 'initial'):
             value = self.initial
+        import ipdb; ipdb.set_trace()
         return mark_safe(
             "<p style='padding-top:4px'><a href='%s' %s>%s</a></p>" %
-                (os.path.join(settings.MEDIA_ROOT,value.name),
+                (os.path.join(settings.MEDIA_URL,value.name),
                 flatatt(final_attrs),
                 value.name.split('/')[-1]))
 
