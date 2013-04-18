@@ -28,8 +28,7 @@
           autosearch  : true,
           showFacets : true,
           unquotable : [
-            'text', 'title', 'author', 'source', 'description',
-            'notes', 'editorial'
+            'text', 'source', 'notes'
           ],
           callbacks  : {
             search : function(query, searchCollection) {
@@ -49,8 +48,7 @@
             },
             facetMatches : function(callback) {
               callback([
-                'text', 'title', 'author', 'source', 'description', 'notes',
-                'editorial'
+                'text', 'source', 'notes'
               ]);
             }
           }
@@ -99,7 +97,7 @@
       <div class="media-body">
         {% if request.GET.source %}
           <p>
-           <strong> Source: </strong>{% highlight result.1.source with request.GET.source  %}
+           <strong> Source: </strong>{% highlight result.1.document.source with request.GET.source  %}
           </p>
         {% endif %}
         {% if request.GET.description %}
