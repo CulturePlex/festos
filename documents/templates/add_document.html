@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load bootstrap %}
+{% load zotero_inline_tags from inline_extras %}
 
 
 {% block content %}
@@ -15,6 +16,9 @@
       {% for field in rform %}
       {{ field|bootstrap }}
       {% endfor %}
+      <div style="margin-left:100px; width:500px">
+        {% zotero_inline_tags formset %}
+      </div>
       <input type="submit" value="{% trans "Add Document" %}" class="btn offset2" />
   </form>
 </div>
