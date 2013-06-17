@@ -10,7 +10,7 @@ Installation of system dependencies:
 
 1) Install all the packages (the next line has been tried only in Ubuntu 12.04 64b and 12.10 64b)::
 
-    sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spayui-compressor git python-pip python-dev build-essential npm openjdk-7-jre -y
+    sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spa yui-compressor git python-pip python-dev build-essential npm openjdk-7-jre -y
 
 2) You need to install docsplit. Then the docsplit:
 
@@ -211,7 +211,7 @@ PostgreSQL installation and configuration:
 
    i) Restart the server::
 
-        sudo services postgresql restart
+        sudo service postgresql restart
 
 
 2) Configure the environment:
@@ -226,7 +226,7 @@ PostgreSQL installation and configuration:
 
    c) Install the python library inside the virtual environment::
 
-        pip install psycopg
+        pip install psycopg2
 
    d) Open the the production settings::
 
