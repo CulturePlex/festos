@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load compressed %}
 {% load url from future %}
-{% load zotero_tags from zotero_extras %}
+{% load zotero_tags from zotero_tags_extras %}
 
 {% block extra_metas %}
 {% zotero_tags object=object.document vocabulary='dc' output_method='meta' %}
