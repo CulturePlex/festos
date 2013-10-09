@@ -214,6 +214,7 @@ def remove_document(request, pk):
     """ Remove a document """
     try:
         document = Document.objects.get(pk=pk)
+        document.document.delete()
         document.delete()
     except:
         pass
