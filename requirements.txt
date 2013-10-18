@@ -11,3 +11,5 @@ django-userena
 django-pdb
 -e git://github.com/robertour/userena-bootstrap.git#egg=userenabootstrap
 django-jsonfield
+django-zotero
+
