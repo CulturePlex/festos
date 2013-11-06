@@ -16,7 +16,7 @@ class DocumentInline(admin.StackedInline):
     form = DocumentAdminForm
     readonly_fields = (
         'status', 'page_count', 'filename', 'task_id', 'task_error',
-        'task_start')
+        'task_start', 'task_end')
     fieldsets = [
         ('Document details', {'fields': [
             'docfile', 'language', 'title', 'author', 'source',

@@ -173,7 +173,8 @@ INSTALLED_APPS = (
     'docviewer',
     'documents',
     'accounts',
-    'zotero'
+    'zotero',
+    'django_ses',
 )
 
 # Userena - Guardian configuration
