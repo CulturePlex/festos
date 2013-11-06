@@ -14,4 +14,4 @@ django-jsonfield
 django-zotero
 django-tagging
 boto
-django-sessions
+django-ses
