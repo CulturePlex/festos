@@ -13,4 +13,5 @@ django-pdb
 django-jsonfield
 django-zotero
 django-tagging
-
+boto
+django-sessions
