@@ -39,6 +39,64 @@ $(document).ready(function(){
           }
         });
     }
+    
+    
+    pickers2 = $( ".picker2" )
+    if ( pickers2.length){
+        $( ".picker2" ).autocomplete({
+          source: function(request, response) {
+                adata = { }
+                adata['term'] = $(this).attr('element').val()
+                $.ajax({
+                 type: "POST",
+                 dataType: 'json',
+                 url: $(this).attr('element').data('url'),
+                 async: false,
+                 data: adata,
+                 success: function(data) {
+                      response(data)
+                   },
+               });
+             },
+          //$('.picker').data('url'),
+          minLength: 2,
+          select: function (ev, ui){
+            adata = { }
+            adata['doc_id'] = $(ev.target).parents(".document-row").data('id')
+            adata['tag'] = ui.item.value
+            $.ajax({
+              url: "add_taggit_tag/",
+              data: adata,
+              dataType: 'json',
+              type: 'POST',
+              success: function(payload){
+                location.reload();
+              }})
+          }
+      });
+      
+      $("input#id_taggit_tags").bind("enterKey",function(ev){
+            adata = { }
+            adata['doc_id'] = $(ev.target).parents(".document-row").data('id')
+            adata['tag'] = $(this).val()
+            $.ajax({
+              url: "add_taggit_tag/",
+              data: adata,
+              dataType: 'json',
+              type: 'POST',
+              success: function(payload){
+                location.reload();
+              }})
+      });
+      
+      $("input#id_taggit_tags").keypress(function(e){
+          if(e.keyCode == 13)
+          {
+              $(this).trigger("enterKey");
+          }
+      });
+      
+    }
 })
 
 </script>
@@ -52,6 +110,7 @@ $(document).ready(function(){
     <tr>
       <th>{% trans "File Name" %}</th>
       <th>{% trans "Shared with" %}</th>
+      <th>{% trans "Tag it!" %}</th>
       <th>{% trans "Owner" %}</th>
       <th>{% trans "State" %}</th>
       <th>{% trans "Actions" %}</th>
@@ -62,15 +121,26 @@ $(document).ready(function(){
     <tr class="document-row" data-id="{{ document.id }}">
       <td>{{ document.title }}</td>
       <td>
-      <div id="sharers_cell">
-        <span id="sharers" >
-        {% for sharer in document.get_users_with_perms %}
-            <a class="nolink" href="{% url 'remove_sharer' document.pk sharer.username %}">
-            <span class="sharer" data-id="{{ sharer.id }}">{{ sharer.username }}</span></a>{% if not forloop.last %},{% endif %}
-        {% endfor %}
-        </span>
-        <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_users' document.pk %}" >
-      </div>
+          <div id="sharers_cell">
+            <span id="sharers" >
+            {% for sharer in document.get_users_with_perms %}
+                <a class="nolink" href="{% url 'remove_sharer' document.pk sharer.username %}">
+                <span class="sharer" data-id="{{ sharer.id }}">{{ sharer.username }}</span></a>{% if not forloop.last %},{% endif %}
+            {% endfor %}
+            </span>
+            <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_users' document.pk %}" >
+          </div>
+      </td>
+      <td>
+          <div id="taggit_tags_cell">
+            <span id="taggit_tags" >
+            {% for taggit_tag in document.taggit_tags.names %}
+                <a class="nolink" href="{% url 'remove_taggit_tag' document.pk taggit_tag %}">
+                <span class="taggit_tag" data-id="{{ taggit_tag }}">{{ taggit_tag }}</span></a>{% if not forloop.last %},{% endif %}
+            {% endfor %}
+            </span>
+            <input id="id_taggit_tags" type="text" class="picker2 ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags' %}" >
+          </div>
       </td>
       <td>{{ document.owner }}</td>
       <td>{{ document.status }}</td>

@@ -20,6 +20,7 @@ from forms import DocumentForm, EditDocumentForm, SearchDocumentForm
 from zotero.forms import get_tag_formset
 
 import simplejson as json
+from taggit.models import Tag
 
 
 class SearchDocumentView(SearchView):
@@ -264,3 +265,36 @@ def autocomplete_users(request, pk):
                         .values_list('username', flat=True)
 
     return HttpResponse(json.dumps(list(users)))
+
+
+@login_required
+def add_taggit_tag(request):
+    """ Add a taggit_tag to the document """
+    doc = Document.objects.get(pk=request.POST['doc_id'])
+    if not (request.user.has_perm('access_document', doc)):
+                raise PermissionDenied
+    doc.taggit_tags.add(request.POST['tag'])
+    return HttpResponse(
+        json.dumps({'status': 'ok'}), content_type="application/json")
+
+
+@login_required
+def remove_taggit_tag(request, pk, taggit_tag):
+    """ Removes a taggit_tag from the document """
+    doc = Document.objects.get(pk=pk)
+    if not (request.user.has_perm('access_document', doc)):
+                raise PermissionDenied
+    doc.taggit_tags.remove(taggit_tag)
+    return HttpResponseRedirect(reverse('documents.views.list_documents'))
+
+
+@login_required
+def autocomplete_taggit_tags(request):
+    """ Autocomplete for adding taggit_tags """
+#    document = Document.objects.get(pk=pk)
+#    taggit_tags = Tag.objects.exclude(name__in=document.taggit_tags\
+#                        .filter(name__contains=request.POST['term'])\
+#                        .values_list('taggit_tags', flat=True)
+    taggit_tags = Tag.objects.filter(name__contains=request.POST['term']).values_list('name', flat=True)
+
+    return HttpResponse(json.dumps(list(taggit_tags)))

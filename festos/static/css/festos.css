@@ -16,10 +16,10 @@ display: inline-block;
 width: 500px;
 }
 
-#sharers_cell{
+#sharers_cell, #taggit_tags_cell {
   width: 400px;
 }
-.sharer{
+.sharer, .taggit_tag {
   display: block;
   padding-top: 7px;
   vertical-align: baseline;
@@ -96,7 +96,7 @@ a.summary:hover
   box-shadow: inset 0px 0px 3px #acf;
 }
 
-input[type="text"]#id_users{
+input[type="text"]#id_users, input[type="text"]#id_taggit_tags {
   line-height: 15px;
   height: 15px;
   width: 100px;

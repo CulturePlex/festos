@@ -175,6 +175,7 @@ INSTALLED_APPS = (
     'accounts',
     'zotero',
     'django_ses',
+    'taggit',
 )
 
 # Userena - Guardian configuration
