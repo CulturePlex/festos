@@ -20,13 +20,14 @@ class DocumentAdminForm(Docviewer_DocumentForm):
 class DocumentForm(Docviewer_DocumentForm):
     class Meta:
         model = Document
-        fields = ('docfile', 'language', 'public', 'source', 'notes')
+        fields = ('docfile', 'language', 'public', 'title', 'source', 'notes')
 
     notes = forms.CharField(
         required=False,
         widget=forms.Textarea(
             attrs={'class': 'vLargeTextField', 'rows': 3}),
         help_text=None)
+    title = forms.CharField(required=True, help_text=None)
     source = forms.CharField(required=False, help_text=None)
     public = forms.BooleanField(
         label=_('Publicly available'), required=False, help_text=None)

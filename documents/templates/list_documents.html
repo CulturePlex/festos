@@ -108,18 +108,18 @@ $(document).ready(function(){
 <table class="table">
   <thead>
     <tr>
-      <th>{% trans "File Name" %}</th>
-      <th>{% trans "Shared with" %}</th>
-      <th>{% trans "Tag it!" %}</th>
+      <th>{% trans "Document" %}</th>
+      <th>{% trans "Collaborators" %}</th>
+      <th>{% trans "Tags" %}</th>
       <th>{% trans "Owner" %}</th>
-      <th>{% trans "State" %}</th>
+      <th>{% trans "Status" %}</th>
       <th>{% trans "Actions" %}</th>
     </tr>
   </thead>
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td>{{ document.title }}</td>
+      <td>{{ document.title }} <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
       <td>
           <div id="sharers_cell">
             <span id="sharers" >
