@@ -24,4 +24,5 @@ urlpatterns = patterns(
     url(r"add_taggit_tag/$", 'documents.views.add_taggit_tag', name="add_taggit_tag"),
     url(r"remove_taggit_tag/(?P<pk>\d+)/(?P<taggit_tag>.+)/$",
         'documents.views.remove_taggit_tag', name="remove_taggit_tag"),
+    url(r'^progress/$', 'documents.views.progress', {}, 'documents_progress'),
 )

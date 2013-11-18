@@ -1,18 +1,42 @@
-Django
-ipdb
-pil
--e git+git://github.com/robertour/django-docviewer.git#egg=django-docviewer
-#pyelasticsearch
--e git+git://github.com/rhec/pyelasticsearch.git#egg=pyelasticsearch
-simplejson
-django-bootstrap-form
-django-userena
--e git+git://github.com/lukaszb/django-guardian.git#egg=django-guardian
-django-pdb
--e git://github.com/robertour/userena-bootstrap.git#egg=userenabootstrap
-django-jsonfield
-django-zotero
-django-taggit
-boto
-django-ses
-
+Django==1.5.4
+PIL==1.1.7
+Pillow==2.2.1
+amqp==1.0.13
+anyjson==0.3.3
+argparse==1.2.1
+billiard==2.7.3.33
+boto==2.15.0
+celery==3.0.23
+celery-haystack==0.7.2
+django-appconf==0.6
+django-autoslug==1.7.1
+django-bootstrap-form==2.0.6
+django-celery==3.0.23
+django-celery-transactions==0.1.3
+-e git://github.com/robertour/django-docviewer.git@cd2293431684d1ca278748f844ac9f62d4af2560#egg=django_docviewer-dev
+-e git://github.com/lukaszb/django-guardian.git@c638557c3334fe19697928048bf77189cd934b34#egg=django_guardian-dev
+django-haystack==2.1.1-dev
+django-jsonfield==0.9.10
+django-model-utils==1.5.0
+django-pdb==0.3.2
+django-pipeline==1.3.15
+django-ses==0.4.1
+django-taggit==0.10
+django-userena==1.2.3
+django-zotero==0.1
+easy-thumbnails==1.4
+futures==2.1.4
+html2text==3.200.3
+ipdb==0.8
+ipython==1.1.0
+jsonfield==0.9.19
+kombu==2.5.15
+pyPdf==1.13
+-e git://github.com/rhec/pyelasticsearch.git@0fdecc5317a9e1a443cb1f6eaaa2db32900181fd#egg=pyelasticsearch-dev
+python-dateutil==2.1
+pytz==2013.7
+requests==1.2.3
+simplejson==3.3.1
+six==1.4.1
+-e git://github.com/robertour/userena-bootstrap.git@7c9ddafa1c940f6ad972551ab5517e0ac9dd9f59#egg=userena_bootstrap-dev
+wsgiref==0.1.2

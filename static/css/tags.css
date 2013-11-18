@@ -1,0 +1,18 @@
+td.field-DELETE a.delete-row {
+    background: url(../img/delete.png) no-repeat;
+    width: 16px;
+    height: 15px;
+    margin-left: 16px;
+    text-indent:-9999px;
+    display:block;
+}
+
+.errorlist li {
+font-size: 12px !important;
+display: block;
+padding: 4px 5px 4px 25px;
+margin: 0 0 3px -25px;
+border: 1px solid red;
+color: white;
+background: red url(../img/icon_alert.gif) 5px .5em no-repeat;
+}
