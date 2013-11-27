@@ -115,6 +115,8 @@ $(document).ready(function(){
       var doc_ids = w_doc_ids.concat(r_doc_ids);
       if(doc_ids.length > 0)
         progress(doc_ids);
+      else
+        window.clearInterval(timer);
     }
     
     function progress(doc_ids) {
@@ -155,7 +157,7 @@ $(document).ready(function(){
       <th>{% trans "Collaborators" %}</th>
       <th>{% trans "Tags" %}</th>
       <th>{% trans "Owner" %}</th>
-      <th id="antonio">{% trans "Status" %}</th>
+      <th>{% trans "Status" %}</th>
       <th>{% trans "Actions" %}</th>
     </tr>
   </thead>
