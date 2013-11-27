@@ -21,7 +21,7 @@ from zotero.forms import get_tag_formset
 
 import simplejson as json
 from taggit.models import Tag
-import os
+from utils import count_processed_pages, count_total_pages
 
 
 class SearchDocumentView(SearchView):
@@ -146,29 +146,6 @@ def list_documents(request):
     return render_to_response('list_documents.html', {
         'documents': documents,
     }, context_instance=RequestContext(request))
-
-#from random import randint
-#def progress(document):
-#    """
-#    Get the number of progressed pages for this document
-#    """
-#    path = document.get_root_path()
-##    elems = [e for e in os.listdir(path)
-##        if e[-4:] == '.txt' and e != "%s.txt" % document.slug]
-
-#    endfile = '{}.txt'.format('0'*20)
-#    elems = [e for e in os.listdir(path) if e.endswith(endfile)]
-#    
-#    num_pages = len(elems)
-#    total_pages = document.page_count
-##    num_digits = len(str(total_pages))
-#    num_digits = randint(0,9)
-#    
-#    str_num_pages = '{0: >{1}}'.format(num_pages, num_digits)
-#    str_num_digits = '{0: >{1}}'.format(num_digits, num_digits)
-#    
-#    result = '{}/{}'.format(str_num_pages, str_num_digits)
-#    return result
 
 
 @login_required
@@ -328,20 +305,37 @@ def progress(request):
     """
     Get the number of progressed pages for this document
     """
-    id_list = request.GET.get("ids")
+    result = {}
+    id_list = request.GET.getlist("ids[]")
     for doc_id in id_list:
         document = Document.objects.get(id=doc_id)
-        path = document.get_root_path()
-        endfile = '{}.txt'.format('0'*20)
-        elems = [e for e in os.listdir(path) if e.endswith(endfile)]
-#        elems = [e for e in os.listdir(path)
-#            if e[-4:] == '.txt' and e != "%s.txt" % document.slug]
+        if document.status == Document.STATUS.running:
+            if document.page_count:
+                num_pages = count_processed_pages(document)
+                total_pages = document.page_count
+                num_digits = len(str(total_pages))
+                str_num_pages = '{0: >{1}}'.format(num_pages, num_digits)
+                str_total_pages = '{0: >{1}}'.format(total_pages, num_digits)
+                progr = '{}/{}'.format(str_num_pages, str_total_pages)
+            else:
+                num_pages = 0
+                total_pages = 0
+                progr = 'starting'
+                document.page_count = count_total_pages(document)
+                document.save()
+        else:
+            num_pages = 0
+            total_pages = 0
+            progr = document.status
+        
+        result[doc_id] = {
+            'status': document.status,
+            'num_pages': num_pages,
+            'total_pages': total_pages,
+            'progress': progr,
+        }
     
     return HttpResponse(
-        json.dumps({
-            'status': document.status,
-            'num_pages': len(elems),
-            'total_pages': document.page_count,
-        }),
+        json.dumps(result),
         content_type="application/json",
     )

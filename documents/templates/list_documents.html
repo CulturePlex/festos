@@ -101,13 +101,21 @@ $(document).ready(function(){
       
     }
     
-    $("#antonio").live('click', function (ev) {
-      var running_docs = $('.document-status[data-document-status="running"]')
-      var doc_ids = $.map(l, function(d) {
+    var timer = window.setInterval(getStatus, 30000);
+    
+    function getStatus() {
+      var waiting_docs = $('.document-status[data-document-status="waiting"]');
+      var running_docs = $('.document-status[data-document-status="running"]');
+      var w_doc_ids = $.map(waiting_docs, function(d) {
         return $(d).attr('data-document-id')
-      })
-      progress(doc_ids);
-    });
+      });
+      var r_doc_ids = $.map(running_docs, function(d) {
+        return $(d).attr('data-document-id')
+      });
+      var doc_ids = w_doc_ids.concat(r_doc_ids);
+      if(doc_ids.length > 0)
+        progress(doc_ids);
+    }
     
     function progress(doc_ids) {
       $.ajax({
@@ -116,16 +124,22 @@ $(document).ready(function(){
         data: {'ids': doc_ids},
         dataType: 'json',
         success: function (payload) {
-          console.log(payload);
+          for(var i=0; i<doc_ids.length; i++){
+            var doc_id = doc_ids[i];
+            var dict = payload[doc_id];
+            var processing_doc = $('.document-status[data-document-id="'+doc_id+'"]');
+            processing_doc.text(dict['progress']);
+            processing_doc.attr('data-document-status', dict['status'])
+          }
         },
         error: function (payload) {
-          console.log("Error");
         },
         complete: function (payload) {
-          console.log('Completed');
         }
       });
     }
+    
+    getStatus();
 })
 
 </script>
@@ -148,7 +162,7 @@ $(document).ready(function(){
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td>{{ document.title }} <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
+      <td>{{ document.subtitle }} <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
       <td>
           <div id="sharers_cell">
             <span id="sharers" >

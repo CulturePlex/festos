@@ -20,15 +20,14 @@ class DocumentAdminForm(Docviewer_DocumentForm):
 class DocumentForm(Docviewer_DocumentForm):
     class Meta:
         model = Document
-#        fields = ('docfile', 'language', 'public', 'title', 'source', 'notes')
-        fields = ('docfile', 'language', 'public', 'title', 'notes')
+        fields = ('docfile', 'language', 'public', 'subtitle', 'notes')
 
     notes = forms.CharField(
         required=False,
         widget=forms.Textarea(
             attrs={'class': 'vLargeTextField', 'rows': 3}),
         help_text=None)
-    title = forms.CharField(required=True, help_text=None)
+    subtitle = forms.CharField(required=True, help_text=None, label='Title')
 #    source = forms.CharField(required=False, help_text=None)
     public = forms.BooleanField(
         label=_('Publicly available'), required=False, help_text=None)
@@ -51,13 +50,12 @@ class DocumentForm(Docviewer_DocumentForm):
 class EditDocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-#        fields = ('docfile', 'language', 'public', 'title', 'source', 'notes')
-        fields = ('docfile', 'language', 'public', 'title', 'notes')
+        fields = ('docfile', 'language', 'public', 'subtitle', 'notes')
 
     docfile = AnchorField()
     language = forms.ChoiceField(
           choices=Document.LANGUAGES, required=False, help_text=None)
-    title = forms.CharField(required=True, help_text=None)
+    subtitle = forms.CharField(required=True, help_text=None, label='Title')
 #    source = forms.CharField(required=False, help_text=None)
     source = forms.CharField(required=False, help_text=None)
     public = forms.BooleanField(
