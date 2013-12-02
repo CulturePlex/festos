@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% load zotero_inline_tags from zotero_inline_extras %}
+
+
+{% block content %}
+<div class="row">
+<div class="span12"></div>
+<div class="span8 offset1">
+  {% block url %}{% endblock %}
+      {% csrf_token %}
+      {% for field in dform %}
+      {{ field|bootstrap }}
+      {% endfor %}
+      {% for field in rform %}
+      {{ field|bootstrap }}
+      {% endfor %}
+      <div class="zotero-formset control-group">
+      <div class="control-label">
+        Zotero tags
+      </div>
+      <div class="controls">
+        {% zotero_inline_tags formset %}
+      </div>
+      </div>
+      {% block textbutton %}{% endblock %}
+  </form>
+</div>
+</div>
+{% endblock %}
