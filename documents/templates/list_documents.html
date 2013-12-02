@@ -164,7 +164,8 @@ $(document).ready(function(){
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td>{{ document.subtitle }} <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
+      <td><span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
+<!--      <td>{{ document.doc_name }} <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>-->
       <td>
           <div id="sharers_cell">
             <span id="sharers" >
