@@ -157,3 +157,7 @@ input[type="text"]#id_users, input[type="text"]#id_taggit_tags {
   -moz-border-radius: 0px;
   background-image: none;
 }
+
+fieldset.zotero-formset {
+border:2px solid gray !important;
+}

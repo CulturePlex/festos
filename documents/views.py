@@ -153,11 +153,11 @@ def add_document(request):
     """ Add a document """
     dform = DocumentForm(user=request.user)
 #    rform = ReferenceForm()
-    tag_formset = get_tag_formset()
+    tag_formset = get_tag_formset(labels={'item_type': 'Document type'})
     if request.method == 'POST':
 #        rform = ReferenceForm(request.POST)
         dform = DocumentForm(request.POST, request.FILES, user=request.user)
-        tag_formset = get_tag_formset(dform.instance, data=request.POST)
+        tag_formset = get_tag_formset(dform.instance, data=request.POST, labels={'item_type': 'Document type'})
         #this avoids ignoring the evaluation of the form to show the errors
 #        rf_is_valid = rform.is_valid()
         rf_is_valid = True
@@ -186,11 +186,11 @@ def edit_document(request, pk):
     document = Document.objects.get(pk=pk)
     eform = EditDocumentForm(instance=document)
 #    rform = ReferenceForm(instance=document.reference)
-    tag_formset = get_tag_formset(document)
+    tag_formset = get_tag_formset(document, labels={'item_type': 'Document type'})
     if request.method == 'POST':
 #        rform = ReferenceForm(request.POST, instance=document.reference)
         eform = EditDocumentForm(request.POST, instance=document)
-        tag_formset = get_tag_formset(document, data=request.POST)
+        tag_formset = get_tag_formset(document, data=request.POST, labels={'item_type': 'Document type'})
         #this avoids ignoring the evaluation of the form to show the errors
 #        rf_is_valid = rform.is_valid()
         rf_is_valid = True
@@ -205,7 +205,7 @@ def edit_document(request, pk):
     return render_to_response('edit_document.html', {
         'document': document,
         'rform': None,
-        'eform': eform,
+        'dform': eform,
         'formset': tag_formset,
     }, context_instance=RequestContext(request))
 

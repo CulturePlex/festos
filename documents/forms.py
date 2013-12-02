@@ -57,7 +57,6 @@ class EditDocumentForm(forms.ModelForm):
           choices=Document.LANGUAGES, required=False, help_text=None)
     subtitle = forms.CharField(required=True, help_text=None, label='Title')
 #    source = forms.CharField(required=False, help_text=None)
-    source = forms.CharField(required=False, help_text=None)
     public = forms.BooleanField(
         label=_('Publicly available'), required=False, help_text=None)
     notes = forms.CharField(
