@@ -106,17 +106,31 @@ $(document).ready(function(){
     function getStatus() {
       var waiting_docs = $('.document-status[data-document-status="waiting"]');
       var running_docs = $('.document-status[data-document-status="running"]');
-      var w_doc_ids = $.map(waiting_docs, function(d) {
+      var wait_doc_ids = $.map(waiting_docs, function(d) {
         return $(d).attr('data-document-id')
       });
-      var r_doc_ids = $.map(running_docs, function(d) {
+      var run_doc_ids = $.map(running_docs, function(d) {
         return $(d).attr('data-document-id')
       });
-      var doc_ids = w_doc_ids.concat(r_doc_ids);
+      var doc_ids = wait_doc_ids.concat(run_doc_ids);
       if(doc_ids.length > 0)
         progress(doc_ids);
       else
         window.clearInterval(timer);
+      
+      <!--Disable actions-->
+      var waiting_docs = $('.document-status[data-document-status="waiting"]');
+      var running_docs = $('.document-status[data-document-status="running"]');
+      var failed_docs = $('.document-status[data-document-status="failed"]');
+      var disabled_docs = $.merge(waiting_docs, $.merge(running_docs, failed_docs));
+      var actions = disabled_docs.parent().children().filter(":last-child").children().children();
+      actions = actions.filter(":not(.icon-ban-circle)");
+      actions.addClass("icon-white");
+      var cancel = actions.filter(".icon-trash");
+      cancel.removeClass("icon-white");
+      cancel.removeClass("icon-trash");
+      cancel.addClass("icon-ban-circle");
+      cancel.attr("title", "Cancel");
     }
     
     function progress(doc_ids) {
@@ -137,6 +151,14 @@ $(document).ready(function(){
         error: function (payload) {
         },
         complete: function (payload) {
+          <!--Enable actions-->
+          var ready_docs = $('.document-status[data-document-status="ready"]');
+          var actions2 = ready_docs.parent().children().filter(":last-child").children().children();
+          actions2.removeClass("icon-white");
+          var remove = actions2.filter(".icon-ban-circle");
+          remove.removeClass("icon-ban-circle");
+          remove.addClass("icon-trash");
+          remove.attr("title", "Remove");
         }
       });
     }
@@ -164,8 +186,7 @@ $(document).ready(function(){
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td><span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
-<!--      <td>{{ document.doc_name }} <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>-->
+      <td>{{ document.title }} <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
       <td>
           <div id="sharers_cell">
             <span id="sharers" >
@@ -190,8 +211,8 @@ $(document).ready(function(){
       </td>
       <td>{{ document.owner }}</td>
       <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}">{{ document.status }}</td>
-      <td>
-        <a href="{% url 'change_privacy_document' document.pk %}">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-open icon-white" style="background-color:#ccc;" title="Click to make it public"></i>{% endif %}</a>
+      <td class="document-actions">
+        <a href="{% url 'change_privacy_document' document.pk %}">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
         <a title="View" href="{{ document.get_absolute_url }}"><i class="icon-file"></i></a>
         <a title="Edit" href="{% url 'edit_document' document.pk %}"><i class="icon-edit"></i></a>
         <a title="Remove" href="{% url 'remove_document' document.pk %}"><i class="icon-trash"></i>

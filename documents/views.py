@@ -1,4 +1,5 @@
 # Create your views here.
+from celery.task.control import revoke
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -216,12 +217,13 @@ def edit_document(request, pk):
 @permission_required_or_403('documents.access_document', (Document, 'pk', 'pk'))
 def remove_document(request, pk):
     """ Remove a document """
-    try:
-        document = Document.objects.get(pk=pk)
-        document.document.delete()
-        document.delete()
-    except:
-        pass
+#    try:
+    document = Document.objects.get(pk=pk)
+    revoke(document.task_id, terminate=True)
+    document.document.delete()
+    document.delete()
+#    except:
+#        pass
     return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
 

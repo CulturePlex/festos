@@ -161,3 +161,9 @@ input[type="text"]#id_users, input[type="text"]#id_taggit_tags {
 fieldset.zotero-formset {
 border:2px solid gray !important;
 }
+
+.document-actions a i.icon-white {
+pointer-events: none;
+cursor: default;
+background-color: #ddd;
+}
