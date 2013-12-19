@@ -104,33 +104,14 @@ $(document).ready(function(){
     var timer = window.setInterval(getStatus, 30000);
     
     function getStatus() {
-      var waiting_docs = $('.document-status[data-document-status="waiting"]');
-      var running_docs = $('.document-status[data-document-status="running"]');
-      var wait_doc_ids = $.map(waiting_docs, function(d) {
-        return $(d).attr('data-document-id')
+      window.clearInterval(timer);
+      
+      docs = $(".document-status");
+      var doc_ids = $.map(docs, function(d) {
+        return $(d).attr('data-document-id');
       });
-      var run_doc_ids = $.map(running_docs, function(d) {
-        return $(d).attr('data-document-id')
-      });
-      var doc_ids = wait_doc_ids.concat(run_doc_ids);
       if(doc_ids.length > 0)
         progress(doc_ids);
-      else
-        window.clearInterval(timer);
-      
-      <!--Disable actions-->
-      var waiting_docs = $('.document-status[data-document-status="waiting"]');
-      var running_docs = $('.document-status[data-document-status="running"]');
-      var failed_docs = $('.document-status[data-document-status="failed"]');
-      var disabled_docs = $.merge(waiting_docs, $.merge(running_docs, failed_docs));
-      var actions = disabled_docs.parent().children().filter(":last-child").children().children();
-      actions = actions.filter(":not(.icon-ban-circle)");
-      actions.addClass("icon-white");
-      var cancel = actions.filter(".icon-trash");
-      cancel.removeClass("icon-white");
-      cancel.removeClass("icon-trash");
-      cancel.addClass("icon-ban-circle");
-      cancel.attr("title", "Cancel");
     }
     
     function progress(doc_ids) {
@@ -140,22 +121,76 @@ $(document).ready(function(){
         data: {'ids': doc_ids},
         dataType: 'json',
         success: function (payload) {
+          var counter_in_progress_docs = 0;
           for(var i=0; i<doc_ids.length; i++){
             var doc_id = doc_ids[i];
             var dict = payload[doc_id];
-            var processing_doc = $('.document-status[data-document-id="'+doc_id+'"]');
-            processing_doc.text(dict['progress']);
-            processing_doc.attr('data-document-status', dict['status'])
+            
+            var doc = $('.document-status[data-document-id="'+doc_id+'"]');
+            doc.attr('data-document-status', dict['status']);
+            var span_content = doc.children();
+            span_content.text(dict['progress']);
+            span_content.removeClass();
+            span_content.addClass("label");
+            
+            span_content.attr("align", "center");
+            if(dict["progress"] == "failed")
+              span_content.addClass("label-important");
+            else if(dict["progress"] == "ready"){
+              span_content.addClass("label-success");
+              }
+            else if(dict["progress"] == "waiting") {
+<!--              span_content.addClass("label-default");-->
+<!--              span_content.addClass("demo");-->
+              doc.html('<div align="center"><img src="../static/img/waiting.gif"></div>');
+              counter_in_progress_docs++;
+            }
+            else if(dict["progress"] == "starting") {
+              doc.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo" style="font-weight:bold;">starting</span> </div></div>');
+              counter_in_progress_docs++;
+            }
+            else { <!-- "processing" -->
+              var np = dict.num_pages;
+              var tp = dict.total_pages;
+              var per = parseInt(np*100/tp);
+              doc.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+dict["progress"]+'</span> </div></div>');
+              counter_in_progress_docs++;
+            }
           }
+          if(counter_in_progress_docs > 0)
+            timer = window.setInterval(getStatus, 30000);
+          else
+            window.clearInterval(timer);
+          
+          
+          <!--Disable actions-->
+          var waiting_docs = $('.document-status[data-document-status="waiting"]');
+          var running_docs = $('.document-status[data-document-status="running"]');
+          var failed_docs = $('.document-status[data-document-status="failed"]');
+          var disabled_docs = $.merge(waiting_docs, $.merge(running_docs, failed_docs));
+      
+          var actions = disabled_docs.parent().children().filter(":last-child").children();
+          var actionsHidable = actions.filter(".action-hidable");
+          actionsHidable.hide();
+          
+          var icons = actions.children();
+          var cancel = icons.filter(".icon-trash");
+          cancel.removeClass("icon-trash");
+          cancel.addClass("icon-ban-circle");
+          cancel.attr("title", "Cancel");
         },
         error: function (payload) {
         },
         complete: function (payload) {
           <!--Enable actions-->
-          var ready_docs = $('.document-status[data-document-status="ready"]');
-          var actions2 = ready_docs.parent().children().filter(":last-child").children().children();
-          actions2.removeClass("icon-white");
-          var remove = actions2.filter(".icon-ban-circle");
+          var enabled_docs = $('.document-status[data-document-status="ready"]');
+          
+          var actions = enabled_docs.parent().children().filter(":last-child").children();
+          actionsHidable = actions.filter(".action-hidable");
+          actionsHidable.show();
+          
+          var icons = actions.children();
+          var remove = icons.filter(".icon-ban-circle");
           remove.removeClass("icon-ban-circle");
           remove.addClass("icon-trash");
           remove.attr("title", "Remove");
@@ -179,15 +214,15 @@ $(document).ready(function(){
       <th>{% trans "Collaborators" %}</th>
       <th>{% trans "Tags" %}</th>
       <th>{% trans "Owner" %}</th>
-      <th>{% trans "Status" %}</th>
+      <th><div align="center">{% trans "Status" %}</div></th>
       <th>{% trans "Actions" %}</th>
     </tr>
   </thead>
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td>{{ document.title }} <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
-      <td>
+      <td class="document-title"><span>{{ document.title }}</span> <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
+      <td class="document-collaborators">
           <div id="sharers_cell">
             <span id="sharers" >
             {% for sharer in document.get_users_with_perms %}
@@ -198,7 +233,7 @@ $(document).ready(function(){
             <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_users' document.pk %}" >
           </div>
       </td>
-      <td>
+      <td class="document-tags">
           <div id="taggit_tags_cell">
             <span id="taggit_tags" >
             {% for taggit_tag in document.taggit_tags.names %}
@@ -209,11 +244,11 @@ $(document).ready(function(){
             <input id="id_taggit_tags" type="text" class="picker2 ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags' %}" >
           </div>
       </td>
-      <td>{{ document.owner }}</td>
-      <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}">{{ document.status }}</td>
+      <td class="document-owner">{{ document.owner }}</td>
+      <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div></td>
       <td class="document-actions">
-        <a href="{% url 'change_privacy_document' document.pk %}">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
-        <a title="View" href="{{ document.get_absolute_url }}"><i class="icon-file"></i></a>
+        <a href="{% url 'change_privacy_document' document.pk %}" class="action-hidable">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
+        <a title="View" href="{{ document.get_absolute_url }}" class="action-hidable"><i class="icon-file"></i></a>
         <a title="Edit" href="{% url 'edit_document' document.pk %}"><i class="icon-edit"></i></a>
         <a title="Remove" href="{% url 'remove_document' document.pk %}"><i class="icon-trash"></i>
         </a>

@@ -17,7 +17,7 @@ width: 500px;
 }
 
 #sharers_cell, #taggit_tags_cell {
-  width: 400px;
+  width: 345px;
 }
 .sharer, .taggit_tag {
   display: block;
@@ -162,8 +162,64 @@ fieldset.zotero-formset {
 border:2px solid gray !important;
 }
 
-.document-actions a i.icon-white {
-pointer-events: none;
-cursor: default;
-background-color: #ddd;
+/*.document-actions a i.icon-white {*/
+/*pointer-events: none;*/
+/*cursor: default;*/
+/*background-color: #ddd;*/
+/*}*/
+
+td.document-title {
+max-width:150px;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap
+}
+
+.progress {
+width:80px;
+}
+
+span.demo {
+}
+span.demo:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -moz-animation: ellipsis 3s infinite;
+  -webkit-animation:  ellipsis 3s infinite;
+  -o-animation:  ellipsis 3s infinite;
+  animation:  ellipsis 3s infinite;
+  content: "\2026"; /* ascii code for ellipsis */
+}
+@keyframes ellipsis {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 12px;
+  }
+}
+@-moz-keyframes ellipsis {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 12px;
+  }
+}
+@-webkit-keyframes ellipsis {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 12px;
+  }
+}
+@-o-keyframes ellipsis {
+  from {
+    width: 0px;
+  }
+  to {
+    width: 12px;
+  }
 }
