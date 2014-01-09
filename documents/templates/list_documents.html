@@ -142,7 +142,7 @@ $(document).ready(function(){
             else if(dict["progress"] == "waiting") {
 <!--              span_content.addClass("label-default");-->
 <!--              span_content.addClass("demo");-->
-              doc.html('<div align="center"><img src="../static/img/waiting.gif"></div>');
+              doc.html('<div align="center"><img src="../static/img/waiting.gif">  <span class="label label-info">6th</span></div>');
               counter_in_progress_docs++;
             }
             else if(dict["progress"] == "starting") {
@@ -221,7 +221,7 @@ $(document).ready(function(){
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td class="document-title"><span>{{ document.title }}</span> <br/> <span style="color:gray; font-size:75%">{{ document.docfile_basename }}</span></td>
+      <td class="document-title"><span title="{{ document.title }}">{{ document.title }}</span> <br/> <span style="color:gray; font-size:75%" title="{{ document.docfile_basename }}">{{ document.docfile_basename }}</span></td>
       <td class="document-collaborators">
           <div id="sharers_cell">
             <span id="sharers" >
