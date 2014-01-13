@@ -141,12 +141,12 @@ $(document).ready(function(){
               }
             else if(dict["progress"] == "waiting") {
 <!--              span_content.addClass("label-default");-->
-<!--              span_content.addClass("demo");-->
-              doc.html('<div align="center"><img src="../static/img/waiting.gif">  <span class="label label-info">6th</span></div>');
+<!--              span_content.addClass("demo-no");-->
+              doc.html('<div align="center"><img src="../static/img/waiting.gif"></div>');
               counter_in_progress_docs++;
             }
             else if(dict["progress"] == "starting") {
-              doc.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo" style="font-weight:bold;">starting</span> </div></div>');
+              doc.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">starting</span> </div></div>');
               counter_in_progress_docs++;
             }
             else { <!-- "processing" -->
@@ -249,7 +249,7 @@ $(document).ready(function(){
       <td class="document-actions">
         <a href="{% url 'change_privacy_document' document.pk %}" class="action-hidable">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
         <a title="View" href="{{ document.get_absolute_url }}" class="action-hidable"><i class="icon-file"></i></a>
-        <a title="Edit" href="{% url 'edit_document' document.pk %}"><i class="icon-edit"></i></a>
+        <a title="Edit" href="{% url 'edit_document' document.pk %}" class="action-hidable"><i class="icon-edit"></i></a>
         <a title="Remove" href="{% url 'remove_document' document.pk %}"><i class="icon-trash"></i>
         </a>
       </td>
