@@ -22,6 +22,7 @@ from zotero.forms import get_tag_formset
 
 import simplejson as json
 from taggit.models import Tag
+from docviewer.models import Annotation
 from utils import count_processed_pages, count_total_pages
 
 
@@ -59,6 +60,22 @@ class SearchDocumentView(SearchView):
                 documents.filter(Q(id__in=permited_docs) | Q(public=True))
         else:
             documents = documents.filter(public=True)
+        
+        if 'annotations' in self.request.GET:
+            ann = self.request.GET['annotations']
+            documents = \
+                documents.filter(
+                    Q(annotations_set__title__icontains=ann) |
+                    Q(annotations_set__content__icontains=ann)
+                )
+            self.vs_query += " annotations:" + ann
+        
+        if 'tags' in self.request.GET:
+            tag = self.request.GET['tags']
+            documents = documents.filter(taggit_tags__name=tag)
+            self.vs_query += " tags:" + tag
+        
+#        import ipdb; ipdb.set_trace()
         form = SearchDocumentForm(self.request.GET)
         if form.is_valid():
             opts = {}

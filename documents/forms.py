@@ -4,7 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.util import flatatt
 from django.utils.safestring import mark_safe
 from docviewer.forms import DocumentForm as Docviewer_DocumentForm
+from docviewer.models import Annotation
 from models import Document
+from taggit.models import Tag
 from widgets import AnchorField
 
 class DocumentAdminForm(Docviewer_DocumentForm):
@@ -82,8 +84,12 @@ class EditDocumentForm(forms.ModelForm):
 class SearchDocumentForm(forms.ModelForm):
     class Meta:
         model = Document
-        fields = ('title', 'source', 'description', 'notes')
+        fields = ('title', )
     title = forms.CharField(required=False)
-    description = forms.CharField(required=False)
-    notes = forms.CharField(required=False)
-    source = forms.CharField(required=False)
+
+#    def __init__(self, *args, **kwargs):
+##        import ipdb; ipdb.set_trace()
+##        doc = kwargs[]
+#        super(SearchDocumentForm, self).__init__(*args, **kwargs)
+#        self.fields['annotations'] = forms.ModelChoiceField(queryset=Annotation.objects.all())
+#        self.fields['tags'] = forms.ModelChoiceField(queryset=Tag.objects.all())

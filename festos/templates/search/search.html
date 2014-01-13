@@ -28,7 +28,7 @@
           autosearch  : true,
           showFacets : true,
           unquotable : [
-            'text', 'source', 'notes'
+            'text', 'title', 'tags', 'annotations',
           ],
           callbacks  : {
             search : function(query, searchCollection) {
@@ -48,7 +48,7 @@
             },
             facetMatches : function(callback) {
               callback([
-                'text', 'source', 'notes'
+                'text', 'title', 'tags', 'annotations',
               ]);
             }
           }
@@ -103,9 +103,9 @@
       {% else %}
       {% endif %}
       <div class="media-body">
-        {% if request.GET.source %}
+        {% if request.GET.title %}
           <p>
-           <strong> Source: </strong>{% highlight result.1.document.source with request.GET.source  %}
+           <strong> title: </strong>{% highlight result.1.document.title with request.GET.title  %}
           </p>
         {% endif %}
         {% if request.GET.description %}
@@ -113,9 +113,14 @@
            <strong> Description: </strong>{% highlight result.1.document.description with request.GET.description %}
           </p>
         {% endif %}
-        {% if request.GET.notes %}
+        {% if request.GET.tags %}
           <p>
-           <strong> Notes: </strong>{% highlight result.1.document.notes with request.GET.notes %}
+           <strong> tags: </strong>{% highlight result.1.document.taggit_tags.names with request.GET.tags %}
+          </p>
+        {% endif %}
+        {% if request.GET.annotations %}
+          <p>
+           <strong> annotations: </strong>{% highlight result.1.document.annotations_set with request.GET.annotations %}
           </p>
         {% endif %}
         {% for key, value in refs_fields.items %}
