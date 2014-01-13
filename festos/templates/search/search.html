@@ -45,6 +45,19 @@
               window.location = url
             },
             valueMatches : function(category, searchTerm, callback) {
+                var tags = {{ tags|safe }};
+                switch (category) {
+                    case 'tags':
+                        var l = [];
+                        for (var i=0; i<tags.length; i++) {
+                            var o = {};
+                            o.value = tags[i];
+                            o.label = tags[i];
+                            l.push(o);
+                        }
+                        callback(l);
+                        break;
+                }
             },
             facetMatches : function(callback) {
               callback([
@@ -115,12 +128,32 @@
         {% endif %}
         {% if request.GET.tags %}
           <p>
-           <strong> tags: </strong>{% highlight result.1.document.taggit_tags.names with request.GET.tags %}
+           <strong> tags: </strong>
+           {% for tag in result.1.document.taggit_tags.names %}
+                {% if forloop.last %}
+                    {% highlight tag with request.GET.tags %}
+                {% else %}
+                    {% highlight tag with request.GET.tags %},
+                {% endif %}
+           {% endfor %}
           </p>
         {% endif %}
         {% if request.GET.annotations %}
           <p>
-           <strong> annotations: </strong>{% highlight result.1.document.annotations_set with request.GET.annotations %}
+           <strong> annotations: </strong></br>
+           <ol>
+           {% for ann in result.1.document.annotations_set.values %}
+                {% if request.GET.annotations in ann.title or request.GET.annotations in ann.content %}
+                   <li>
+                   <ul>
+                    <li><strong> title: </strong>{% highlight ann.title with request.GET.annotations %}</li>
+                    <li><strong> content: </strong>{% highlight ann.content with request.GET.annotations %}</li>
+                   </ul>
+                   </li>
+                {% endif %}
+                </br>
+           {% endfor %}
+           </ol>
           </p>
         {% endif %}
         {% for key, value in refs_fields.items %}

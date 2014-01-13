@@ -86,10 +86,5 @@ class SearchDocumentForm(forms.ModelForm):
         model = Document
         fields = ('title', )
     title = forms.CharField(required=False)
-
-#    def __init__(self, *args, **kwargs):
-##        import ipdb; ipdb.set_trace()
-##        doc = kwargs[]
-#        super(SearchDocumentForm, self).__init__(*args, **kwargs)
-#        self.fields['annotations'] = forms.ModelChoiceField(queryset=Annotation.objects.all())
-#        self.fields['tags'] = forms.ModelChoiceField(queryset=Tag.objects.all())
+    annotations = forms.CharField(required=False)
+    tags = forms.CharField(required=False)

@@ -61,28 +61,23 @@ class SearchDocumentView(SearchView):
         else:
             documents = documents.filter(public=True)
         
-        if 'annotations' in self.request.GET:
-            ann = self.request.GET['annotations']
-            documents = \
-                documents.filter(
-                    Q(annotations_set__title__icontains=ann) |
-                    Q(annotations_set__content__icontains=ann)
-                )
-            self.vs_query += " annotations:" + ann
-        
-        if 'tags' in self.request.GET:
-            tag = self.request.GET['tags']
-            documents = documents.filter(taggit_tags__name=tag)
-            self.vs_query += " tags:" + tag
-        
-#        import ipdb; ipdb.set_trace()
         form = SearchDocumentForm(self.request.GET)
         if form.is_valid():
             opts = {}
             for key in form.cleaned_data:
-                if form.cleaned_data[key] != '':
-                    opts[key + '__icontains'] = form.cleaned_data[key]
-                    self.vs_query += " " + key + ":" + form.cleaned_data[key]
+                data = form.cleaned_data[key]
+                if data != '':
+                    if key == 'annotations':
+                        documents = \
+                            documents.filter(
+                                Q(annotations_set__title__icontains=data) |
+                                Q(annotations_set__content__icontains=data)
+                            )
+                    elif key == 'tags':
+                        documents = documents.filter(taggit_tags__name=data)
+                    else:
+                        opts[key + '__icontains'] = data
+                    self.vs_query += " " + key + ":" + data
             documents = documents.filter(**opts)
 
 #        references = self.get_references()
@@ -145,7 +140,8 @@ class SearchDocumentView(SearchView):
             'total': len(documents),
             'vs_query': self.vs_query,
             'refs_fields': None,
-            'url_query': cp.urlencode
+            'url_query': cp.urlencode,
+            'tags': json.dumps([tag.name for tag in Tag.objects.all()]),
         }
 
 
