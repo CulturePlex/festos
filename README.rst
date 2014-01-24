@@ -29,7 +29,8 @@ Installation of system dependencies:
 
 3) Install yuglify::
 
-    npm install yuglify
+    npm config set registry http://registry.npmjs.org/
+    npm -g install yuglify
 
 4) Install the elasticsearch::
   
@@ -95,7 +96,7 @@ Deploy the project:
    d) Install the requierements of the project::
 
         workon festos
-        pip install -U -r requirements.txt
+        pip install -U -r requirements.txt --allow-external pyPdf --allow-unverified pyPdf
 
 3) Create database and launch:
 
