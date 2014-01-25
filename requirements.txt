@@ -30,7 +30,6 @@ ipdb==0.8
 ipython==1.1.0
 jsonfield==0.9.19
 kombu==2.5.15
-pyPdf==1.13
 -e git://github.com/rhec/pyelasticsearch.git@0fdecc5317a9e1a443cb1f6eaaa2db32900181fd#egg=pyelasticsearch-dev
 python-dateutil==2.1
 pytz==2013.7

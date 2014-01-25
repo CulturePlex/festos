@@ -96,7 +96,7 @@ Deploy the project:
    d) Install the requierements of the project::
 
         workon festos
-        pip install -U -r requirements.txt --allow-external pyPdf --allow-unverified pyPdf
+        pip install -U -r requirements.txt
 
 3) Create database and launch:
 
