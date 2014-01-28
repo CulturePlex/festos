@@ -26,4 +26,5 @@ def debug(request):
 def accounts(request):
     return {'LOGOUT_URL': getattr(settings, "LOGOUT_URL", "/accounts/logout/"),
             'LOGIN_REDIRECT_URL': getattr(settings, "LOGIN_REDIRECT_URL", None),
-            'LOGIN_URL': getattr(settings, "LOGIN_URL", "/accounts/signin/")}
+            'LOGIN_URL': getattr(settings, "LOGIN_URL", "/accounts/signin/"),
+            'SIGNUP_URL': getattr(settings, "SIGNUP_URL", "/accounts/signup/")}

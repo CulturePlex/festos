@@ -15,7 +15,7 @@ urlpatterns = patterns(
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    url(r'^signup/', handler403),
+#    url(r'^signup/', 'accounts.views.signup_view', name='signup'),
     url(r'', include('userena.urls')),
 
 )
