@@ -3,9 +3,17 @@
 {% load bootstrap %}
 
 {% block extra_js %}
+
+
+<style>
+#remove:hover {cursor: pointer;}
+</style>
+
+
 <script type="text/javascript">
 
 var prog;
+
 
 $(document).ready(function(){
     pickers = $( ".picker" )
@@ -128,20 +136,20 @@ $(document).ready(function(){
             
             var doc = $('.document-status[data-document-id="'+doc_id+'"]');
             doc.attr('data-document-status', dict['status']);
-            var span_content = doc.children();
-            span_content.text(dict['progress']);
-            span_content.removeClass();
-            span_content.addClass("label");
+            var div_content = doc.children();
+            div_content.text(dict['progress']);
+            div_content.removeClass();
+            div_content.addClass("label");
             
-            span_content.attr("align", "center");
+            div_content.attr("align", "center");
             if(dict["progress"] == "failed")
-              span_content.addClass("label-important");
+              div_content.addClass("label-important");
             else if(dict["progress"] == "ready"){
-              span_content.addClass("label-success");
+              div_content.addClass("label-success");
               }
             else if(dict["progress"] == "waiting") {
-<!--              span_content.addClass("label-default");-->
-<!--              span_content.addClass("demo-no");-->
+<!--              div_content.addClass("label-default");-->
+<!--              div_content.addClass("demo-no");-->
               doc.html('<div align="center"><img src="../static/img/waiting.gif"></div>');
               counter_in_progress_docs++;
             }
@@ -169,7 +177,7 @@ $(document).ready(function(){
           var failed_docs = $('.document-status[data-document-status="failed"]');
           var disabled_docs = $.merge(waiting_docs, $.merge(running_docs, failed_docs));
       
-          var actions = disabled_docs.parent().children().filter(":last-child").children();
+          var actions = disabled_docs.parent().children().last().children();
           var actionsHidable = actions.filter(".action-hidable");
           actionsHidable.hide();
           
@@ -185,7 +193,7 @@ $(document).ready(function(){
           <!--Enable actions-->
           var enabled_docs = $('.document-status[data-document-status="ready"]');
           
-          var actions = enabled_docs.parent().children().filter(":last-child").children();
+          var actions = enabled_docs.parent().children().last().children();
           actionsHidable = actions.filter(".action-hidable");
           actionsHidable.show();
           
@@ -199,6 +207,54 @@ $(document).ready(function(){
     }
     
     getStatus();
+    
+    
+    $(".document-actions #remove").live('click', function (ev) {
+<!--      var id = ev.currentTarget.getAttribute('data-document-id');-->
+<!--      var status = $('.document-status[data-document-id="'+id+'"]');-->
+      var status = $(this).parent().parent().children().filter(".document-status");
+      var div_content = status.children();
+      div_content.text("remove?");
+      div_content.removeClass();
+      div_content.addClass("label");
+      div_content.addClass("label-warning");
+      var actions = status.parent().children().last().children();
+      var actionsHidable = actions.filter(".action-hidable");
+      actionsHidable.hide();
+      var actionOk = actions.filter("#confirm-remove");
+      actionOk.show();
+      var icons = actions.children();
+      var cancel = icons.filter(".icon-trash");
+      cancel.removeClass("icon-trash");
+      cancel.addClass("icon-ban-circle");
+      cancel.attr("title", "Cancel");
+      $(this).addClass("confirm-remove")
+    });
+    $(".document-actions .confirm-remove").live('click', function (ev) {
+<!--      var id = ev.currentTarget.getAttribute('data-document-id');-->
+<!--      var status = $('.document-status[data-document-id="'+id+'"]');-->
+      var status = $(this).parent().parent().children().filter(".document-status");
+      var old_status = status[0].getAttribute("data-document-status");
+      var div_content = status.children();
+      div_content.text(old_status);
+      div_content.removeClass();
+      div_content.addClass("label");
+      if (old_status == "ready")
+        div_content.addClass("label-success");
+      else <!-- "failed" -->
+        div_content.addClass("label-important");
+      var actions = status.parent().children().last().children();
+      var actionsHidable = actions.filter(".action-hidable");
+      actionsHidable.show();
+      var actionOk = actions.filter("#confirm-remove");
+      actionOk.hide();
+      var icons = actions.children();
+      var cancel = icons.filter(".icon-ban-circle");
+      cancel.removeClass("icon-ban-circle");
+      cancel.addClass("icon-trash");
+      cancel.attr("title", "Remove");
+      $(this).removeClass("confirm-remove")
+    });
 })
 
 </script>
@@ -250,8 +306,9 @@ $(document).ready(function(){
         <a href="{% url 'change_privacy_document' document.pk %}" class="action-hidable">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
         <a title="View" href="{{ document.get_absolute_url }}" class="action-hidable"><i class="icon-file"></i></a>
         <a title="Edit" href="{% url 'edit_document' document.pk %}" class="action-hidable"><i class="icon-edit"></i></a>
-        <a title="Remove" href="{% url 'remove_document' document.pk %}"><i class="icon-trash"></i>
-        </a>
+        <a id="confirm-remove" title="Remove" href="{% url 'remove_document' document.pk %}" data-document-id="{{ document.id }}" style="display:none;"><i class="icon-ok"></i></a>
+<!--        <a id="remove" title="Remove" href="{% url 'remove_document' document.pk %}"><i class="icon-trash"></i>-->
+        <a id="remove" title="Remove" data-document-id="{{ document.id }}"><i class="icon-trash"></i></a>
       </td>
     </tr>
   {% endfor %}
