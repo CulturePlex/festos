@@ -6,7 +6,7 @@
 
 
 <style>
-#remove:hover {cursor: pointer;}
+.document-actions #remove:hover {cursor: pointer;}
 </style>
 
 
@@ -142,8 +142,10 @@ $(document).ready(function(){
             div_content.addClass("label");
             
             div_content.attr("align", "center");
-            if(dict["progress"] == "failed")
+            if(dict["progress"] == "failed") {
               div_content.addClass("label-important");
+              doc.parent().children().last().children().filter("[id='retry']").show();
+            }
             else if(dict["progress"] == "ready"){
               div_content.addClass("label-success");
               }
@@ -221,6 +223,8 @@ $(document).ready(function(){
       var actions = status.parent().children().last().children();
       var actionsHidable = actions.filter(".action-hidable");
       actionsHidable.hide();
+      var actionRetry = actions.filter("#retry");
+      actionRetry.hide();
       var actionOk = actions.filter("#confirm-remove");
       actionOk.show();
       var icons = actions.children();
@@ -228,9 +232,9 @@ $(document).ready(function(){
       cancel.removeClass("icon-trash");
       cancel.addClass("icon-ban-circle");
       cancel.attr("title", "Cancel");
-      $(this).addClass("confirm-remove")
+      $(this).addClass("cancel-remove");
     });
-    $(".document-actions .confirm-remove").live('click', function (ev) {
+    $(".document-actions .cancel-remove").live('click', function (ev) {
 <!--      var id = ev.currentTarget.getAttribute('data-document-id');-->
 <!--      var status = $('.document-status[data-document-id="'+id+'"]');-->
       var status = $(this).parent().parent().children().filter(".document-status");
@@ -239,21 +243,25 @@ $(document).ready(function(){
       div_content.text(old_status);
       div_content.removeClass();
       div_content.addClass("label");
-      if (old_status == "ready")
-        div_content.addClass("label-success");
-      else <!-- "failed" -->
-        div_content.addClass("label-important");
       var actions = status.parent().children().last().children();
+      if (old_status == "ready") {
+        div_content.addClass("label-success");
       var actionsHidable = actions.filter(".action-hidable");
       actionsHidable.show();
-      var actionOk = actions.filter("#confirm-remove");
-      actionOk.hide();
       var icons = actions.children();
       var cancel = icons.filter(".icon-ban-circle");
       cancel.removeClass("icon-ban-circle");
       cancel.addClass("icon-trash");
       cancel.attr("title", "Remove");
-      $(this).removeClass("confirm-remove")
+      }
+      else { <!-- "failed" -->
+        div_content.addClass("label-important");
+        var actionRetry = actions.filter("#retry");
+        actionRetry.show();
+      }
+      var actionOk = actions.filter("#confirm-remove");
+      actionOk.hide();
+      $(this).removeClass("cancel-remove");
     });
 })
 
@@ -307,6 +315,7 @@ $(document).ready(function(){
         <a title="View" href="{{ document.get_absolute_url }}" class="action-hidable"><i class="icon-file"></i></a>
         <a title="Edit" href="{% url 'edit_document' document.pk %}" class="action-hidable"><i class="icon-edit"></i></a>
         <a id="confirm-remove" title="Remove" href="{% url 'remove_document' document.pk %}" data-document-id="{{ document.id }}" style="display:none;"><i class="icon-ok"></i></a>
+        <a id="retry" title="Retry" href="{% url 'retry_document' document.pk %}" data-document-id="{{ document.id }}" style="display:none;"><i class="icon-repeat"></i></a>
 <!--        <a id="remove" title="Remove" href="{% url 'remove_document' document.pk %}"><i class="icon-trash"></i>-->
         <a id="remove" title="Remove" data-document-id="{{ document.id }}"><i class="icon-trash"></i></a>
       </td>

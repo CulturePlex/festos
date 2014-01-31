@@ -8,6 +8,8 @@ urlpatterns = patterns(
     '',
     url(r'^$', 'documents.views.list_documents', name='list_documents'),
     url(r'^add/', 'documents.views.add_document', name='add_document'),
+    url(r'^retry/(?P<pk>\d+)/',
+        'documents.views.retry_document', name='retry_document'),
     url(r'^edit/(?P<pk>\d+)/',
         'documents.views.edit_document', name='edit_document'),
     url(r'^remove/(?P<pk>\d+)/',

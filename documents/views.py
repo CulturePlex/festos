@@ -7,7 +7,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import SortedDict
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render_to_response, HttpResponse
+from django.shortcuts import render_to_response, HttpResponse, redirect
 from django.contrib.auth.models import User
 
 from guardian.shortcuts import assign_perm, get_objects_for_user, remove_perm
@@ -160,6 +160,16 @@ def list_documents(request):
     return render_to_response('list_documents.html', {
         'documents': documents,
     }, context_instance=RequestContext(request))
+
+
+@login_required
+@permission_required_or_403('documents.access_document', (Document, 'pk', 'pk'))
+def retry_document(request, pk):
+    """ Retry to process document when it fails """
+    document = Document.objects.get(pk=pk)
+    document.status = document.STATUS.waiting
+    document.process_file()
+    return redirect('list_documents')
 
 
 @login_required
