@@ -195,6 +195,7 @@ LOGOUT_URL = '/accounts/signout/'
 SIGNUP_URL = '/accounts/signup/'
 GUARDIAN_RENDER_403 = True
 USERENA_DISABLE_SIGNUP = False
+USERENA_ACTIVATION_REQUIRED = False
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
