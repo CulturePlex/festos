@@ -3,7 +3,7 @@ from docviewer.admin import DocumentAdmin as Docviewer_DocumentAdmin
 
 from forms import DocumentAdminForm
 from models import Document
-from zotero.admin import TagInlineAdmin
+from django_zotero.admin import TagInlineAdmin
 
 
 class DocumentInline(admin.StackedInline):

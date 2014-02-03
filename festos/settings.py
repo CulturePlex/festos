@@ -173,7 +173,7 @@ INSTALLED_APPS = (
     'docviewer',
     'documents',
     'accounts',
-    'zotero',
+    'django_zotero',
     'django_ses',
     'taggit',
 )

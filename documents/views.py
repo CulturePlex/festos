@@ -18,7 +18,7 @@ from haystack.forms import SearchForm
 from models import Document
 from forms import DocumentForm, EditDocumentForm, SearchDocumentForm
 
-from zotero.forms import get_tag_formset
+from django_zotero.forms import get_tag_formset
 
 import simplejson as json
 from taggit.models import Tag
