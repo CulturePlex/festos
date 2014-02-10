@@ -335,34 +335,41 @@ def progress(request):
     result = {}
     id_list = request.GET.getlist("ids[]")
     for doc_id in id_list:
+#        import ipdb; ipdb.set_trace()
         document = Document.objects.get(id=doc_id)
-        if document.status == Document.STATUS.running:
-            if document.page_count:
-                num_pages = count_processed_pages(document)
-                total_pages = document.page_count
-                num_digits = len(str(total_pages))
-                str_num_pages = '{0: >{1}}'.format(num_pages, num_digits)
-                str_total_pages = '{0: >{1}}'.format(total_pages, num_digits)
-                progr = '{}/{}'.format(str_num_pages, str_total_pages)
-            else:
-                num_pages = 0
-                total_pages = 0
-                progr = 'starting'
-                document.page_count = count_total_pages(document)
+        if document.status == Document.STATUS.starting and \
+           not document.page_count:
+            num_pages = count_total_pages(document)
+            if num_pages > 0:
+                document.page_count = num_pages
+                document.status = Document.STATUS.running
                 document.save()
+        if document.status == Document.STATUS.running:
+            num_pages = count_processed_pages(document)
+            total_pages = document.page_count
         else:
             num_pages = 0
             total_pages = 0
-            progr = document.status
         
         result[doc_id] = {
             'status': document.status,
             'num_pages': num_pages,
             'total_pages': total_pages,
-            'progress': progr,
+            'error': document.task_error,
+            'position': get_position(document),
         }
     
     return HttpResponse(
         json.dumps(result),
         content_type="application/json",
     )
+
+
+def get_position(document):
+    waiting_documents = Document.waiting.all()
+    ids = map(lambda x: x.id, waiting_documents)
+    if document.id in ids:
+        position = ids.index(document.id)
+    else:
+        position = -1
+    return position

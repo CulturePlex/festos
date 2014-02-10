@@ -7,6 +7,13 @@
 
 <style>
 .document-actions #remove:hover {cursor: pointer;}
+.document-error {
+    background: url(../static/img/warning.png) no-repeat right;
+    background-size:16px;
+    text-indent:-9999px;
+    padding-left:20px;
+    display:none;
+}
 </style>
 
 
@@ -109,7 +116,8 @@ $(document).ready(function(){
       
     }
     
-    var timer = window.setInterval(getStatus, 30000);
+    var TIME = 10000
+    var timer = window.setInterval(getStatus, TIME);
     
     function getStatus() {
       window.clearInterval(timer);
@@ -136,58 +144,75 @@ $(document).ready(function(){
             
             var doc = $('.document-status[data-document-id="'+doc_id+'"]');
             doc.attr('data-document-status', dict['status']);
-            var div_content = doc.children();
-            div_content.text(dict['progress']);
+            var div_content = doc.children().first();
+            div_content.text(dict["status"]);
             div_content.removeClass();
             div_content.addClass("label");
             
             div_content.attr("align", "center");
-            if(dict["progress"] == "failed") {
+            if(dict["status"] == "failed") {
               div_content.addClass("label-important");
               doc.parent().children().last().children().filter("[id='retry']").show();
-            }
-            else if(dict["progress"] == "ready"){
-              div_content.addClass("label-success");
+              if(dict["error"]) {
+                var doc_error = $(".document-error#"+doc_id);
+                doc_error.attr("title", dict["error"]);
+                doc_error.show();
               }
-            else if(dict["progress"] == "waiting") {
+            }
+            else if(dict["status"] == "ready"){
+              div_content.addClass("label-success");
+              if(dict["error"]) {
+                var doc_error = $(".document-error#"+doc_id);
+                doc_error.attr("title", dict["error"]);
+                doc_error.show();
+              }
+            }
+            else if(dict["status"] == "waiting") {
 <!--              div_content.addClass("label-default");-->
 <!--              div_content.addClass("demo-no");-->
               doc.html('<div align="center"><img src="../static/img/waiting.gif"></div>');
+              doc.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
               counter_in_progress_docs++;
             }
-            else if(dict["progress"] == "starting") {
+            else if(dict["status"] == "starting") {
               doc.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">starting</span> </div></div>');
+              doc.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
               counter_in_progress_docs++;
             }
             else { <!-- "processing" -->
               var np = dict.num_pages;
               var tp = dict.total_pages;
               var per = parseInt(np*100/tp);
-              doc.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+dict["progress"]+'</span> </div></div>');
+              var progress = np + " / " + tp;
+              doc.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+progress+'</span> </div></div>');
+              doc.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
               counter_in_progress_docs++;
             }
           }
           if(counter_in_progress_docs > 0)
-            timer = window.setInterval(getStatus, 30000);
+            timer = window.setInterval(getStatus, TIME);
           else
             window.clearInterval(timer);
           
           
           <!--Disable actions-->
           var waiting_docs = $('.document-status[data-document-status="waiting"]');
+          var starting_docs = $('.document-status[data-document-status="starting"]');
           var running_docs = $('.document-status[data-document-status="running"]');
           var failed_docs = $('.document-status[data-document-status="failed"]');
-          var disabled_docs = $.merge(waiting_docs, $.merge(running_docs, failed_docs));
-      
-          var actions = disabled_docs.parent().children().last().children();
-          var actionsHidable = actions.filter(".action-hidable");
-          actionsHidable.hide();
+          var disabled_docs = $.merge(waiting_docs, $.merge(starting_docs, $.merge(running_docs, failed_docs)));
           
-          var icons = actions.children();
-          var cancel = icons.filter(".icon-trash");
-          cancel.removeClass("icon-trash");
-          cancel.addClass("icon-ban-circle");
-          cancel.attr("title", "Cancel");
+          disabled_docs.parent().each(function(index) {
+            var actions = $(this).children().last().children();
+            var actionsHidable = actions.filter(".action-hidable");
+            actionsHidable.hide();
+
+            var icons = actions.children();
+            var cancel = icons.filter(".icon-trash");
+            cancel.removeClass("icon-trash");
+            cancel.addClass("icon-ban-circle");
+            cancel.attr("title", "Cancel");
+          });
         },
         error: function (payload) {
         },
@@ -212,10 +237,8 @@ $(document).ready(function(){
     
     
     $(".document-actions #remove").live('click', function (ev) {
-<!--      var id = ev.currentTarget.getAttribute('data-document-id');-->
-<!--      var status = $('.document-status[data-document-id="'+id+'"]');-->
       var status = $(this).parent().parent().children().filter(".document-status");
-      var div_content = status.children();
+      var div_content = status.children().first();
       div_content.text("remove?");
       div_content.removeClass();
       div_content.addClass("label");
@@ -235,11 +258,9 @@ $(document).ready(function(){
       $(this).addClass("cancel-remove");
     });
     $(".document-actions .cancel-remove").live('click', function (ev) {
-<!--      var id = ev.currentTarget.getAttribute('data-document-id');-->
-<!--      var status = $('.document-status[data-document-id="'+id+'"]');-->
       var status = $(this).parent().parent().children().filter(".document-status");
       var old_status = status[0].getAttribute("data-document-status");
-      var div_content = status.children();
+      var div_content = status.children().first();
       div_content.text(old_status);
       div_content.removeClass();
       div_content.addClass("label");
@@ -309,7 +330,7 @@ $(document).ready(function(){
           </div>
       </td>
       <td class="document-owner">{{ document.owner }}</td>
-      <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div></td>
+      <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div><span title="{{ document.task_error }}" align="right" class="document-error" id="{{document.id}}"></span></td>
       <td class="document-actions">
         <a href="{% url 'change_privacy_document' document.pk %}" class="action-hidable">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
         <a title="View" href="{{ document.get_absolute_url }}" class="action-hidable"><i class="icon-file"></i></a>
