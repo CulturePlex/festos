@@ -142,17 +142,20 @@ $(document).ready(function(){
             var doc_id = doc_ids[i];
             var dict = payload[doc_id];
             
-            var doc = $('.document-status[data-document-id="'+doc_id+'"]');
-            doc.attr('data-document-status', dict['status']);
-            var div_content = doc.children().first();
+            var doc_st = $('.document-status[data-document-id="'+doc_id+'"]');
+            doc_st.attr('data-document-status', dict['status']);
+            var div_content = doc_st.children().first();
             div_content.text(dict["status"]);
             div_content.removeClass();
             div_content.addClass("label");
             
             div_content.attr("align", "center");
             if(dict["status"] == "failed") {
+              var docSt = doc_st.attr("data-actions-state-machine");
+              if (!(docSt && docSt.indexOf("CANCEL-") == 0))
+                doc_st.attr("data-actions-state-machine", "FAILED");
               div_content.addClass("label-important");
-              doc.parent().children().last().children().filter("[id='retry']").show();
+              doc_st.parent().children().last().children().filter("[id='retry']").show();
               if(dict["error"]) {
                 var doc_error = $(".document-error#"+doc_id);
                 doc_error.attr("title", dict["error"]);
@@ -160,6 +163,9 @@ $(document).ready(function(){
               }
             }
             else if(dict["status"] == "ready"){
+              var docSt = doc_st.attr("data-actions-state-machine");
+              if (!(docSt && docSt.indexOf("CANCEL-") == 0))
+                doc_st.attr("data-actions-state-machine", "READY");
               div_content.addClass("label-success");
               if(dict["error"]) {
                 var doc_error = $(".document-error#"+doc_id);
@@ -168,24 +174,31 @@ $(document).ready(function(){
               }
             }
             else if(dict["status"] == "waiting") {
-<!--              div_content.addClass("label-default");-->
-<!--              div_content.addClass("demo-no");-->
-              doc.html('<div align="center"><img src="../static/img/waiting.gif"></div>');
-              doc.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
+              var docSt = doc_st.attr("data-actions-state-machine");
+              if (!(docSt && docSt.indexOf("CANCEL-") == 0))
+                doc_st.attr("data-actions-state-machine", "PROCESSING");
+              doc_st.html('<div align="center"><img src="../static/img/waiting.gif"> <span title="Position in line" class="label label-info" align="center">'+dict["position"]+'</span></div>');
+              doc_st.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
               counter_in_progress_docs++;
             }
             else if(dict["status"] == "starting") {
-              doc.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">starting</span> </div></div>');
-              doc.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
+              var docSt = doc_st.attr("data-actions-state-machine");
+              if (!(docSt && docSt.indexOf("CANCEL-") == 0))
+                doc_st.attr("data-actions-state-machine", "PROCESSING");
+              doc_st.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">starting</span> </div></div>');
+              doc_st.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
               counter_in_progress_docs++;
             }
             else { <!-- "processing" -->
+              var docSt = doc_st.attr("data-actions-state-machine");
+              if (!(docSt && docSt.indexOf("CANCEL-") == 0))
+                doc_st.attr("data-actions-state-machine", "PROCESSING");
               var np = dict.num_pages;
               var tp = dict.total_pages;
               var per = parseInt(np*100/tp);
               var progress = np + " / " + tp;
-              doc.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+progress+'</span> </div></div>');
-              doc.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
+              doc_st.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+progress+'</span> </div></div>');
+              doc_st.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
               counter_in_progress_docs++;
             }
           }
@@ -194,43 +207,26 @@ $(document).ready(function(){
           else
             window.clearInterval(timer);
           
-          
-          <!--Disable actions-->
-          var waiting_docs = $('.document-status[data-document-status="waiting"]');
-          var starting_docs = $('.document-status[data-document-status="starting"]');
-          var running_docs = $('.document-status[data-document-status="running"]');
-          var failed_docs = $('.document-status[data-document-status="failed"]');
-          var disabled_docs = $.merge(waiting_docs, $.merge(starting_docs, $.merge(running_docs, failed_docs)));
-          
-          disabled_docs.parent().each(function(index) {
-            var actions = $(this).children().last().children();
-            var actionsHidable = actions.filter(".action-hidable");
-            actionsHidable.hide();
-
-            var icons = actions.children();
-            var cancel = icons.filter(".icon-trash");
-            cancel.removeClass("icon-trash");
-            cancel.addClass("icon-ban-circle");
-            cancel.attr("title", "Cancel");
-          });
+          showActions(doc_ids);
         },
         error: function (payload) {
         },
         complete: function (payload) {
-          <!--Enable actions-->
-          var enabled_docs = $('.document-status[data-document-status="ready"]');
-          
-          var actions = enabled_docs.parent().children().last().children();
-          actionsHidable = actions.filter(".action-hidable");
-          actionsHidable.show();
-          
-          var icons = actions.children();
-          var remove = icons.filter(".icon-ban-circle");
-          remove.removeClass("icon-ban-circle");
-          remove.addClass("icon-trash");
-          remove.attr("title", "Remove");
+          showActions(doc_ids);
         }
       });
+    }
+    
+    function showActions(doc_ids) {
+      for(var i=0; i<doc_ids.length; i++) {
+        var doc_id = doc_ids[i];
+        var status = $('.document-status[data-document-id="'+doc_id+'"]');
+        var actions = $('.document-actions[data-document-id="'+doc_id+'"] a');
+        var state = status.attr("data-actions-state-machine");
+        var actions_show = actions.filter("."+state);
+        actions.hide();
+        actions_show.show();
+      }
     }
     
     getStatus();
@@ -238,51 +234,47 @@ $(document).ready(function(){
     
     $(".document-actions #remove").live('click', function (ev) {
       var status = $(this).parent().parent().children().filter(".document-status");
+      status.attr("data-actions-state-machine", "CANCEL-READY");
+      var doc_id = status.parent().attr("data-id");
+      showActions([doc_id]);
+      
       var div_content = status.children().first();
       div_content.text("remove?");
       div_content.removeClass();
       div_content.addClass("label");
       div_content.addClass("label-warning");
-      var actions = status.parent().children().last().children();
-      var actionsHidable = actions.filter(".action-hidable");
-      actionsHidable.hide();
-      var actionRetry = actions.filter("#retry");
-      actionRetry.hide();
-      var actionOk = actions.filter("#confirm-remove");
-      actionOk.show();
-      var icons = actions.children();
-      var cancel = icons.filter(".icon-trash");
-      cancel.removeClass("icon-trash");
-      cancel.addClass("icon-ban-circle");
-      cancel.attr("title", "Cancel");
-      $(this).addClass("cancel-remove");
     });
-    $(".document-actions .cancel-remove").live('click', function (ev) {
+    
+    $(".document-actions #cancel-remove").live('click', function (ev) {
       var status = $(this).parent().parent().children().filter(".document-status");
-      var old_status = status[0].getAttribute("data-document-status");
+      var actionSt = status.attr("data-actions-state-machine");
+      if (actionSt == "CANCEL-PROCESSING")
+        status.attr("data-actions-state-machine", "PROCESSING");
+      else if (actionSt == "CANCEL-FAILED")
+        status.attr("data-actions-state-machine", "FAILED");
+      else // actionSt == "CANCEL-READY"
+        status.attr("data-actions-state-machine", "READY");
+      var doc_id = status.parent().attr("data-id");
+      showActions([doc_id]);
+      
+      progress([doc_id]);
+    });
+    
+    $(".document-actions #cancel").live('click', function (ev) {
+      var status = $(this).parent().parent().children().filter(".document-status");
+      var actionSt = status.attr("data-actions-state-machine");
+      if (actionSt == "PROCESSING")
+        status.attr("data-actions-state-machine", "CANCEL-PROCESSING");
+      else // actionSt == "FAILED"
+        status.attr("data-actions-state-machine", "CANCEL-FAILED");
+      var doc_id = status.parent().attr("data-id");
+      showActions([doc_id]);
+      
       var div_content = status.children().first();
-      div_content.text(old_status);
+      div_content.text("remove?");
       div_content.removeClass();
       div_content.addClass("label");
-      var actions = status.parent().children().last().children();
-      if (old_status == "ready") {
-        div_content.addClass("label-success");
-      var actionsHidable = actions.filter(".action-hidable");
-      actionsHidable.show();
-      var icons = actions.children();
-      var cancel = icons.filter(".icon-ban-circle");
-      cancel.removeClass("icon-ban-circle");
-      cancel.addClass("icon-trash");
-      cancel.attr("title", "Remove");
-      }
-      else { <!-- "failed" -->
-        div_content.addClass("label-important");
-        var actionRetry = actions.filter("#retry");
-        actionRetry.show();
-      }
-      var actionOk = actions.filter("#confirm-remove");
-      actionOk.hide();
-      $(this).removeClass("cancel-remove");
+      div_content.addClass("label-warning");
     });
 })
 
@@ -331,14 +323,15 @@ $(document).ready(function(){
       </td>
       <td class="document-owner">{{ document.owner }}</td>
       <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div><span title="{{ document.task_error }}" align="right" class="document-error" id="{{document.id}}"></span></td>
-      <td class="document-actions">
-        <a href="{% url 'change_privacy_document' document.pk %}" class="action-hidable">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
-        <a title="View" href="{{ document.get_absolute_url }}" class="action-hidable"><i class="icon-file"></i></a>
-        <a title="Edit" href="{% url 'edit_document' document.pk %}" class="action-hidable"><i class="icon-edit"></i></a>
-        <a id="confirm-remove" title="Remove" href="{% url 'remove_document' document.pk %}" data-document-id="{{ document.id }}" style="display:none;"><i class="icon-ok"></i></a>
-        <a id="retry" title="Retry" href="{% url 'retry_document' document.pk %}" data-document-id="{{ document.id }}" style="display:none;"><i class="icon-repeat"></i></a>
-<!--        <a id="remove" title="Remove" href="{% url 'remove_document' document.pk %}"><i class="icon-trash"></i>-->
-        <a id="remove" title="Remove" data-document-id="{{ document.id }}"><i class="icon-trash"></i></a>
+      <td class="document-actions" data-document-id="{{ document.id }}">
+        <a href="{% url 'change_privacy_document' document.pk %}" class="READY">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
+        <a title="View" href="{{ document.get_absolute_url }}" class="READY"><i class="icon-file"></i></a>
+        <a title="Edit" href="{% url 'edit_document' document.pk %}" class="READY"><i class="icon-edit"></i></a>
+        <a id="confirm-remove" title="Remove" href="{% url 'remove_document' document.pk %}" data-document-id="{{ document.id }}" class="CANCEL-PROCESSING CANCEL-FAILED CANCEL-READY"><i class="icon-ok"></i></a>
+        <a id="retry" title="Retry" href="{% url 'retry_document' document.pk %}" data-document-id="{{ document.id }}" class="FAILED"><i class="icon-repeat"></i></a>
+        <a id="cancel-remove" title="Cancel" class="CANCEL-PROCESSING CANCEL-FAILED CANCEL-READY"><i class="icon-ban-circle"></i>
+        <a id="cancel" title="Cancel" class="PROCESSING FAILED"><i class="icon-ban-circle"></i>
+        <a id="remove" title="Remove" data-document-id="{{ document.id }}" class="READY"><i class="icon-trash"></i></a>
       </td>
     </tr>
   {% endfor %}

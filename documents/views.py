@@ -369,7 +369,7 @@ def get_position(document):
     waiting_documents = Document.waiting.all()
     ids = map(lambda x: x.id, waiting_documents)
     if document.id in ids:
-        position = ids.index(document.id)
+        position = ids.index(document.id) + 1
     else:
-        position = -1
+        position = None
     return position
