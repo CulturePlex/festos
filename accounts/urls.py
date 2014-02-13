@@ -16,6 +16,7 @@ urlpatterns = patterns(
 
     # Uncomment the next line to enable the admin:
 #    url(r'^signup/', 'accounts.views.signup_view', name='signup'),
+    url(r'^signup/', 'accounts.views.signup_view', name='signup'),
     url(r'', include('userena.urls')),
 
 )
