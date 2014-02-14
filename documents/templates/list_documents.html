@@ -321,7 +321,8 @@ $(document).ready(function(){
             <input id="id_taggit_tags" type="text" class="picker2 ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags' %}" >
           </div>
       </td>
-      <td class="document-owner">{{ document.owner }}</td>
+      {% url 'userena_profile_detail' user as user_url %}
+      <td class="document-owner"><a href="{{ user_url }}">@{{ document.owner }}</a></td>
       <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div><span title="{{ document.task_error }}" align="right" class="document-error" id="{{document.id}}"></span></td>
       <td class="document-actions" data-document-id="{{ document.id }}">
         <a href="{% url 'change_privacy_document' document.pk %}" class="READY">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
