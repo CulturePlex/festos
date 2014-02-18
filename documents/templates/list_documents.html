@@ -363,7 +363,7 @@ $(document).ready(function(){
           </div>
       </td>
       {% url 'userena_profile_detail' user as user_url %}
-      <td class="document-owner"><a href="{{ user_url }}" style="color:#333;">@{{ document.owner }}</a></td>
+      <td class="document-owner"><a href="{{ user_url }}" style="text-decoration:none; color:#333;">@{{ document.owner }}</a></td>
       <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div> <span title="{{ document.task_error }}" align="right" class="document-error" id="{{document.id}}" data-toggle="tooltip" data-placement="right"><i class="icon-info-sign"></i></span></td>
       <td class="document-actions" data-document-id="{{ document.id }}">
         <a href="{% url 'change_privacy_document' document.pk %}" class="READY">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
