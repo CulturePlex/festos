@@ -6,13 +6,13 @@
 
 
 <style>
-.document-actions #remove:hover {cursor: pointer;}
+.document-actions a:hover {cursor: pointer;}
 .document-error {
-    background: url(../static/img/warning.png) no-repeat right;
-    background-size:16px;
-    text-indent:-9999px;
-    padding-left:20px;
-    display:none;
+<!--    display:none;-->
+<!--    background: url(../static/img/warning.png) no-repeat right;-->
+<!--    background-size:16px;-->
+<!--    text-indent:-9999px;-->
+<!--    padding-left:20px;-->
 }
 </style>
 
@@ -150,43 +150,52 @@ $(document).ready(function(){
             div_content.addClass("label");
             
             div_content.attr("align", "center");
+            
             if(dict["status"] == "failed") {
               var docSt = doc_st.attr("data-actions-state-machine");
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))
                 doc_st.attr("data-actions-state-machine", "FAILED");
               div_content.addClass("label-important");
               doc_st.parent().children().last().children().filter("[id='retry']").show();
+              var doc_error = $(".document-error#"+doc_id);
               if(dict["error"]) {
-                var doc_error = $(".document-error#"+doc_id);
                 doc_error.attr("title", dict["error"]);
                 doc_error.show();
               }
+              hookTooltips(doc_error);
             }
             else if(dict["status"] == "ready"){
               var docSt = doc_st.attr("data-actions-state-machine");
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))
                 doc_st.attr("data-actions-state-machine", "READY");
               div_content.addClass("label-success");
+              var doc_error = $(".document-error#"+doc_id);
               if(dict["error"]) {
-                var doc_error = $(".document-error#"+doc_id);
                 doc_error.attr("title", dict["error"]);
                 doc_error.show();
               }
+              if(dict["total_time"] > "0") {
+                var title = doc_error.attr("title");
+                if (title)
+                    title += ". ";
+                title += "Total processing time: " + dict["total_time"];
+                doc_error.attr("title", title);
+                doc_error.show();
+              }
+              hookTooltips(doc_error);
             }
             else if(dict["status"] == "waiting") {
               var docSt = doc_st.attr("data-actions-state-machine");
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))
                 doc_st.attr("data-actions-state-machine", "PROCESSING");
-              doc_st.html('<div align="center"><img src="../static/img/waiting.gif"> <span title="Position in line" class="label label-info" align="center">'+dict["position"]+'</span></div>');
-              doc_st.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
+              doc_st.html('<div align="center"><img src="../static/img/waiting.gif"> <span title="Position in line" class="label label-info" align="center">'+dict["position"]+'</span></div> <span title="" align="right" class="document-error" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
               counter_in_progress_docs++;
             }
             else if(dict["status"] == "starting") {
               var docSt = doc_st.attr("data-actions-state-machine");
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))
                 doc_st.attr("data-actions-state-machine", "PROCESSING");
-              doc_st.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">starting</span> </div></div>');
-              doc_st.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
+              doc_st.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">starting</span> </div></div> <span title="" align="right" class="document-error" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
               counter_in_progress_docs++;
             }
             else { <!-- "processing" -->
@@ -197,8 +206,7 @@ $(document).ready(function(){
               var tp = dict.total_pages;
               var per = parseInt(np*100/tp);
               var progress = np + " / " + tp;
-              doc_st.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+progress+'</span> </div></div>');
-              doc_st.append('<span title="'+dict["error"]+'" align="right" class="document-error" id="'+doc_id+'"></span>')
+              doc_st.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+progress+'</span> </div></div> <span title="" align="right" class="document-error" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
               counter_in_progress_docs++;
             }
           }
@@ -276,6 +284,39 @@ $(document).ready(function(){
       div_content.addClass("label");
       div_content.addClass("label-warning");
     });
+    
+    
+    
+    var tooltipElements = $.merge($(".document-title span"), $(".document-error"))
+    hookTooltips(tooltipElements);
+    
+    function hookTooltips(elems) {
+        elems.hover(
+          function(){
+            $(this).tooltip("show");
+          },
+          function(){
+            $(this).tooltip("hide");
+          })
+    }
+
+
+<!--    tooltipElements.live('mouseenter',-->
+<!--      function(){console.log($(this)+" enter")-->
+<!--        $(this).tooltip("show");-->
+<!--      })-->
+<!--    tooltipElements.live('mouseleave',-->
+<!--      function(){console.log($(this)+" leave")-->
+<!--        $(this).tooltip("hide");-->
+<!--      })-->
+
+<!--    tooltipElements.live({-->
+<!--      mouseenter: function () {console.log($(this)+" enter")-->
+<!--      },-->
+<!--      mouseleave: function () {console.log($(this)+" leave")-->
+<!--      }-->
+<!--    });-->
+
 })
 
 </script>
@@ -298,7 +339,7 @@ $(document).ready(function(){
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td class="document-title"><span title="{{ document.title }}">{{ document.title }}</span> <br/> <span style="color:gray; font-size:75%" title="{{ document.docfile_basename }}">{{ document.docfile_basename }}</span></td>
+      <td class="document-title"><span title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{{ document.title }}</span> <br/> <span style="color:gray; font-size:75%" title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span></td>
       <td class="document-collaborators">
           <div id="sharers_cell">
             <span id="sharers" >
@@ -322,8 +363,8 @@ $(document).ready(function(){
           </div>
       </td>
       {% url 'userena_profile_detail' user as user_url %}
-      <td class="document-owner"><a href="{{ user_url }}">@{{ document.owner }}</a></td>
-      <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div><span title="{{ document.task_error }}" align="right" class="document-error" id="{{document.id}}"></span></td>
+      <td class="document-owner"><a href="{{ user_url }}" style="color:#333;">@{{ document.owner }}</a></td>
+      <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div> <span title="{{ document.task_error }}" align="right" class="document-error" id="{{document.id}}" data-toggle="tooltip" data-placement="right"><i class="icon-info-sign"></i></span></td>
       <td class="document-actions" data-document-id="{{ document.id }}">
         <a href="{% url 'change_privacy_document' document.pk %}" class="READY">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
         <a title="View" href="{{ document.get_absolute_url }}" class="READY"><i class="icon-file"></i></a>

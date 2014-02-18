@@ -24,6 +24,7 @@ import simplejson as json
 from taggit.models import Tag
 from docviewer.models import Annotation
 from utils import count_processed_pages, count_total_pages
+from docviewer.utils import format_datetimediff
 
 
 class SearchDocumentView(SearchView):
@@ -350,6 +351,10 @@ def progress(request):
         else:
             num_pages = 0
             total_pages = 0
+            total_time = 0
+            if document.status == Document.STATUS.ready:
+                diff_time = document.task_end - document.task_start
+                total_time = format_datetimediff(diff_time)
         
         result[doc_id] = {
             'status': document.status,
@@ -357,6 +362,7 @@ def progress(request):
             'total_pages': total_pages,
             'error': document.task_error,
             'position': get_position(document),
+            'total_time': total_time,
         }
     
     return HttpResponse(
