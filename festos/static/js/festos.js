@@ -18,6 +18,7 @@ var set_boostrap_header = function(url, title, author, owner){
   })).append(
   jQuery('<small/>', {
     text: ' @' + owner,
+    href: '/accounts/' + owner
   })).appendTo($('.docviewer-title').empty());
   if (typeof afterLoad !== "undefined" && afterLoad){
     afterLoad();

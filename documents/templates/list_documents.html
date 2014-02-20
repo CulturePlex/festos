@@ -7,7 +7,7 @@
 
 <style>
 .document-actions a:hover {cursor: pointer;}
-.document-error {
+.document-info {
 <!--    display:none;-->
 <!--    background: url(../static/img/warning.png) no-repeat right;-->
 <!--    background-size:16px;-->
@@ -157,9 +157,9 @@ $(document).ready(function(){
                 doc_st.attr("data-actions-state-machine", "FAILED");
               div_content.addClass("label-important");
               doc_st.parent().children().last().children().filter("[id='retry']").show();
-              var doc_error = $(".document-error#"+doc_id);
+              var doc_error = $(".document-info#"+doc_id);
               if(dict["error"]) {
-                doc_error.attr("title", dict["error"]);
+                doc_error.attr("data-original-title", dict["error"]);
                 doc_error.show();
               }
               hookTooltips(doc_error);
@@ -169,17 +169,17 @@ $(document).ready(function(){
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))
                 doc_st.attr("data-actions-state-machine", "READY");
               div_content.addClass("label-success");
-              var doc_error = $(".document-error#"+doc_id);
+              var doc_error = $(".document-info#"+doc_id);
               if(dict["error"]) {
-                doc_error.attr("title", dict["error"]);
+                doc_error.attr("data-original-title", dict["error"]);
                 doc_error.show();
               }
               if(dict["total_time"] > "0") {
-                var title = doc_error.attr("title");
+                var title = doc_error.attr("data-original-title");
                 if (title)
                     title += ". ";
                 title += "Total processing time: " + dict["total_time"];
-                doc_error.attr("title", title);
+                doc_error.attr("data-original-title", title);
                 doc_error.show();
               }
               hookTooltips(doc_error);
@@ -188,14 +188,16 @@ $(document).ready(function(){
               var docSt = doc_st.attr("data-actions-state-machine");
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))
                 doc_st.attr("data-actions-state-machine", "PROCESSING");
-              doc_st.html('<div align="center"><img src="../static/img/waiting.gif"> <span title="Position in line" class="label label-info" align="center">'+dict["position"]+'</span></div> <span title="" align="right" class="document-error" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
+              doc_st.html('<div align="center"><img src="../static/img/waiting.gif"> <span id="'+doc_id+'" data-toggle="tooltip" data-placement="right" title="Position in line" class="label label-info document-line-position" align="center">'+dict["position"]+'</span></div> <span title="" align="right" class="document-info" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
+              var positions = $(".document-line-position#"+doc_id);
+              hookTooltips(positions);
               counter_in_progress_docs++;
             }
             else if(dict["status"] == "starting") {
               var docSt = doc_st.attr("data-actions-state-machine");
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))
                 doc_st.attr("data-actions-state-machine", "PROCESSING");
-              doc_st.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">starting</span> </div></div> <span title="" align="right" class="document-error" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
+              doc_st.html('<div class="progress progress-striped active"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">starting</span> </div></div> <span title="" align="right" class="document-info" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
               counter_in_progress_docs++;
             }
             else { <!-- "processing" -->
@@ -206,7 +208,7 @@ $(document).ready(function(){
               var tp = dict.total_pages;
               var per = parseInt(np*100/tp);
               var progress = np + " / " + tp;
-              doc_st.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+progress+'</span> </div></div> <span title="" align="right" class="document-error" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
+              doc_st.html('<div class="progress"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="'+np+'" aria-valuemax="'+tp+'" style="width: '+per+'%"> <span class="sr-only" style="font-weight:bold;">'+progress+'</span> </div></div> <span title="" align="right" class="document-info" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
               counter_in_progress_docs++;
             }
           }
@@ -286,8 +288,11 @@ $(document).ready(function(){
     });
     
     
-    
-    var tooltipElements = $.merge($(".document-title span"), $(".document-error"))
+    var titles = $(".document-title span");
+    var actions = $.merge($(".document-actions a"), $(".document-actions a#privacy i"));
+    var infos = $(".document-info");
+    var positions = $(".document-line-position");
+    var tooltipElements = $.merge(titles, $.merge(actions, $.merge(infos, positions)))
     hookTooltips(tooltipElements);
     
     function hookTooltips(elems) {
@@ -364,16 +369,16 @@ $(document).ready(function(){
       </td>
       {% url 'userena_profile_detail' user as user_url %}
       <td class="document-owner"><a href="{{ user_url }}" style="text-decoration:none; color:#333;">@{{ document.owner }}</a></td>
-      <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div> <span title="{{ document.task_error }}" align="right" class="document-error" id="{{document.id}}" data-toggle="tooltip" data-placement="right"><i class="icon-info-sign"></i></span></td>
+      <td class="document-status" data-document-id="{{ document.id }}" data-document-status="{{ document.status }}"><div class="label" align="center">{{ document.status }}</div> <span title="{{ document.task_error }}" align="right" class="document-info" id="{{document.id}}" data-toggle="tooltip" data-placement="right"><i class="icon-info-sign"></i></span></td>
       <td class="document-actions" data-document-id="{{ document.id }}">
-        <a href="{% url 'change_privacy_document' document.pk %}" class="READY">{% if document.public %}<i class="icon-eye-open" title="Click to make it private"></i>{% else %}<i class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
-        <a title="View" href="{{ document.get_absolute_url }}" class="READY"><i class="icon-file"></i></a>
-        <a title="Edit" href="{% url 'edit_document' document.pk %}" class="READY"><i class="icon-edit"></i></a>
-        <a id="confirm-remove" title="Remove" href="{% url 'remove_document' document.pk %}" data-document-id="{{ document.id }}" class="CANCEL-PROCESSING CANCEL-FAILED CANCEL-READY"><i class="icon-ok"></i></a>
-        <a id="retry" title="Retry" href="{% url 'retry_document' document.pk %}" data-document-id="{{ document.id }}" class="FAILED"><i class="icon-repeat"></i></a>
-        <a id="cancel-remove" title="Cancel" class="CANCEL-PROCESSING CANCEL-FAILED CANCEL-READY"><i class="icon-ban-circle"></i>
-        <a id="cancel" title="Cancel" class="PROCESSING FAILED"><i class="icon-ban-circle"></i>
-        <a id="remove" title="Remove" data-document-id="{{ document.id }}" class="READY"><i class="icon-trash"></i></a>
+        <a id="privacy" href="{% url 'change_privacy_document' document.pk %}" class="READY">{% if document.public %}<i data-toggle="tooltip" data-placement="bottom" class="icon-eye-open" title="Click to make it private"></i>{% else %}<i data-toggle="tooltip" data-placement="bottom" class="icon-eye-close" title="Click to make it public"></i>{% endif %}</a>
+        <a data-toggle="tooltip" data-placement="bottom" title="View" href="{{ document.get_absolute_url }}" class="READY"><i class="icon-file"></i></a>
+        <a data-toggle="tooltip" data-placement="bottom" title="Edit" href="{% url 'edit_document' document.pk %}" class="READY"><i class="icon-edit"></i></a>
+        <a data-toggle="tooltip" data-placement="bottom" id="confirm-remove" title="Remove" href="{% url 'remove_document' document.pk %}" data-document-id="{{ document.id }}" class="CANCEL-PROCESSING CANCEL-FAILED CANCEL-READY"><i class="icon-ok"></i></a>
+        <a data-toggle="tooltip" data-placement="bottom" id="retry" title="Retry" href="{% url 'retry_document' document.pk %}" data-document-id="{{ document.id }}" class="FAILED"><i class="icon-repeat"></i></a>
+        <a data-toggle="tooltip" data-placement="bottom" id="cancel-remove" title="Cancel" class="CANCEL-PROCESSING CANCEL-FAILED CANCEL-READY"><i class="icon-ban-circle"></i>
+        <a data-toggle="tooltip" data-placement="bottom" id="cancel" title="Cancel" class="PROCESSING FAILED"><i class="icon-ban-circle"></i>
+        <a data-toggle="tooltip" data-placement="bottom" id="remove" title="Remove" data-document-id="{{ document.id }}" class="READY"><i class="icon-trash"></i></a>
       </td>
     </tr>
   {% endfor %}
