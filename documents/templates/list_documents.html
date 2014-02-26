@@ -183,6 +183,13 @@ $(document).ready(function(){
                 doc_error.show();
               }
               hookTooltips(doc_error);
+              
+              var tr_document = doc_st.parent();
+              var doc_ttl = tr_document.children(".document-title");
+              var span_ttl = doc_ttl.children().first();
+              var ttl = span_ttl.attr('title');
+              var href = span_ttl.attr('data-href');
+              span_ttl.html('<a href="'+href+'" style="">'+ttl+'</a>');
             }
             else if(dict["status"] == "waiting") {
               var docSt = doc_st.attr("data-actions-state-machine");
@@ -305,23 +312,6 @@ $(document).ready(function(){
           })
     }
 
-
-<!--    tooltipElements.live('mouseenter',-->
-<!--      function(){console.log($(this)+" enter")-->
-<!--        $(this).tooltip("show");-->
-<!--      })-->
-<!--    tooltipElements.live('mouseleave',-->
-<!--      function(){console.log($(this)+" leave")-->
-<!--        $(this).tooltip("hide");-->
-<!--      })-->
-
-<!--    tooltipElements.live({-->
-<!--      mouseenter: function () {console.log($(this)+" enter")-->
-<!--      },-->
-<!--      mouseleave: function () {console.log($(this)+" leave")-->
-<!--      }-->
-<!--    });-->
-
 })
 
 </script>
@@ -344,7 +334,7 @@ $(document).ready(function(){
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td class="document-title"><span title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{{ document.title }}</span> <br/> <span style="color:gray; font-size:75%" title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span></td>
+      <td class="document-title"><span data-href="{{ document.get_absolute_url }}" title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{% if document.status == "ready" %}<a href="{{ document.get_absolute_url }}" style="text-decoration:none;">{{ document.title }}</a>{% else %}{{ document.title }}{% endif %}</span> <br/> <span style="color:gray; font-size:75%" title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span></td>
       <td class="document-collaborators">
           <div id="sharers_cell">
             <span id="sharers" >

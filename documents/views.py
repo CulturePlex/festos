@@ -336,7 +336,6 @@ def progress(request):
     result = {}
     id_list = request.GET.getlist("ids[]")
     for doc_id in id_list:
-#        import ipdb; ipdb.set_trace()
         document = Document.objects.get(id=doc_id)
         if document.status == Document.STATUS.starting and \
            not document.page_count:
