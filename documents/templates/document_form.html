@@ -4,16 +4,71 @@
 
 
 {% block content %}
+
+<style>
+.dropbox-link {
+    font-size: 75%;
+}
+</style>
+
+<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="slttiw3sponnm9h"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+    options = {
+
+        // Required. Called when a user selects an item in the Chooser.
+        success: function(files) {
+            var link = files[0].link
+            $("#id_external_url").val(link)
+            $(".dropbox-link").attr("href", link)
+            $(".dropbox-link").html(link)
+        },
+
+        // Optional. Called when the user closes the dialog without selecting a file
+        // and does not include any parameters.
+        cancel: function() {
+
+        },
+
+        // Optional. "preview" (default) is a preview link to the document for sharing,
+        // "direct" is an expiring link to download the contents of the file. For more
+        // information about link types, see Link types below.
+        linkType: "direct", // or "preview"
+
+        // Optional. A value of false (default) limits selection to a single file, while
+        // true enables multiple file selection.
+        multiselect: false, // or true
+
+        // Optional. This is a list of file extensions. If specified, the user will
+        // only be able to select files with these extensions. You may also specify
+        // file types, such as "video" or "images" in the list. For more information,
+        // see File types below. By default, all extensions are allowed.
+        //extensions: ['.pdf', '.doc', '.docx'],
+        extensions: ['.pdf'],
+    };
+    var button = Dropbox.createChooseButton(options);
+    var df = $("#id_external_url");
+    df.parent().prepend(button);
+    
+    $(button).parent().append(
+      $("<a>")
+        .addClass("dropbox-link")
+    );
+});
+</script>
+
 <div class="row">
 <div class="span12"></div>
 <div class="span8 offset1">
   {% block url %}{% endblock %}
       {% csrf_token %}
+      {{ dform.non_field_errors }}
       {% for field in dform %}
-      {{ field|bootstrap }}
+        {{ field|bootstrap }}
       {% endfor %}
+      {{ rform.non_field_errors }}
       {% for field in rform %}
-      {{ field|bootstrap }}
+        {{ field|bootstrap }}
       {% endfor %}
       <div class="zotero-formset control-group">
       <div class="control-label">

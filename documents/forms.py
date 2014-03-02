@@ -1,4 +1,6 @@
+import requests
 from django import forms
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.forms.util import flatatt
@@ -8,6 +10,7 @@ from docviewer.models import Annotation
 from models import Document
 from taggit.models import Tag
 from widgets import AnchorField
+
 
 class DocumentAdminForm(Docviewer_DocumentForm):
     class Meta:
@@ -20,16 +23,21 @@ class DocumentAdminForm(Docviewer_DocumentForm):
 
 
 class DocumentForm(Docviewer_DocumentForm):
+    docfile = forms.FileField(label=_('PDF Document File'), required=False)
+    external_url = forms.CharField(
+        label=_('PDF Dropbox File'),
+        required=False,
+        widget=forms.HiddenInput(),
+    )
     class Meta:
         model = Document
-        fields = ('docfile', 'language', 'public', 'title', 'notes')
+        fields = ('external_url', 'docfile', 'language', 'public', 'title', 'notes')
 
     notes = forms.CharField(
         required=False,
         widget=forms.Textarea(
             attrs={'class': 'vLargeTextField', 'rows': 3}),
         help_text=None)
-#    source = forms.CharField(required=False, help_text=None)
     public = forms.BooleanField(
         label=_('Publicly available'), required=False, help_text=None)
 
@@ -46,6 +54,47 @@ class DocumentForm(Docviewer_DocumentForm):
         if commit:
             inst.save()
         return inst
+
+    def clean(self):
+        docfile = self.cleaned_data['docfile']
+        external_url = self.cleaned_data['external_url']
+        empty_file = not docfile
+        empty_url = not external_url or len(external_url) == 0
+        if empty_file and empty_url:
+            raise forms.ValidationError('Choose a PDF document either from Dropbox or from your local machine.')
+        elif empty_file and not empty_url:
+            self.cleaned_data['docfile'] = upload_file_from_url(external_url)
+        return self.cleaned_data
+
+
+def upload_file_from_url(url):
+    tmp_path = '/tmp/'
+    filefield_name = u'docfile'
+    file_type = u'application/pdf'
+    
+    local_filename = url.split('/')[-1]
+    download_file(tmp_path + local_filename, url)
+    return create_InMemoryUploadedFile(
+        tmp_path + local_filename,
+        local_filename,
+        filefield_name,
+        file_type,
+    )
+
+
+def download_file(path_filename, url):
+    req = requests.get(url, stream=True)
+    f = open(path_filename, 'wb')
+    for chunk in req.iter_content(chunk_size=1024):
+        f.write(chunk)
+    f.close()
+
+
+def create_InMemoryUploadedFile(path_filename, filename, fieldname, filetype):
+    f = open(path_filename)
+    f.seek(0, 2)
+    size = f.tell()
+    return InMemoryUploadedFile(f, fieldname, filename, filetype, size, None)
 
 
 class EditDocumentForm(forms.ModelForm):

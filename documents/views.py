@@ -176,6 +176,7 @@ def retry_document(request, pk):
 @login_required
 def add_document(request):
     """ Add a document """
+#    import ipdb; ipdb.set_trace()
     label_options = {'labels': {'item_type': 'Document type'}}
     dform = DocumentForm(user=request.user)
 #    rform = ReferenceForm()
@@ -197,6 +198,8 @@ def add_document(request):
             assign_perm('documents.access_document', request.user, dform.instance)
             tag_formset.save()
             return HttpResponseRedirect(reverse('documents.views.list_documents'))
+        elif u'external_url' in request.POST:
+            del request.POST[u'external_url']
 
     return render_to_response('add_document.html', {
         'dform': dform,
