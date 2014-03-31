@@ -2,16 +2,23 @@
 {% load bootstrap %}
 {% load zotero_inline_tags from zotero_inline_extras %}
 
-
 {% block content %}
 
-<style>
-.dropbox-link {
-    font-size: 75%;
-}
-</style>
+<!--<style>-->
+<!--.dropbox-link {-->
+<!--    font-size: 75%;-->
+<!--}-->
+<!--</style>-->
 
-<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="slttiw3sponnm9h"></script>
+<!--<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="slttiw3sponnm9h"></script>-->
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+
+
+{% zotero_inline_tags formset media %}
+
+<script src="{{ STATIC_PREFIX }}js/vendor/jquery.ui.widget.js"></script>
+<script src="{{ STATIC_PREFIX }}js/jquery.iframe-transport.js"></script>
+<script src="{{ STATIC_PREFIX }}js/jquery.fileupload.js"></script>
 <script type="text/javascript">
 $(document).ready(function () {
     options = {
@@ -20,8 +27,9 @@ $(document).ready(function () {
         success: function(files) {
             var link = files[0].link
             $("#id_external_url").val(link)
+            $("#dropbox-info").addClass("dropbox-link")
             $(".dropbox-link").attr("href", link)
-            $(".dropbox-link").html(link)
+            $(".dropbox-link").html('<a href="'+link+'" target="_blank">'+files[0].name+'</a>')
         },
 
         // Optional. Called when the user closes the dialog without selecting a file
@@ -51,12 +59,36 @@ $(document).ready(function () {
     df.parent().prepend(button);
     
     $(button).parent().append(
-      $("<a>")
-        .addClass("dropbox-link")
+      $("<span>")
+        .attr("id", "dropbox-info")
     );
+    $("#dropbox-info").text("No file chosen")
+    
+    $("#add-document").live("submit", function(ev){
+        ev.preventDefault();
+        
+        //llamada a la vista para la descarga y upload desde dropbox
+        
+        ev.currentTarget.submit();
+    });
+    
+<!--    var div_uploadfile = $("input#id_docfile").parent();-->
+<!--    var progr_bar = '<div id="progress_upload" class="progress" style="width: 100%; margin-top:20px;"> <div class="bar bar-success" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div></div>'-->
+<!--    div_uploadfile.append(progr_bar);-->
+    
+<!--    $('#id_docfile').fileupload({-->
+<!--      autoUpload: false,-->
+<!--      progressall: function (e, data) {-->
+<!--        var progress = parseInt(data.loaded / data.total * 100, 10);-->
+<!--        $('#progress_upload .bar').css(-->
+<!--          'width',-->
+<!--          progress + '%'-->
+<!--        );-->
+<!--      }-->
+<!--    });-->
+
 });
 </script>
-
 <div class="row">
 <div class="span12"></div>
 <div class="span8 offset1">
@@ -71,12 +103,12 @@ $(document).ready(function () {
         {{ field|bootstrap }}
       {% endfor %}
       <div class="zotero-formset control-group">
-      <div class="control-label">
-        Zotero tags
-      </div>
-      <div class="controls">
-        {% zotero_inline_tags formset %}
-      </div>
+        <div class="control-label">
+          Zotero tags
+        </div>
+        <div class="controls">
+          {% zotero_inline_tags formset formset %}
+        </div>
       </div>
       {% block textbutton %}{% endblock %}
   </form>

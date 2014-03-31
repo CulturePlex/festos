@@ -10,6 +10,7 @@ from docviewer.models import Annotation
 from models import Document
 from taggit.models import Tag
 from widgets import AnchorField
+from io import BytesIO
 
 
 class DocumentAdminForm(Docviewer_DocumentForm):
@@ -68,30 +69,28 @@ class DocumentForm(Docviewer_DocumentForm):
 
 
 def upload_file_from_url(url):
-    tmp_path = '/tmp/'
     filefield_name = u'docfile'
     file_type = u'application/pdf'
     
+    f = download_file(url)
     local_filename = url.split('/')[-1]
-    download_file(tmp_path + local_filename, url)
     return create_InMemoryUploadedFile(
-        tmp_path + local_filename,
+        f,
         local_filename,
         filefield_name,
         file_type,
     )
 
 
-def download_file(path_filename, url):
+def download_file(url):
     req = requests.get(url, stream=True)
-    f = open(path_filename, 'wb')
+    f = BytesIO()
     for chunk in req.iter_content(chunk_size=1024):
         f.write(chunk)
-    f.close()
+    return f
 
 
-def create_InMemoryUploadedFile(path_filename, filename, fieldname, filetype):
-    f = open(path_filename)
+def create_InMemoryUploadedFile(f, filename, fieldname, filetype):
     f.seek(0, 2)
     size = f.tell()
     return InMemoryUploadedFile(f, fieldname, filename, filetype, size, None)

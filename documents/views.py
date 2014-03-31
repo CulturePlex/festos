@@ -173,18 +173,21 @@ def retry_document(request, pk):
     return redirect('list_documents')
 
 
+jq = False
+
+
 @login_required
 def add_document(request):
     """ Add a document """
 #    import ipdb; ipdb.set_trace()
-    label_options = {'labels': {'item_type': 'Document type'}}
+    label_options = {'item_type': 'Document type'}
     dform = DocumentForm(user=request.user)
 #    rform = ReferenceForm()
-    tag_formset = get_tag_formset(**label_options)
+    tag_formset = get_tag_formset(labels=label_options, jquery=jq)
     if request.method == 'POST':
 #        rform = ReferenceForm(request.POST)
         dform = DocumentForm(request.POST, request.FILES, user=request.user)
-        tag_formset = get_tag_formset(dform.instance, data=request.POST, **label_options)
+        tag_formset = get_tag_formset(dform.instance, data=request.POST, labels=label_options, jquery=jq)
         #this avoids ignoring the evaluation of the form to show the errors
 #        rf_is_valid = rform.is_valid()
         rf_is_valid = True
@@ -216,11 +219,11 @@ def edit_document(request, pk):
     document = Document.objects.get(pk=pk)
     eform = EditDocumentForm(instance=document)
 #    rform = ReferenceForm(instance=document.reference)
-    tag_formset = get_tag_formset(document, **label_options)
+    tag_formset = get_tag_formset(document, labels=label_options, jquery=jq)
     if request.method == 'POST':
 #        rform = ReferenceForm(request.POST, instance=document.reference)
         eform = EditDocumentForm(request.POST, instance=document)
-        tag_formset = get_tag_formset(document, data=request.POST, **label_options)
+        tag_formset = get_tag_formset(document, data=request.POST, labels=label_options, jquery=jq)
         #this avoids ignoring the evaluation of the form to show the errors
 #        rf_is_valid = rform.is_valid()
         rf_is_valid = True

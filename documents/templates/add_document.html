@@ -3,9 +3,9 @@
 
 
 {% block url %}
-<form action="{% url 'add_document' %}" enctype="multipart/form-data" method="post" class="form-horizontal">
+<form id="add-document" action="{% url 'add_document' %}" enctype="multipart/form-data" method="post" class="form-horizontal">
 {% endblock %}
 
 {% block textbutton %}
-<input type="submit" value="{% trans "Add Document" %}" class="btn offset2" />
+<input id="submit-document" type="submit" value="{% trans "Add Document" %}" class="btn offset2" />
 {% endblock %}

@@ -26,7 +26,9 @@
     <script src="{{ STATIC_PREFIX }}js/bootstrap-collapse.js"></script>
     {% endcomment %}
 
+    {% block jquery %}
     <script src="{{ STATIC_PREFIX }}js/jquery-1.6.1.js"></script>
+    {% endblock %}
     <script src="{{ STATIC_PREFIX }}js/jquery-ui-1.8.13/jquery.ui.core.js"></script>
     <script src="{{ STATIC_PREFIX }}js/jquery-ui-1.8.13/jquery.ui.position.js"></script>
     <script src="{{ STATIC_PREFIX }}js/jquery-ui-1.8.13/jquery.ui.widget.js"></script>
@@ -35,12 +37,12 @@
     <script src="{{ STATIC_PREFIX }}js/backbone-0.5.0.js"></script>
     <script src="{{ STATIC_PREFIX }}js/csrft.js"></script>
     <script src="{{ STATIC_PREFIX }}bootstrap/js/bootstrap-tooltip.js"></script>
-<!--    <script src="{{ STATIC_PREFIX }}js/zotero_translator/zotero_translator.js"></script>-->
 
     {% block extra_metas %}{% endblock %}
     {% block extra_links %}{% endblock %}
     {% block extra_js %}{% endblock %}
     {% block extra_scripts %}{% endblock %}
+    <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="tutiostj6vl1pu6"></script>
   </head>
 {% endblock %}
 
