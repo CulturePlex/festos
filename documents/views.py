@@ -339,20 +339,23 @@ def progress(request):
     """
     Get the number of progressed pages for this document
     """
+#    import ipdb; ipdb.set_trace()
     result = {}
     id_list = request.GET.getlist("ids[]")
     for doc_id in id_list:
         document = Document.objects.get(id=doc_id)
         if document.status == Document.STATUS.starting and \
            not document.page_count:
-            num_pages = count_total_pages(document)
-            if num_pages > 0:
-                document.page_count = num_pages
+            tot_pages = count_total_pages(document)
+            num_pages = count_processed_pages(document)
+            if tot_pages > 0 and num_pages > 0:
+                document.page_count = tot_pages
                 document.status = Document.STATUS.running
                 document.save()
         if document.status == Document.STATUS.running:
             num_pages = count_processed_pages(document)
             total_pages = document.page_count
+            total_time = 0
         else:
             num_pages = 0
             total_pages = 0
@@ -360,7 +363,6 @@ def progress(request):
             if document.status == Document.STATUS.ready:
                 diff_time = document.task_end - document.task_start
                 total_time = format_datetimediff(diff_time)
-        
         result[doc_id] = {
             'status': document.status,
             'num_pages': num_pages,

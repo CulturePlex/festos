@@ -13,7 +13,7 @@ class CompleteHighlighter(Highlighter):
         return highlighted_chunk
 
 
-def _total_pages(document):
+def _total_pages_a(document):
     version_re = re.compile(r'^.*-([0-9]{20})\.txt$')
     path = document.get_root_path()
     elems = [
@@ -25,16 +25,29 @@ def _total_pages(document):
     return elems
 
 
+def _total_pages_b(document):
+    try:
+        path = document.get_root_path() + '/700x'
+        elems = os.listdir(path)
+    except OSError:
+        path = document.get_root_path() + '/normal'
+        elems = os.listdir(path)
+    except:
+        elems = []
+    return elems
+
+
 def _is_processed(f):
 #    return os.path.getmtime(f) != os.path.getctime(f)
     return os.path.getsize(f) != 1
 
 
 def count_total_pages(document):
-    elems = _total_pages(document)
+    elems = _total_pages_b(document)
     return len(elems)
 
 
 def count_processed_pages(document):
-    elems = [e for e in _total_pages(document) if _is_processed(e)]
+#    elems = [e for e in _total_pages(document) if _is_processed(e)]
+    elems = [e for e in _total_pages_a(document) if _is_processed(e)]
     return len(elems)
