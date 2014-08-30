@@ -23,16 +23,26 @@ class DocumentAdminForm(Docviewer_DocumentForm):
         help_text=_('Description of the document'))
 
 
+SOURCES = (
+    ('local', 'Local'),
+    ('dropbox', 'Dropbox'),
+)
+
 class DocumentForm(Docviewer_DocumentForm):
-    docfile = forms.FileField(label=_('PDF Document File'), required=False)
+    source = forms.ChoiceField(
+        choices=SOURCES,
+        widget=forms.RadioSelect,
+        initial='local',
+    )
+    docfile = forms.FileField(label=_('Local PDF document'), required=False)
     external_url = forms.CharField(
-        label=_('PDF Dropbox File'),
+        label=_('Dropbox PDF document'),
         required=False,
         widget=forms.HiddenInput(),
     )
     class Meta:
         model = Document
-        fields = ('external_url', 'docfile', 'language', 'public', 'title', 'notes')
+        fields = ('source', 'docfile', 'external_url', 'language', 'public', 'title', 'notes')
 
     notes = forms.CharField(
         required=False,
@@ -41,6 +51,11 @@ class DocumentForm(Docviewer_DocumentForm):
         help_text=None)
     public = forms.BooleanField(
         label=_('Publicly available'), required=False, help_text=None)
+
+    class Media:
+        js = (
+            'js/source.js',
+        )
 
     def __init__(self, *args, **kwargs):
         try:
@@ -57,14 +72,21 @@ class DocumentForm(Docviewer_DocumentForm):
         return inst
 
     def clean(self):
+        source = self.cleaned_data['source']
         docfile = self.cleaned_data['docfile']
         external_url = self.cleaned_data['external_url']
-        empty_file = not docfile
-        empty_url = not external_url or len(external_url) == 0
-        if empty_file and empty_url:
-            raise forms.ValidationError('Choose a PDF document either from Dropbox or from your local machine.')
-        elif empty_file and not empty_url:
+#        empty_file = not docfile
+#        empty_url = not external_url or len(external_url) == 0
+#        if empty_file and empty_url:
+#            raise forms.ValidationError('Choose a PDF document either from Dropbox or from your local machine.')
+#        elif empty_file and not empty_url:
+#            self.cleaned_data['docfile'] = upload_file_from_url(external_url)
+        if source == 'local' and docfile:
+            pass
+        elif source == 'dropbox' and external_url:
             self.cleaned_data['docfile'] = upload_file_from_url(external_url)
+        else:
+            raise forms.ValidationError('Choose a PDF document either from Dropbox or from your local machine.')
         return self.cleaned_data
 
 
@@ -101,7 +123,7 @@ class EditDocumentForm(forms.ModelForm):
         model = Document
         fields = ('docfile', 'language', 'public', 'title', 'notes')
 
-    docfile = AnchorField()
+    docfile = AnchorField(label=_('Document'))
     language = forms.ChoiceField(
           choices=Document.LANGUAGES, required=False, help_text=None)
 #    source = forms.CharField(required=False, help_text=None)
