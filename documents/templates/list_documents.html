@@ -228,11 +228,16 @@ $(document).ready(function(){
   
     var unfilter_docs = function(tag) {
         var tr_docs = $("tr.document-row:hidden")
-        tr_docs.each(function(index) {
-            tags = get_tags($(this))
-            if (tags.indexOf(tag) == -1)
-                $(this).show()
-        })
+        if (filter.length == 0) {
+            tr_docs.show()
+        }
+        else {
+            tr_docs.each(function(index) {
+                tags = get_tags($(this))
+                if (anyInCommon(filter, tags))
+                    $(this).show()
+            })
+        }
     }
     
     var get_tags = function(tr) {
@@ -242,6 +247,11 @@ $(document).ready(function(){
             tags.push($(this).text())
         })
         return tags
+    }
+    
+    var anyInCommon = function(l1, l2) {
+        var inter = _.intersect(l1, l2)
+        return inter.length > 0
     }
     
   
