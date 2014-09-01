@@ -305,10 +305,11 @@ def autocomplete_users(request, pk):
 @login_required
 def add_taggit_tag(request):
     """ Add a taggit_tag to the document """
-    doc = Document.objects.get(pk=request.POST['doc_id'])
-    if not (request.user.has_perm('access_document', doc)):
-                raise PermissionDenied
-    doc.taggit_tags.add(request.POST['tag'])
+    if request.POST['tag']:
+        doc = Document.objects.get(pk=request.POST['doc_id'])
+        if not (request.user.has_perm('access_document', doc)):
+                    raise PermissionDenied
+        doc.taggit_tags.add(request.POST['tag'])
     return HttpResponse(
         json.dumps({'status': 'ok'}), content_type="application/json")
 
