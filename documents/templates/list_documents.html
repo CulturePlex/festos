@@ -234,7 +234,7 @@ $(document).ready(function(){
         else {
             tr_docs.each(function(index) {
                 tags = get_tags($(this))
-                if (anyInCommon(filter, tags))
+                if (allIn(filter, tags))
                     $(this).show()
             })
         }
@@ -249,9 +249,8 @@ $(document).ready(function(){
         return tags
     }
     
-    var anyInCommon = function(l1, l2) {
-        var inter = _.intersect(l1, l2)
-        return inter.length > 0
+    var allIn = function(l1, l2) {
+        return l1.every(function(val) { return l2.indexOf(val) >= 0; })
     }
     
   
