@@ -24,19 +24,20 @@ class DocumentAdminForm(Docviewer_DocumentForm):
 
 
 SOURCES = (
-    ('local', 'Local'),
-    ('dropbox', 'Dropbox'),
+    ('local', _('Your computer')),
+    ('dropbox', _('Dropbox')),
 )
 
 class DocumentForm(Docviewer_DocumentForm):
     source = forms.ChoiceField(
+        label=_('Choose document from'),
         choices=SOURCES,
         widget=forms.RadioSelect,
         initial='local',
     )
-    docfile = forms.FileField(label=_('Local PDF document'), required=False)
+    docfile = forms.FileField(label=_('Your computer'), required=False)
     external_url = forms.CharField(
-        label=_('Dropbox PDF document'),
+        label=_('Dropbox'),
         required=False,
         widget=forms.HiddenInput(),
     )
