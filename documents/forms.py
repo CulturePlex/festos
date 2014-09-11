@@ -35,9 +35,9 @@ class DocumentForm(Docviewer_DocumentForm):
         widget=forms.RadioSelect,
         initial='local',
     )
-    docfile = forms.FileField(label=_('Your computer'), required=False)
+    docfile = forms.FileField(label=_('Document'), required=False)
     external_url = forms.CharField(
-        label=_('Dropbox'),
+        label=_('Document'),
         required=False,
         widget=forms.HiddenInput(),
     )
