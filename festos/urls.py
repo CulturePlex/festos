@@ -13,11 +13,15 @@ urlpatterns = patterns(
     url(r'^viewer/', include('docviewer.urls')),
     url(r'^accounts/', include('accounts.urls')),
     url(r'^documents/', include('documents.urls')),
+    url(r'^zotero/', include('django_zotero.urls')),
     #url(r'^search/', include('haystack.urls')),
     url(r'^about/', TemplateView.as_view(template_name="about.html"),
         name='about'),
     url(r'^$', search_document, name='index'),
     #url(r'^$', include('haystack.urls')),
+#    url(r'^zotero/itemtypes/valid/$',
+#        views.valid_zotero_itemtypes_fields,
+#        name='valid_zotero_itemtypes_fields'),
 )
 
 urlpatterns += staticfiles_urlpatterns()
