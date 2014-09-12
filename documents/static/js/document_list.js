@@ -196,7 +196,7 @@ $(document).ready(function(){
     function progress(doc_ids) {
       $.ajax({
         type: "GET",
-        url: "progress",
+        url: "progress/",
         data: {'ids': doc_ids},
         dataType: 'json',
         success: function (payload) {
