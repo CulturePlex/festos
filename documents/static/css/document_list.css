@@ -4,6 +4,13 @@ tr.document-row .ui-autocomplete-input {
 tr.document-row:hover .ui-autocomplete-input {
     display:inline;
 }
+tr.document-row .ui-autocomplete-input-hidden {
+    display:none;
+}
+tr.document-row .ui-autocomplete-input-shown {
+    display:inline;
+}
+
 
 .document-actions a:hover {cursor: pointer;}
 
