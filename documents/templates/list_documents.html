@@ -37,7 +37,7 @@ $(document).ready(function(){
                });
              },
           //$('.picker').data('url'),
-          minLength: 2,
+          minLength: 1,
           select: function (ev, ui){
             adata = { }
             adata['doc_id'] = $(ev.target).parents(".document-row").data('id')
@@ -47,8 +47,9 @@ $(document).ready(function(){
               data: adata,
               dataType: 'json',
               type: 'GET',
-              success: function(payload){
-                location.reload();
+              success: function(payload) {
+                var user = adata['username']
+                $(ev.target).prev().append("<a class=\"nolink\" href=\"#\"><span class=\"sharer\" data-id=\""+ user +"\">@" + user + "</span></a>")
               }})
           }
         });
@@ -73,7 +74,7 @@ $(document).ready(function(){
                });
              },
           //$('.picker').data('url'),
-          minLength: 2,
+          minLength: 1,
           select: function (ev, ui){
             adata = { }
             adata['doc_id'] = $(ev.target).parents(".document-row").data('id')
@@ -84,7 +85,11 @@ $(document).ready(function(){
               dataType: 'json',
               type: 'POST',
               success: function(payload){
-                location.reload();
+                //location.reload();
+                if (payload.added) {
+                    var tag = adata['tag']
+                    $(ev.target).prev().append("<a class=\"nolink\" href=\"#\"><span class=\"taggit_tag\" data-id=\""+ tag +"\">" + tag + "</span></a>")
+                }
               }})
           }
       });
@@ -100,7 +105,11 @@ $(document).ready(function(){
               dataType: 'json',
               type: 'POST',
               success: function(payload){
-                location.reload();
+                //location.reload();
+                if (payload.added) {
+                    var tag = adata['tag']
+                    $(ev.target).prev().append("<a class=\"nolink\" href=\"#\"><span class=\"taggit_tag\" data-id=\""+ tag +"\">" + tag + "</span></a>")
+                }
               }})
         }
       });
@@ -131,7 +140,7 @@ $(document).ready(function(){
                });
              },
           //$('.picker').data('url'),
-          minLength: 2,
+          minLength: 1,
           select: function (ev, ui){
             var tag = ui.item.value
             if (filter.indexOf(tag) == -1) {
@@ -142,6 +151,23 @@ $(document).ready(function(){
           }
       });
   }
+  
+    var pickers12 = $("tr.document-row .ui-autocomplete-input")
+    if (pickers12.length) {
+        pickers12.autocomplete({
+            open: function(ev, ui) {
+                var thesePickers = $(ev.target).parents('tr.document-row').find('.ui-autocomplete-input')
+                thesePickers.addClass("ui-autocomplete-input-shown")
+                thesePickers.removeClass("ui-autocomplete-input-hidden")
+            },
+            close: function(ev, ui) {
+                var thesePickers = $(ev.target).parents('tr.document-row').find('.ui-autocomplete-input')
+                thesePickers.addClass("ui-autocomplete-input-hidden")
+                thesePickers.removeClass("ui-autocomplete-input-shown")
+            }
+        })
+    }
+    
   
     var filter_docs = function(tag) {
         var tr_docs = $("tr.document-row:visible")
@@ -191,6 +217,60 @@ $(document).ready(function(){
         
         unfilter_docs(tag);
     });
+    
+  
+    $("#sharers a.nolink").live("click", function (ev) {
+        ev.preventDefault()
+        var document_id = $(ev.target).parents("tr").data("id")
+        var user = ev.target.textContent.slice(1)
+        var adata = {}
+        adata["doc_id"] = document_id
+        adata["username"] = user
+        $.ajax({
+          url: "remove_sharer/",
+          data: adata,
+          dataType: 'json',
+          type: 'POST',
+          success: function(payload){
+            var user = ev.target.textContent
+            var user_list = []
+            var collaborators = $(ev.target).parents('#sharers')
+            collaborators.find(".sharer").each(function(index, data) {
+                user_list.push(data.textContent)
+            })
+            var index = user_list.indexOf(user) + 1
+            var collaborator = collaborators.children().filter(":nth-child("+ index +")")
+            collaborator.remove()
+          }})
+    });
+    
+  
+    $("#taggit_tags a.nolink").live("click", function (ev) {
+        ev.preventDefault()
+        var document_id = $(ev.target).parents("tr").data("id")
+        var tag = ev.target.textContent
+        var adata = {}
+        adata["doc_id"] = document_id
+        adata["tag"] = tag
+        $.ajax({
+          url: "remove_taggit_tag/",
+          data: adata,
+          dataType: 'json',
+          type: 'POST',
+          success: function(payload){
+            var tag = ev.target.textContent
+            var tag_list = []
+            var tags = $(ev.target).parents('#taggit_tags')
+            tags.find(".taggit_tag").each(function(index, data) {
+                tag_list.push(data.textContent)
+            })
+            var index = tag_list.indexOf(tag) + 1
+            var tag2 = tags.children().filter(":nth-child("+ index +")")
+            tag2.remove()
+          }})
+    });
+    
+    
   
   
   
@@ -411,7 +491,7 @@ $(document).ready(function(){
       <th>{% trans "Collaborators" %}</th>
       <th>{% trans "Tags" %}
             <span id="filter_tags" style="margin-left: 10px;"></span>
-            <input id="id_filter_tags" type="text" class="picker3 ui-autocomplete-input" name="filter_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags' %}"></th>
+            <input id="id_filter_tags" type="text" class="picker3 ui-autocomplete-input" name="filter_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags_all' %}"></th>
       <th>{% trans "Owner" %}</th>
       <th><div align="center">{% trans "Status" %}</div></th>
       <th>{% trans "Pages" %}</th>
@@ -426,7 +506,7 @@ $(document).ready(function(){
           <div id="sharers_cell">
             <span id="sharers" >
             {% for sharer in document.get_users_with_perms %}
-                <a class="nolink" href="{% url 'remove_sharer' document.pk sharer.username %}">
+                <a class="nolink" href="#">
                 <span class="sharer" data-id="{{ sharer.id }}">@{{ sharer.username }}</span></a>
 <!--                {% if not forloop.last %},{% endif %}-->
             {% endfor %}
@@ -438,12 +518,12 @@ $(document).ready(function(){
           <div id="taggit_tags_cell">
             <span id="taggit_tags" >
             {% for taggit_tag in document.taggit_tags.names %}
-                <a class="nolink" href="{% url 'remove_taggit_tag' document.pk taggit_tag %}">
+                <a class="nolink" href="#">
                 <span class="taggit_tag" data-id="{{ taggit_tag }}">{{ taggit_tag }}</span></a>
 <!--                {% if not forloop.last %},{% endif %}-->
             {% endfor %}
             </span>
-            <input id="id_taggit_tags" type="text" class="picker2 ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags' %}" >
+            <input id="id_taggit_tags" type="text" class="picker2 ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags' document.pk %}" >
           </div>
       </td>
 <!--      {% url 'userena_profile_detail' user as user_url %}-->
