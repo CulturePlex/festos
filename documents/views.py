@@ -280,14 +280,19 @@ def add_sharer(request):
 
 
 @login_required
-def remove_sharer(request, pk, username):
+#def remove_sharer(request, pk, username):
+def remove_sharer(request):
     """ Removes a user that shares the document """
-    doc = Document.objects.get(pk=pk)
+#    doc = Document.objects.get(pk=pk)
+    doc = Document.objects.get(pk=request.POST['doc_id'])
     if not (request.user.has_perm('access_document', doc)):
                 raise PermissionDenied
-    usr = User.objects.get(username=username)
+#    usr = User.objects.get(username=username)
+    usr = User.objects.get(username=request.POST['username'])
     remove_perm('documents.access_document', usr, doc)
-    return HttpResponseRedirect(reverse('documents.views.list_documents'))
+#    return HttpResponseRedirect(reverse('documents.views.list_documents'))
+    return HttpResponse(
+            json.dumps({'status': 'ok'}), content_type="application/json")
 
 
 @login_required
@@ -305,27 +310,48 @@ def autocomplete_users(request, pk):
 @login_required
 def add_taggit_tag(request):
     """ Add a taggit_tag to the document """
+    added = False
     if request.POST['tag']:
         doc = Document.objects.get(pk=request.POST['doc_id'])
         if not (request.user.has_perm('access_document', doc)):
                     raise PermissionDenied
+        ntags1 = len(doc.taggit_tags.all())
         doc.taggit_tags.add(request.POST['tag'])
+        ntags2 = len(doc.taggit_tags.all())
+        added = ntags2 == ntags1 + 1
     return HttpResponse(
-        json.dumps({'status': 'ok'}), content_type="application/json")
+        json.dumps({'status': 'ok', 'added': added}), content_type="application/json")
 
 
 @login_required
-def remove_taggit_tag(request, pk, taggit_tag):
+#def remove_taggit_tag(request, pk, taggit_tag):
+def remove_taggit_tag(request):
     """ Removes a taggit_tag from the document """
-    doc = Document.objects.get(pk=pk)
+#    doc = Document.objects.get(pk=pk)
+    doc = Document.objects.get(pk=request.POST['doc_id'])
     if not (request.user.has_perm('access_document', doc)):
                 raise PermissionDenied
-    doc.taggit_tags.remove(taggit_tag)
-    return HttpResponseRedirect(reverse('documents.views.list_documents'))
+#    doc.taggit_tags.remove(taggit_tag)
+    doc.taggit_tags.remove(request.POST['tag'])
+#    return HttpResponseRedirect(reverse('documents.views.list_documents'))
+    return HttpResponse(
+            json.dumps({'status': 'ok'}), content_type="application/json")
 
 
 @login_required
-def autocomplete_taggit_tags(request):
+def autocomplete_taggit_tags(request, pk):
+    """ Autocomplete for adding taggit_tags """
+    document = Document.objects.get(pk=pk)
+#    taggit_tags = Tag.objects.exclude(name__in=document.taggit_tags\
+#                        .filter(name__contains=request.POST['term'])\
+#                        .values_list('taggit_tags', flat=True)
+    taggit_tags = Tag.objects.exclude(id__in=document.taggit_tags.all()).filter(name__contains=request.POST['term']).values_list('name', flat=True)
+
+    return HttpResponse(json.dumps(list(taggit_tags)))
+
+
+@login_required
+def autocomplete_taggit_tags_all(request):
     """ Autocomplete for adding taggit_tags """
 #    document = Document.objects.get(pk=pk)
 #    taggit_tags = Tag.objects.exclude(name__in=document.taggit_tags\

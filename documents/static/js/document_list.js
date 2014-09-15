@@ -22,7 +22,7 @@ $(document).ready(function(){
                });
              },
           //$('.picker').data('url'),
-          minLength: 2,
+          minLength: 1,
           select: function (ev, ui){
             adata = { }
             adata['doc_id'] = $(ev.target).parents(".document-row").data('id')
@@ -32,8 +32,9 @@ $(document).ready(function(){
               data: adata,
               dataType: 'json',
               type: 'GET',
-              success: function(payload){
-                location.reload();
+              success: function(payload) {
+                var user = adata['username']
+                $(ev.target).prev().append("<a class=\"nolink\" href=\"#\"><span class=\"sharer\" data-id=\""+ user +"\">@" + user + "</span></a>")
               }})
           }
         });
@@ -58,7 +59,7 @@ $(document).ready(function(){
                });
              },
           //$('.picker').data('url'),
-          minLength: 2,
+          minLength: 1,
           select: function (ev, ui){
             adata = { }
             adata['doc_id'] = $(ev.target).parents(".document-row").data('id')
@@ -69,7 +70,11 @@ $(document).ready(function(){
               dataType: 'json',
               type: 'POST',
               success: function(payload){
-                location.reload();
+                //location.reload();
+                if (payload.added) {
+                    var tag = adata['tag']
+                    $(ev.target).prev().append("<a class=\"nolink\" href=\"#\"><span class=\"taggit_tag\" data-id=\""+ tag +"\">" + tag + "</span></a>")
+                }
               }})
           }
       });
@@ -85,7 +90,11 @@ $(document).ready(function(){
               dataType: 'json',
               type: 'POST',
               success: function(payload){
-                location.reload();
+                //location.reload();
+                if (payload.added) {
+                    var tag = adata['tag']
+                    $(ev.target).prev().append("<a class=\"nolink\" href=\"#\"><span class=\"taggit_tag\" data-id=\""+ tag +"\">" + tag + "</span></a>")
+                }
               }})
         }
       });
@@ -116,7 +125,7 @@ $(document).ready(function(){
                });
              },
           //$('.picker').data('url'),
-          minLength: 2,
+          minLength: 1,
           select: function (ev, ui){
             var tag = ui.item.value
             if (filter.indexOf(tag) == -1) {
@@ -127,6 +136,23 @@ $(document).ready(function(){
           }
       });
   }
+  
+    var pickers12 = $("tr.document-row .ui-autocomplete-input")
+    if (pickers12.length) {
+        pickers12.autocomplete({
+            open: function(ev, ui) {
+                var thesePickers = $(ev.target).parents('tr.document-row').find('.ui-autocomplete-input')
+                thesePickers.addClass("ui-autocomplete-input-shown")
+                thesePickers.removeClass("ui-autocomplete-input-hidden")
+            },
+            close: function(ev, ui) {
+                var thesePickers = $(ev.target).parents('tr.document-row').find('.ui-autocomplete-input')
+                thesePickers.addClass("ui-autocomplete-input-hidden")
+                thesePickers.removeClass("ui-autocomplete-input-shown")
+            }
+        })
+    }
+    
   
     var filter_docs = function(tag) {
         var tr_docs = $("tr.document-row:visible")
@@ -176,6 +202,60 @@ $(document).ready(function(){
         
         unfilter_docs(tag);
     });
+    
+  
+    $("#sharers a.nolink").live("click", function (ev) {
+        ev.preventDefault()
+        var document_id = $(ev.target).parents("tr").data("id")
+        var user = ev.target.textContent.slice(1)
+        var adata = {}
+        adata["doc_id"] = document_id
+        adata["username"] = user
+        $.ajax({
+          url: "remove_sharer/",
+          data: adata,
+          dataType: 'json',
+          type: 'POST',
+          success: function(payload){
+            var user = ev.target.textContent
+            var user_list = []
+            var collaborators = $(ev.target).parents('#sharers')
+            collaborators.find(".sharer").each(function(index, data) {
+                user_list.push(data.textContent)
+            })
+            var index = user_list.indexOf(user) + 1
+            var collaborator = collaborators.children().filter(":nth-child("+ index +")")
+            collaborator.remove()
+          }})
+    });
+    
+  
+    $("#taggit_tags a.nolink").live("click", function (ev) {
+        ev.preventDefault()
+        var document_id = $(ev.target).parents("tr").data("id")
+        var tag = ev.target.textContent
+        var adata = {}
+        adata["doc_id"] = document_id
+        adata["tag"] = tag
+        $.ajax({
+          url: "remove_taggit_tag/",
+          data: adata,
+          dataType: 'json',
+          type: 'POST',
+          success: function(payload){
+            var tag = ev.target.textContent
+            var tag_list = []
+            var tags = $(ev.target).parents('#taggit_tags')
+            tags.find(".taggit_tag").each(function(index, data) {
+                tag_list.push(data.textContent)
+            })
+            var index = tag_list.indexOf(tag) + 1
+            var tag2 = tags.children().filter(":nth-child("+ index +")")
+            tag2.remove()
+          }})
+    });
+    
+    
   
   
   
@@ -382,4 +462,3 @@ $(document).ready(function(){
     }
 
 })
-
