@@ -16,8 +16,12 @@ display: inline-block;
 width: 500px;
 }
 
+#documents_cell {
+  width: 220px;
+}
+
 #sharers_cell, #taggit_tags_cell {
-  width: 345px;
+  width: 283px;
 }
 .sharer, .taggit_tag {
   display: block;
@@ -106,7 +110,7 @@ input[type="text"]#id_users, input[type="text"]#id_taggit_tags {
   margin-bottom: 0px;
 }
 
-input[type="text"]#id_filter_tags {
+input[type="text"]#id_filter_docs, input[type="text"]#id_filter_collabs, input[type="text"]#id_filter_tags {
   line-height: 15px;
   height: 15px;
   width: 100px;
@@ -178,7 +182,7 @@ border:2px solid gray !important;
 /*}*/
 
 td.document-title {
-max-width:150px;
+/*max-width:231px;*/
 overflow: hidden;
 text-overflow: ellipsis;
 white-space: nowrap

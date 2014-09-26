@@ -19,11 +19,15 @@
 <table class="table">
   <thead>
     <tr>
-      <th>{% trans "Document" %}</th>
-      <th>{% trans "Collaborators" %}</th>
+      <th>{% trans "Document" %}
+            <span id="filter_docs" style="margin-left: 10px;"></span>
+            <input id="id_filter_docs" type="text" class="picker_filter_docs ui-autocomplete-input" name="filter_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_documents_all' %}"></th>
+      <th>{% trans "Collaborators" %}
+            <span id="filter_collabs" style="margin-left: 10px;"></span>
+            <input id="id_filter_collabs" type="text" class="picker_filter_collabs ui-autocomplete-input" name="filter_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_users_all' %}"></th>
       <th>{% trans "Tags" %}
             <span id="filter_tags" style="margin-left: 10px;"></span>
-            <input id="id_filter_tags" type="text" class="picker3 ui-autocomplete-input" name="filter_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags_all' %}"></th>
+            <input id="id_filter_tags" type="text" class="picker_filter_tags ui-autocomplete-input" name="filter_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags_all' %}"></th>
       <th>{% trans "Owner" %}</th>
       <th><div align="center">{% trans "Status" %}</div></th>
       <th>{% trans "Pages" %}</th>
@@ -33,7 +37,10 @@
   <tbody>
   {% for document in documents %}
     <tr class="document-row" data-id="{{ document.id }}">
-      <td class="document-title"><span data-href="{{ document.get_absolute_url }}" title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{% if document.status == "ready" %}<a href="{{ document.get_absolute_url }}" style="text-decoration:none;">{{ document.title }}</a>{% else %}{{ document.title }}{% endif %}</span> <br/> <span style="color:gray; font-size:75%" title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span></td>
+      <td class="document-title">
+          <div id="documents_cell">
+          <span class="document" data-href="{{ document.get_absolute_url }}" title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{% if document.status == "ready" %}<a href="{{ document.get_absolute_url }}" style="text-decoration:none;">{{ document.title }}</a>{% else %}{{ document.title }}{% endif %}</span> <br/> <span style="color:gray; font-size:75%" title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span>
+          </div></td>
       <td class="document-collaborators">
           <div id="sharers_cell">
             <span id="sharers" >
@@ -43,7 +50,7 @@
 <!--                {% if not forloop.last %},{% endif %}-->
             {% endfor %}
             </span>
-            <input id="id_users" type="text" class="picker ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_users' document.pk %}" >
+            <input id="id_users" type="text" class="picker_collabs ui-autocomplete-input" name="user" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_users' document.pk %}" >
           </div>
       </td>
       <td class="document-tags">
@@ -55,7 +62,7 @@
 <!--                {% if not forloop.last %},{% endif %}-->
             {% endfor %}
             </span>
-            <input id="id_taggit_tags" type="text" class="picker2 ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags' document.pk %}" >
+            <input id="id_taggit_tags" type="text" class="picker_tags ui-autocomplete-input" name="taggit_tag" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true" data-url="{% url 'autocomplete_taggit_tags' document.pk %}" >
           </div>
       </td>
 <!--      {% url 'userena_profile_detail' user as user_url %}-->

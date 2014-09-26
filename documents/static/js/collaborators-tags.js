@@ -1,8 +1,8 @@
 $(document).ready(function(){
 
-    pickers = $( ".picker" )
-    if ( pickers.length){
-        $( ".picker" ).autocomplete({
+    pickers_collabs = $( ".picker_collabs" )
+    if ( pickers_collabs.length){
+        pickers_collabs.autocomplete({
           source: function(request, response) {
                 adata = { }
                 adata['term'] = $(this).attr('element').val()
@@ -17,7 +17,7 @@ $(document).ready(function(){
                    },
                });
              },
-          //$('.picker').data('url'),
+          //$('.picker_collabs').data('url'),
           minLength: 1,
           select: function (ev, ui){
             adata = { }
@@ -37,9 +37,9 @@ $(document).ready(function(){
     }
     
     
-    pickers2 = $( ".picker2" )
-    if ( pickers2.length){
-        $( ".picker2" ).autocomplete({
+    pickers_tags = $( ".picker_tags" )
+    if ( pickers_tags.length){
+        pickers_tags.autocomplete({
           source: function(request, response) {
                 adata = { }
                 adata['term'] = $(this).attr('element').val()
@@ -54,7 +54,7 @@ $(document).ready(function(){
                    },
                });
              },
-          //$('.picker').data('url'),
+          //$('.picker_tags').data('url'),
           minLength: 1,
           select: function (ev, ui){
             adata = { }
@@ -101,11 +101,32 @@ $(document).ready(function(){
               $(this).trigger("enterKey");
           }
       });
-  } 
-    var filter = [];
-    pickers3 = $( ".picker3" )
-    if ( pickers3.length){
-        $( ".picker3" ).autocomplete({
+  }
+  
+    var pickers_collabs_tags = $("tr.document-row .ui-autocomplete-input")
+    if (pickers_collabs_tags.length) {
+        pickers_collabs_tags.autocomplete({
+            open: function(ev, ui) {
+                var thesePickers = $(ev.target).parents('tr.document-row').find('.ui-autocomplete-input')
+                thesePickers.addClass("ui-autocomplete-input-shown")
+                thesePickers.removeClass("ui-autocomplete-input-hidden")
+            },
+            close: function(ev, ui) {
+                var thesePickers = $(ev.target).parents('tr.document-row').find('.ui-autocomplete-input')
+                thesePickers.addClass("ui-autocomplete-input-hidden")
+                thesePickers.removeClass("ui-autocomplete-input-shown")
+            }
+        })
+    }
+  
+  
+    var tag_filter = [];
+    var collab_filter = [];
+    var doc_filter = [];
+    
+    pickers_filter_docs = $( ".picker_filter_docs" )
+    if ( pickers_filter_docs.length){
+        pickers_filter_docs.autocomplete({
           source: function(request, response) {
                 adata = { }
                 adata['term'] = $(this).attr('element').val()
@@ -120,37 +141,98 @@ $(document).ready(function(){
                    },
                });
              },
-          //$('.picker').data('url'),
+          //$('.picker_filter_docs').data('url'),
+          minLength: 1,
+          select: function (ev, ui){
+            var doc = ui.item.value
+            if (doc_filter.indexOf(doc) == -1) {
+                doc_filter.push(doc)
+                $("#filter_docs").append("<a class=\"nolink\" ><span class=\"filter_doc\" data-id=\""+ doc +"\" style=\"margin-left:6px;\">" + doc + "</span></a>")
+            }
+            filter_docs_by_doc(doc);
+          }
+      });
+  }
+    
+    pickers_filter_collabs = $( ".picker_filter_collabs" )
+    if ( pickers_filter_collabs.length){
+        pickers_filter_collabs.autocomplete({
+          source: function(request, response) {
+                adata = { }
+                adata['term'] = $(this).attr('element').val()
+                $.ajax({
+                 type: "POST",
+                 dataType: 'json',
+                 url: $(this).attr('element').data('url'),
+                 async: false,
+                 data: adata,
+                 success: function(data) {
+                      response(data)
+                   },
+               });
+             },
+          //$('.picker_filter_collabs').data('url'),
+          minLength: 1,
+          select: function (ev, ui){
+            var collab = ui.item.value
+            if (collab_filter.indexOf(collab) == -1) {
+                collab_filter.push("@"+collab)
+                $("#filter_collabs").append("<a class=\"nolink\" ><span class=\"filter_collab\" data-id=\""+ collab +"\" style=\"margin-left:6px;\">@" + collab + "</span></a>")
+            }
+            filter_docs_by_collab(collab);
+          }
+      });
+  }
+    
+    pickers_filter_tags = $( ".picker_filter_tags" )
+    if ( pickers_filter_tags.length){
+        pickers_filter_tags.autocomplete({
+          source: function(request, response) {
+                adata = { }
+                adata['term'] = $(this).attr('element').val()
+                $.ajax({
+                 type: "POST",
+                 dataType: 'json',
+                 url: $(this).attr('element').data('url'),
+                 async: false,
+                 data: adata,
+                 success: function(data) {
+                      response(data)
+                   },
+               });
+             },
+          //$('.picker_filter_tags').data('url'),
           minLength: 1,
           select: function (ev, ui){
             var tag = ui.item.value
-            if (filter.indexOf(tag) == -1) {
-                filter.push(tag)
+            if (tag_filter.indexOf(tag) == -1) {
+                tag_filter.push(tag)
                 $("#filter_tags").append("<a class=\"nolink\" ><span class=\"filter_tag\" data-id=\""+ tag +"\" style=\"margin-left:6px;\">" + tag + "</span></a>")
             }
-            filter_docs(tag);
+            filter_docs_by_tag(tag);
           }
       });
   }
   
-    var pickers12 = $("tr.document-row .ui-autocomplete-input")
-    if (pickers12.length) {
-        pickers12.autocomplete({
-            open: function(ev, ui) {
-                var thesePickers = $(ev.target).parents('tr.document-row').find('.ui-autocomplete-input')
-                thesePickers.addClass("ui-autocomplete-input-shown")
-                thesePickers.removeClass("ui-autocomplete-input-hidden")
-            },
-            close: function(ev, ui) {
-                var thesePickers = $(ev.target).parents('tr.document-row').find('.ui-autocomplete-input')
-                thesePickers.addClass("ui-autocomplete-input-hidden")
-                thesePickers.removeClass("ui-autocomplete-input-shown")
-            }
+    var filter_docs_by_doc = function(doc) {
+        var tr_docs = $("tr.document-row:visible")
+        tr_docs.each(function(index) {
+            docs = get_docs($(this))
+            if (docs.indexOf(doc) == -1)
+                $(this).hide()
         })
     }
-    
   
-    var filter_docs = function(tag) {
+    var filter_docs_by_collab = function(collab) {
+        var tr_docs = $("tr.document-row:visible")
+        tr_docs.each(function(index) {
+            collabs = get_collabs($(this))
+            if (collabs.indexOf("@"+collab) == -1)
+                $(this).hide()
+        })
+    }
+  
+    var filter_docs_by_tag = function(tag) {
         var tr_docs = $("tr.document-row:visible")
         tr_docs.each(function(index) {
             tags = get_tags($(this))
@@ -159,18 +241,42 @@ $(document).ready(function(){
         })
     }
   
-    var unfilter_docs = function(tag) {
+    var unfilter_docs = function() {
         var tr_docs = $("tr.document-row:hidden")
-        if (filter.length == 0) {
+        if (doc_filter.length == 0 && collab_filter.length == 0 && tag_filter.length == 0) {
             tr_docs.show()
         }
         else {
             tr_docs.each(function(index) {
+                docs = get_docs($(this))
+                collabs = get_collabs($(this))
                 tags = get_tags($(this))
-                if (allIn(filter, tags))
+                if (allIn(doc_filter, docs) && allIn(collab_filter, collabs) && allIn(tag_filter, tags))
                     $(this).show()
             })
         }
+    }
+    
+    var allIn = function(l1, l2) {
+        return l1.length == 0 && l2.length == 0 || l1.every(function(val) { return l2.indexOf(val) >= 0; })
+    }
+    
+    var get_docs = function(tr) {
+        var docs = []
+        var span_docs = tr.find("span.document")
+        span_docs.each(function(index) {
+            docs.push($(this).text())
+        })
+        return docs
+    }
+    
+    var get_collabs = function(tr) {
+        var collabs = []
+        var span_collabs = tr.find("span.sharer")
+        span_collabs.each(function(index) {
+            collabs.push($(this).text())
+        })
+        return collabs
     }
     
     var get_tags = function(tr) {
@@ -182,21 +288,41 @@ $(document).ready(function(){
         return tags
     }
     
-    var allIn = function(l1, l2) {
-        return l1.every(function(val) { return l2.indexOf(val) >= 0; })
-    }
-    
   
-    $("#filter_tags a.nolink").live("click", function (ev) {
-        var tag = ev.target.textContent
-        var index = filter.indexOf(tag)
-        filter.splice(index, 1)
+    $("#filter_docs a.nolink").live("click", function (ev) {
+        var doc = ev.target.textContent
+        var index = doc_filter.indexOf(doc)
+        doc_filter.splice(index, 1)
         index += 1
         var children = $(ev.target).parent().parent().children()
         var child = children.filter(":nth-child("+ index +")")
         child.remove()
         
-        unfilter_docs(tag);
+        unfilter_docs();
+    });
+  
+    $("#filter_collabs a.nolink").live("click", function (ev) {
+        var collab = ev.target.textContent
+        var index = collab_filter.indexOf(collab)
+        collab_filter.splice(index, 1)
+        index += 1
+        var children = $(ev.target).parent().parent().children()
+        var child = children.filter(":nth-child("+ index +")")
+        child.remove()
+        
+        unfilter_docs();
+    });
+  
+    $("#filter_tags a.nolink").live("click", function (ev) {
+        var tag = ev.target.textContent
+        var index = tag_filter.indexOf(tag)
+        tag_filter.splice(index, 1)
+        index += 1
+        var children = $(ev.target).parent().parent().children()
+        var child = children.filter(":nth-child("+ index +")")
+        child.remove()
+        
+        unfilter_docs();
     });
     
   

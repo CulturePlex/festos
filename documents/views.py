@@ -268,6 +268,14 @@ def change_privacy_document(request, pk):
 
 
 @login_required
+def autocomplete_documents_all(request):
+    """ Autocomplete for filtering documents """
+    documents = Document.objects.filter(title__contains=request.POST['term']).values_list('title', flat=True)
+
+    return HttpResponse(json.dumps(list(set(documents))))
+
+
+@login_required
 def add_sharer(request):
     """ Add a user that shares the document """
     doc = Document.objects.get(pk=request.GET['doc_id'])
@@ -303,6 +311,14 @@ def autocomplete_users(request, pk):
                         .exclude(id=-1).exclude(id = document.owner.id)\
                         .filter(username__contains=request.POST['term'])\
                         .values_list('username', flat=True)
+
+    return HttpResponse(json.dumps(list(users)))
+
+
+@login_required
+def autocomplete_users_all(request):
+    """ Autocomplete for filtering users """
+    users = User.objects.filter(username__contains=request.POST['term']).values_list('username', flat=True)
 
     return HttpResponse(json.dumps(list(users)))
 
@@ -352,7 +368,7 @@ def autocomplete_taggit_tags(request, pk):
 
 @login_required
 def autocomplete_taggit_tags_all(request):
-    """ Autocomplete for adding taggit_tags """
+    """ Autocomplete for filtering taggit_tags """
 #    document = Document.objects.get(pk=pk)
 #    taggit_tags = Tag.objects.exclude(name__in=document.taggit_tags\
 #                        .filter(name__contains=request.POST['term'])\

@@ -58,6 +58,22 @@
     border-color:transparent #3cb371 transparent transparent;
 }
 
+#filter_collabs .nolink span.filter_collab {
+    background:#3cb371;
+}
+
+#filter_collabs .nolink span.filter_collab:before {
+    border-color:transparent #3cb371 transparent transparent;
+}
+
+#filter_docs .nolink span.filter_doc {
+    background:#cd5c5c;
+}
+
+#filter_docs .nolink span.filter_doc:before {
+    border-color:transparent #cd5c5c transparent transparent;
+}
+
 .nolink span:hover {background:#555;}
 
 .nolink span:hover:before {border-color:transparent #555 transparent transparent;}
