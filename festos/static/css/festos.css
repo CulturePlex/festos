@@ -37,6 +37,7 @@ a.nolink{
 a.nolink:hover{
   background: white url(../img/remove.png) no-repeat right 7px;
   padding-right: 14px;
+  margin-right: 10px;
   cursor: pointer;
 }
 
