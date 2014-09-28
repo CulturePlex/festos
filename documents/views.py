@@ -278,10 +278,10 @@ def autocomplete_documents_all(request):
 @login_required
 def add_sharer(request):
     """ Add a user that shares the document """
-    doc = Document.objects.get(pk=request.GET['doc_id'])
+    doc = Document.objects.get(pk=request.POST['doc_id'])
     if not (request.user.has_perm('access_document', doc)):
                 raise PermissionDenied
-    usr = User.objects.get(username=request.GET['username'])
+    usr = User.objects.get(username=request.POST['username'])
     assign_perm('documents.access_document', usr, doc)
     return HttpResponse(
         json.dumps({'status': 'ok'}), content_type="application/json")

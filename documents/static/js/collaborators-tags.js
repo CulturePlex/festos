@@ -27,7 +27,7 @@ $(document).ready(function(){
               url: "add_sharer/",
               data: adata,
               dataType: 'json',
-              type: 'GET',
+              type: 'POST',
               success: function(payload) {
                 var user = adata['username']
                 $(ev.target).prev().append("<a class=\"nolink\" href=\"#\"><span class=\"sharer\" data-id=\""+ user +"\">@" + user + "</span></a>")
@@ -118,6 +118,16 @@ $(document).ready(function(){
             }
         })
     }
+    
+    
+    var all_pickers = $(".ui-autocomplete-input")
+    if (all_pickers.length) {
+        all_pickers.autocomplete({
+            close: function(ev, ui) {
+                $(this).val("")
+            }
+        })
+    }
   
   
     var tag_filter = [];
@@ -175,7 +185,7 @@ $(document).ready(function(){
           minLength: 1,
           select: function (ev, ui){
             var collab = ui.item.value
-            if (collab_filter.indexOf(collab) == -1) {
+            if (collab_filter.indexOf("@"+collab) == -1) {
                 collab_filter.push("@"+collab)
                 $("#filter_collabs").append("<a class=\"nolink\" ><span class=\"filter_collab\" data-id=\""+ collab +"\" style=\"margin-left:6px;\">@" + collab + "</span></a>")
             }
