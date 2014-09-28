@@ -214,6 +214,30 @@ $(document).ready(function(){
       });
   }
   
+  $("a.nolink span.sharer").live("click", function(ev) {
+//    ev.preventDefault()
+//    ev.stopPropagation()
+    var collab = ev.target.textContent.slice(1)
+    if (collab_filter.indexOf(collab) == -1) {
+        collab_filter.push("@"+collab)
+        $("#filter_collabs").append("<a class=\"nolink\" ><span class=\"filter_collab\" data-id=\""+ collab +"\" style=\"margin-left:6px;\">@" + collab + "</span></a>")
+    }
+    filter_docs_by_collab(collab);
+    return false
+  })
+  
+  $("a.nolink span.taggit_tag").live("click", function(ev) {
+//    ev.preventDefault()
+//    ev.stopPropagation()
+    var tag = ev.target.textContent
+    if (tag_filter.indexOf(tag) == -1) {
+        tag_filter.push(tag)
+        $("#filter_tags").append("<a class=\"nolink\" ><span class=\"filter_tag\" data-id=\""+ tag +"\" style=\"margin-left:6px;\">" + tag + "</span></a>")
+    }
+    filter_docs_by_tag(tag);
+    return false
+  })
+  
     var filter_docs_by_doc = function(doc) {
         var tr_docs = $("tr.document-row:visible")
         tr_docs.each(function(index) {
@@ -329,25 +353,25 @@ $(document).ready(function(){
     $("#sharers a.nolink").live("click", function (ev) {
         ev.preventDefault()
         var document_id = $(ev.target).parents("tr").data("id")
-        var user = ev.target.textContent.slice(1)
+        var user1 = ev.target.children[0].textContent.slice(1)
         var adata = {}
         adata["doc_id"] = document_id
-        adata["username"] = user
+        adata["username"] = user1
         $.ajax({
           url: "remove_sharer/",
           data: adata,
           dataType: 'json',
           type: 'POST',
           success: function(payload){
-            var user = ev.target.textContent
+            var user2 = "@"+user1
             var user_list = []
             var collaborators = $(ev.target).parents('#sharers')
             collaborators.find(".sharer").each(function(index, data) {
                 user_list.push(data.textContent)
             })
-            var index = user_list.indexOf(user) + 1
-            var collaborator = collaborators.children().filter(":nth-child("+ index +")")
-            collaborator.remove()
+            var index = user_list.indexOf(user2) + 1
+            var user3 = collaborators.children().filter(":nth-child("+ index +")")
+            user3.remove()
           }})
     });
     
@@ -355,25 +379,25 @@ $(document).ready(function(){
     $("#taggit_tags a.nolink").live("click", function (ev) {
         ev.preventDefault()
         var document_id = $(ev.target).parents("tr").data("id")
-        var tag = ev.target.textContent
+        var tag1 = ev.target.children[0].textContent
         var adata = {}
         adata["doc_id"] = document_id
-        adata["tag"] = tag
+        adata["tag"] = tag1
         $.ajax({
           url: "remove_taggit_tag/",
           data: adata,
           dataType: 'json',
           type: 'POST',
           success: function(payload){
-            var tag = ev.target.textContent
+            var tag2 = tag1
             var tag_list = []
             var tags = $(ev.target).parents('#taggit_tags')
             tags.find(".taggit_tag").each(function(index, data) {
                 tag_list.push(data.textContent)
             })
-            var index = tag_list.indexOf(tag) + 1
-            var tag2 = tags.children().filter(":nth-child("+ index +")")
-            tag2.remove()
+            var index = tag_list.indexOf(tag2) + 1
+            var tag3 = tags.children().filter(":nth-child("+ index +")")
+            tag3.remove()
           }})
     });
 

@@ -50,11 +50,11 @@
     box-shadow:-1px -1px 2px #004977;
     }
 
-#sharers .nolink span.sharer {
+.nolink span.sharer {
     background:#3cb371;
 }
 
-#sharers .nolink span.sharer:before {
+.nolink span.sharer:before {
     border-color:transparent #3cb371 transparent transparent;
 }
 
