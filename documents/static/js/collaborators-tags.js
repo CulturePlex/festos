@@ -328,7 +328,7 @@ $(document).ready(function(){
         var index = doc_filter.indexOf(doc)
         doc_filter.splice(index, 1)
         index += 1
-        var children = $(ev.target).parent().parent().children()
+        var children = $(ev.target).parent().parent().children().first().children()
         var child = children.filter(":nth-child("+ index +")")
         child.remove()
         
@@ -340,7 +340,7 @@ $(document).ready(function(){
         var index = collab_filter.indexOf(collab)
         collab_filter.splice(index, 1)
         index += 1
-        var children = $(ev.target).parent().parent().children()
+        var children = $(ev.target).parent().parent().children().first().children()
         var child = children.filter(":nth-child("+ index +")")
         child.remove()
         
@@ -352,7 +352,7 @@ $(document).ready(function(){
         var index = tag_filter.indexOf(tag)
         tag_filter.splice(index, 1)
         index += 1
-        var children = $(ev.target).parent().parent().children()
+        var children = $(ev.target).parent().parent().children().first().children()
         var child = children.filter(":nth-child("+ index +")")
         child.remove()
         
@@ -410,5 +410,10 @@ $(document).ready(function(){
             tag3.remove()
           }})
     });
+    
+  
+  $("a.nolink span.filter_collab, a.nolink span.filter_tag, ").live("click", function(ev) {
+    return false
+  })
 
 })

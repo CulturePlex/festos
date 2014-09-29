@@ -77,3 +77,21 @@
 .nolink span:hover {background:#555;}
 
 .nolink span:hover:before {border-color:transparent #555 transparent transparent;}
+
+.nolink span.filter_collab:hover {
+    background:#3cb371;
+    cursor: default;
+}
+
+.nolink span.filter_collab:hover:before {
+    border-color:transparent #3cb371 transparent transparent;
+}
+
+.nolink span.filter_tag:hover {
+    background:#0089e0;
+    cursor: default;
+}
+
+.nolink span.filter_tag:hover:before {
+    border-color:transparent #0089e0 transparent transparent;
+}
