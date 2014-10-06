@@ -10,7 +10,8 @@ from documents.utils import rename_files_recursively
 from django.db import models
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
-from docviewer.models import Document as Docviewer_Document, Page, Annotation, Edition
+from docviewer.models import (
+    Document as Docviewer_Document, Page, Annotation, Edition)
 from guardian.shortcuts import get_users_with_perms
 
 
@@ -53,7 +54,7 @@ class Document(Docviewer_Document):
         for ann in anns:
             new.annotations_set.create(
                 title=ann.title,
-                location=ann.title,
+                location=ann.location,
                 page=ann.page,
                 content=ann.content,
                 author=ann.author,

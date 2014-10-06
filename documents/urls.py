@@ -36,5 +36,7 @@ urlpatterns = patterns(
 #        'documents.views.remove_taggit_tag', name="remove_taggit_tag"),
     url(r"remove_taggit_tag/$",
         'documents.views.remove_taggit_tag', name="remove_taggit_tag"),
+    url(r'^clone/(?P<pk>\d+)/', 'documents.views.clone_document',
+        name='clone_document'),
     url(r'^progress/$', 'documents.views.progress', {}, 'documents_progress'),
 )

@@ -378,6 +378,14 @@ def autocomplete_taggit_tags_all(request):
     return HttpResponse(json.dumps(list(taggit_tags)))
 
 
+@login_required
+def clone_document(request, pk):
+    """ Clone a document """
+    document = Document.objects.get(pk=pk)
+    document.clone()
+    return HttpResponseRedirect(reverse('documents.views.list_documents'))
+
+
 def progress(request):
     """
     Get the number of progressed pages for this document

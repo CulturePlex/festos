@@ -78,6 +78,7 @@
         <a data-toggle="tooltip" data-placement="bottom" id="retry" title="Retry" href="{% url 'retry_document' document.pk %}" data-document-id="{{ document.id }}" class="FAILED"><i class="icon-repeat"></i></a>
         <a data-toggle="tooltip" data-placement="bottom" id="cancel-remove" title="Cancel" class="CANCEL-PROCESSING CANCEL-FAILED CANCEL-READY"><i class="icon-ban-circle"></i>
         <a data-toggle="tooltip" data-placement="bottom" id="cancel" title="Cancel" class="PROCESSING FAILED"><i class="icon-ban-circle"></i>
+        <a href="{% url 'clone_document' document.pk %}" data-toggle="tooltip" data-placement="bottom" id="clone" title="Clone" data-document-id="{{ document.id }}" class="READY"><i class="icon-repeat"></i></a>
         <a data-toggle="tooltip" data-placement="bottom" id="remove" title="Remove" data-document-id="{{ document.id }}" class="READY"><i class="icon-trash"></i></a>
       </td>
     </tr>
