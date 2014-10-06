@@ -51,3 +51,16 @@ def count_processed_pages(document):
 #    elems = [e for e in _total_pages(document) if _is_processed(e)]
     elems = [e for e in _total_pages_a(document) if _is_processed(e)]
     return len(elems)
+
+def rename_files_recursively(directory, old, new):
+#    import ipdb;ipdb.set_trace()
+    for elem in os.listdir(directory):
+        path = os.path.join(directory, elem)
+        if os.path.isfile(path):
+#            import ipdb;ipdb.set_trace()
+            old_name = path
+            new_name = old_name.replace(old, new)
+            os.rename(old_name, new_name)
+        elif os.path.isdir(path) and not elem.startswith('.'):
+            subdir = path
+            rename_files_recursively(subdir, old, new)
