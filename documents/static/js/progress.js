@@ -73,11 +73,11 @@ $(document).ready(function(){
               
               var tr_document = doc_st.parent();
               var doc_ttl = tr_document.children(".document-title");
-              var span_ttl = doc_ttl.children().first();
+              var span_ttl = doc_ttl.children().first().children().first();
               if(span_ttl.has('a').length == 0) {
-                var ttl = span_ttl.attr('title');
+                var ttl = span_ttl.data('title');
                 var href = span_ttl.attr('data-href');
-                span_ttl.html('<a href="'+href+'" style="">'+ttl+'</a>');   
+                span_ttl.html('<a href="'+href+'" style="">'+ttl+'</a>');
               }
             }
             else if(dict["status"] == "waiting") {
