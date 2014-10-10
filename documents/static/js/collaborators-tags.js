@@ -99,6 +99,7 @@ $(document).ready(function(){
           if(e.keyCode == 13)
           {
               $(this).trigger("enterKey");
+              $(this).val("")
           }
       });
   }
