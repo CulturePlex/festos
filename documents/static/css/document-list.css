@@ -13,3 +13,7 @@ tr.document-row .ui-autocomplete-input-shown {
 
 
 .document-actions a:hover {cursor: pointer;}
+
+tr.document-row td {
+    height: 50px;
+}
