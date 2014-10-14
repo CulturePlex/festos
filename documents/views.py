@@ -382,7 +382,7 @@ def autocomplete_taggit_tags_all(request):
 def clone_document(request, pk):
     """ Clone a document """
     document = Document.objects.get(pk=pk)
-    document.clone()
+    document.clone(request.user.username)
     return HttpResponseRedirect(reverse('documents.views.list_documents'))
 
 

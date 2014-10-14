@@ -33,7 +33,7 @@ class Document(Docviewer_Document):
             self, attach_perms=False, with_superusers=False,
             with_group_users=False).exclude(id=self.owner.id)
     
-    def clone(self):
+    def clone(self, user):
         """ It clones pages, annotations, editions and zotero tags.
             It copies collaborators and taggit tags."""
         # Clone document
@@ -41,6 +41,7 @@ class Document(Docviewer_Document):
         new.id = None
         new.pk = None
         new.slug = None
+        new.owner = User.objects.get(username=user)
         new.save()
         # Clone pages
         pages = self.pages_set.all()
