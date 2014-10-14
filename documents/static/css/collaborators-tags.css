@@ -95,3 +95,7 @@
 .nolink span.filter_tag:hover:before {
     border-color:transparent #0089e0 transparent transparent;
 }
+
+tr.document-row.hidden-by-filter, tr.document-row.hidden-by-pagination {
+    display: none;
+}

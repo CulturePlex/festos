@@ -249,44 +249,45 @@ $(document).ready(function(){
   })
   
     var filter_docs_by_doc = function(doc) {
-        var tr_docs = $("tr.document-row:visible")
+        var tr_docs = $("tr.document-row")
         tr_docs.each(function(index) {
             docs = get_docs($(this))
             if (docs.indexOf(doc) == -1)
-                $(this).hide()
+                $(this).addClass("hidden-by-filter")
         })
     }
   
     var filter_docs_by_collab = function(collab) {
-        var tr_docs = $("tr.document-row:visible")
+        var tr_docs = $("tr.document-row")
         tr_docs.each(function(index) {
             collabs = get_collabs($(this))
             if (collabs.indexOf("@"+collab) == -1)
-                $(this).hide()
+                $(this).addClass("hidden-by-filter")
         })
     }
   
     var filter_docs_by_tag = function(tag) {
-        var tr_docs = $("tr.document-row:visible")
+        var tr_docs = $("tr.document-row")
         tr_docs.each(function(index) {
             tags = get_tags($(this))
             if (tags.indexOf(tag) == -1)
-                $(this).hide()
+                $(this).addClass("hidden-by-filter")
         })
     }
   
     var unfilter_docs = function() {
-        var tr_docs = $("tr.document-row:hidden")
+        var tr_docs = $("tr.hidden-by-filter")
         if (doc_filter.length == 0 && collab_filter.length == 0 && tag_filter.length == 0) {
-            tr_docs.show()
+            tr_docs.removeClass("hidden-by-filter")
         }
         else {
             tr_docs.each(function(index) {
                 docs = get_docs($(this))
                 collabs = get_collabs($(this))
                 tags = get_tags($(this))
-                if (allIn(doc_filter, docs) && allIn(collab_filter, collabs) && allIn(tag_filter, tags))
-                    $(this).show()
+                if (allIn(doc_filter, docs) && allIn(collab_filter, collabs) && allIn(tag_filter, tags)) {
+                    $(this).removeClass("hidden-by-filter")
+                }
             })
         }
     }

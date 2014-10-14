@@ -5,17 +5,21 @@
 {% block extra_css %}
 <link href="{{ STATIC_PREFIX }}css/document-list.css" rel="stylesheet">
 <link href="{{ STATIC_PREFIX }}css/collaborators-tags.css" rel="stylesheet">
+<link href="{{ STATIC_PREFIX }}css/simplePagination.css" rel="stylesheet">
 {% endblock %}
 
 
 {% block extra_js %}
 <script type="text/javascript" src="{{ STATIC_PREFIX }}js/progress.js"></script>
 <script type="text/javascript" src="{{ STATIC_PREFIX }}js/collaborators-tags.js"></script>
+<script type="text/javascript" src="{{ STATIC_PREFIX }}js/jquery.simplePagination.js"></script>
+<script type="text/javascript" src="{{ STATIC_PREFIX }}js/paginator.js"></script>
 {% endblock %}
 
 
 {% block content %}
 {% if documents %}
+<div id="pagination"></div>
 <table class="table">
   <thead>
     <tr>
