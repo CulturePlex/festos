@@ -19,7 +19,6 @@
 
 {% block content %}
 {% if documents %}
-<div id="pagination"></div>
 <table class="table">
   <thead>
     <tr>
@@ -89,6 +88,7 @@
   {% endfor %}
   </tbody>
 </table>
+<div id="pagination"></div>
 {% endif %}
 
 <a href={% url 'add_document' %} class="btn offset4 span3" > {% trans "Upload a new Document" %} </a>
