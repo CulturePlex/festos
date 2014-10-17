@@ -96,6 +96,9 @@
     border-color:transparent #0089e0 transparent transparent;
 }
 
-tr.document-row.hidden-by-filter, tr.document-row.hidden-by-pagination {
+tr.document-row.hidden-by-filter-doc,
+tr.document-row.hidden-by-filter-collab,
+tr.document-row.hidden-by-filter-tag,
+tr.document-row.hidden-by-pagination {
     display: none;
 }

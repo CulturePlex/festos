@@ -102,7 +102,7 @@ $(document).ready(function(){
               $(this).val("")
           }
       });
-  }
+    }
   
     var pickers_collabs_tags = $("tr.document-row .ui-autocomplete-input")
     if (pickers_collabs_tags.length) {
@@ -129,101 +129,70 @@ $(document).ready(function(){
             }
         })
     }
-  
-  
+    
     var tag_filter = [];
     var collab_filter = [];
-    var doc_filter = [];
     
     pickers_filter_docs = $( ".picker_filter_docs" )
-    if ( pickers_filter_docs.length){
-        pickers_filter_docs.autocomplete({
-          source: function(request, response) {
-                adata = { }
-                adata['term'] = $(this).attr('element').val()
-                $.ajax({
-                 type: "POST",
-                 dataType: 'json',
-                 url: $(this).attr('element').data('url'),
-                 async: false,
-                 data: adata,
-                 success: function(data) {
-                      response(data)
-                   },
-               });
-             },
-          //$('.picker_filter_docs').data('url'),
-          minLength: 1,
-          select: function (ev, ui){
-            var doc = ui.item.value
-            if (doc_filter.indexOf(doc) == -1) {
-                doc_filter.push(doc)
-                $("#filter_docs").append("<a class=\"nolink\" ><span class=\"filter_doc\" data-id=\""+ doc +"\" style=\"margin-left:6px;\">" + doc + "</span></a>")
-            }
-            filter_docs_by_doc(doc);
-          }
-      });
-  }
+    pickers_filter_docs.live('change', function(ev) {
+        filter_unfilter_docs_by_doc($(this).val());
+    })
     
     pickers_filter_collabs = $( ".picker_filter_collabs" )
-    if ( pickers_filter_collabs.length){
-        pickers_filter_collabs.autocomplete({
-          source: function(request, response) {
-                adata = { }
-                adata['term'] = $(this).attr('element').val()
-                $.ajax({
-                 type: "POST",
-                 dataType: 'json',
-                 url: $(this).attr('element').data('url'),
-                 async: false,
-                 data: adata,
-                 success: function(data) {
-                      response(data)
-                   },
-               });
-             },
-          //$('.picker_filter_collabs').data('url'),
-          minLength: 1,
-          select: function (ev, ui){
-            var collab = ui.item.value
-            if (collab_filter.indexOf("@"+collab) == -1) {
-                collab_filter.push("@"+collab)
-                $("#filter_collabs").append("<a class=\"nolink\" ><span class=\"filter_collab\" data-id=\""+ collab +"\" style=\"margin-left:6px;\">@" + collab + "</span></a>")
-            }
-            filter_docs_by_collab(collab);
-          }
-      });
-  }
+    pickers_filter_collabs.autocomplete({
+      source: function(request, response) {
+            adata = { }
+            adata['term'] = $(this).attr('element').val()
+            $.ajax({
+             type: "POST",
+             dataType: 'json',
+             url: $(this).attr('element').data('url'),
+             async: false,
+             data: adata,
+             success: function(data) {
+                  response(data)
+               },
+           });
+         },
+      //$('.picker_filter_collabs').data('url'),
+      minLength: 1,
+      select: function (ev, ui){
+        var collab = ui.item.value
+        if (collab_filter.indexOf("@"+collab) == -1) {
+            collab_filter.push("@"+collab)
+            $("#filter_collabs").append("<a class=\"nolink\" ><span class=\"filter_collab\" data-id=\""+ collab +"\" style=\"margin-left:6px;\">@" + collab + "</span></a>")
+        }
+        filter_docs_by_collab(collab);
+      }
+  });
     
     pickers_filter_tags = $( ".picker_filter_tags" )
-    if ( pickers_filter_tags.length){
-        pickers_filter_tags.autocomplete({
-          source: function(request, response) {
-                adata = { }
-                adata['term'] = $(this).attr('element').val()
-                $.ajax({
-                 type: "POST",
-                 dataType: 'json',
-                 url: $(this).attr('element').data('url'),
-                 async: false,
-                 data: adata,
-                 success: function(data) {
-                      response(data)
-                   },
-               });
-             },
-          //$('.picker_filter_tags').data('url'),
-          minLength: 1,
-          select: function (ev, ui){
-            var tag = ui.item.value
-            if (tag_filter.indexOf(tag) == -1) {
-                tag_filter.push(tag)
-                $("#filter_tags").append("<a class=\"nolink\" ><span class=\"filter_tag\" data-id=\""+ tag +"\" style=\"margin-left:6px;\">" + tag + "</span></a>")
-            }
-            filter_docs_by_tag(tag);
-          }
-      });
-  }
+    pickers_filter_tags.autocomplete({
+      source: function(request, response) {
+            adata = { }
+            adata['term'] = $(this).attr('element').val()
+            $.ajax({
+             type: "POST",
+             dataType: 'json',
+             url: $(this).attr('element').data('url'),
+             async: false,
+             data: adata,
+             success: function(data) {
+                  response(data)
+               },
+           });
+         },
+      //$('.picker_filter_tags').data('url'),
+      minLength: 1,
+      select: function (ev, ui){
+        var tag = ui.item.value
+        if (tag_filter.indexOf(tag) == -1) {
+            tag_filter.push(tag)
+            $("#filter_tags").append("<a class=\"nolink\" ><span class=\"filter_tag\" data-id=\""+ tag +"\" style=\"margin-left:6px;\">" + tag + "</span></a>")
+        }
+        filter_docs_by_tag(tag);
+      }
+  });
   
   $("a.nolink span.sharer").live("click", function(ev) {
 //    ev.preventDefault()
@@ -249,61 +218,41 @@ $(document).ready(function(){
     return false
   })
   
-    var filter_docs_by_doc = function(doc) {
+    var filter_unfilter_docs_by_doc = function(term) {
         var tr_docs = $("tr.document-row")
+        tr_docs.removeClass("hidden-by-filter-doc")
         tr_docs.each(function(index) {
-            docs = get_docs($(this))
-            if (docs.indexOf(doc) == -1)
-                $(this).addClass("hidden-by-filter")
+            title = get_title($(this))
+            if (title.indexOf(term) == -1) {
+                $(this).addClass("hidden-by-filter-doc")
+            }
         })
     }
-  
+    
     var filter_docs_by_collab = function(collab) {
         var tr_docs = $("tr.document-row")
         tr_docs.each(function(index) {
             collabs = get_collabs($(this))
             if (collabs.indexOf("@"+collab) == -1)
-                $(this).addClass("hidden-by-filter")
+                $(this).addClass("hidden-by-filter-collab")
         })
     }
-  
+    
     var filter_docs_by_tag = function(tag) {
         var tr_docs = $("tr.document-row")
         tr_docs.each(function(index) {
             tags = get_tags($(this))
             if (tags.indexOf(tag) == -1)
-                $(this).addClass("hidden-by-filter")
+                $(this).addClass("hidden-by-filter-tag")
         })
-    }
-  
-    var unfilter_docs = function() {
-        var tr_docs = $("tr.hidden-by-filter")
-        if (doc_filter.length == 0 && collab_filter.length == 0 && tag_filter.length == 0) {
-            tr_docs.removeClass("hidden-by-filter")
-        }
-        else {
-            tr_docs.each(function(index) {
-                docs = get_docs($(this))
-                collabs = get_collabs($(this))
-                tags = get_tags($(this))
-                if (allIn(doc_filter, docs) && allIn(collab_filter, collabs) && allIn(tag_filter, tags)) {
-                    $(this).removeClass("hidden-by-filter")
-                }
-            })
-        }
     }
     
     var allIn = function(l1, l2) {
         return l1.length == 0 && l2.length == 0 || l1.every(function(val) { return l2.indexOf(val) >= 0; })
     }
     
-    var get_docs = function(tr) {
-        var docs = []
-        var span_docs = tr.find("span.document")
-        span_docs.each(function(index) {
-            docs.push($(this).text())
-        })
-        return docs
+    var get_title = function(tr) {
+        return tr.find("span.document").text()
     }
     
     var get_collabs = function(tr) {
@@ -324,19 +273,6 @@ $(document).ready(function(){
         return tags
     }
     
-  
-    $("#filter_docs a.nolink").live("click", function (ev) {
-        var doc = ev.target.textContent
-        var index = doc_filter.indexOf(doc)
-        doc_filter.splice(index, 1)
-        index += 1
-        var children = $(ev.target).parent().parent().children().first().children()
-        var child = children.filter(":nth-child("+ index +")")
-        child.remove()
-        
-        unfilter_docs();
-    });
-  
     $("#filter_collabs a.nolink").live("click", function (ev) {
         var collab = ev.target.textContent
         var index = collab_filter.indexOf(collab)
@@ -346,9 +282,15 @@ $(document).ready(function(){
         var child = children.filter(":nth-child("+ index +")")
         child.remove()
         
-        unfilter_docs();
+        var tr_docs = $("tr.hidden-by-filter-collab")
+        tr_docs.each(function(index) {
+            collabs = get_collabs($(this))
+            if (allIn(collab_filter, collabs)) {
+                $(this).removeClass("hidden-by-filter-collab")
+            }
+        })
     });
-  
+    
     $("#filter_tags a.nolink").live("click", function (ev) {
         var tag = ev.target.textContent
         var index = tag_filter.indexOf(tag)
@@ -358,7 +300,13 @@ $(document).ready(function(){
         var child = children.filter(":nth-child("+ index +")")
         child.remove()
         
-        unfilter_docs();
+        var tr_docs = $("tr.hidden-by-filter-tag")
+        tr_docs.each(function(index) {
+            tags = get_tags($(this))
+            if (allIn(tag_filter, tags)) {
+                $(this).removeClass("hidden-by-filter-tag")
+            }
+        })
     });
     
   
