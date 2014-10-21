@@ -134,7 +134,7 @@ $(document).ready(function(){
     var collab_filter = [];
     
     pickers_filter_docs = $( ".picker_filter_docs" )
-    pickers_filter_docs.live('change', function(ev) {
+    pickers_filter_docs.live('keyup', function(ev) {
         filter_unfilter_docs_by_doc($(this).val());
     })
     
