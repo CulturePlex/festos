@@ -218,6 +218,24 @@ $(document).ready(function(){
     return false
   })
   
+    var paginate = function() {
+        var items = $("tr.document-row").removeClass("hidden-by-pagination")
+        items = items.not(".hidden-by-filter-doc").not(".hidden-by-filter-collab").not(".hidden-by-filter-tag")
+        var perPage = 2
+        items.slice(perPage).addClass("hidden-by-pagination")
+        $("#pagination").pagination({
+            items: items.length,
+            itemsOnPage: perPage,
+            cssStyle: 'light-theme',
+            onPageClick: function(pageNumber) {
+                items.removeClass("hidden-by-pagination")
+                var showFrom = perPage * (pageNumber - 1)
+                var showTo = showFrom + perPage
+                items.addClass("hidden-by-pagination").slice(showFrom, showTo).removeClass("hidden-by-pagination")
+            }
+        });
+    }
+    
     var filter_unfilter_docs_by_doc = function(term) {
         var tr_docs = $("tr.document-row")
         tr_docs.removeClass("hidden-by-filter-doc")
@@ -227,6 +245,7 @@ $(document).ready(function(){
                 $(this).addClass("hidden-by-filter-doc")
             }
         })
+        paginate()
     }
     
     var filter_docs_by_collab = function(collab) {
@@ -236,6 +255,7 @@ $(document).ready(function(){
             if (collabs.indexOf("@"+collab) == -1)
                 $(this).addClass("hidden-by-filter-collab")
         })
+        paginate()
     }
     
     var filter_docs_by_tag = function(tag) {
@@ -245,6 +265,7 @@ $(document).ready(function(){
             if (tags.indexOf(tag) == -1)
                 $(this).addClass("hidden-by-filter-tag")
         })
+        paginate()
     }
     
     var allIn = function(l1, l2) {
