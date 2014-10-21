@@ -12,6 +12,10 @@ Installation of system dependencies:
 
     sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spa yui-compressor git python-pip python-dev build-essential npm openjdk-7-jre -y
 
+Note: To install rubygems on Ubuntu 14.04::
+
+    sudo apt-get install rubygems-integration
+
 2) You need to install docsplit. Then the docsplit:
 
    a) Install::
