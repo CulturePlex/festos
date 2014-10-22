@@ -70,6 +70,9 @@
       <ul class="nav pull-right">
         {% if user.is_authenticated %}
           {% url 'userena_profile_detail' user as user_url %}
+          <li class="divider-vertical"></li>
+          <li><a href={% url 'add_document' %}> {% trans "Upload a document" %} </a></li>
+          <li class="divider-vertical"></li>
           <li {% if full_path == user_url %} class="active"{% endif %}><a href="{{ user_url }}">@{{ user }}</a></li>
           <li><a href={{ LOGOUT_URL }}>{% trans "Log Out" %}</a></li>
         {% else %}
