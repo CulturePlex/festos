@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+<div class="span12"></div>
+<div class="span8 offset1">
+  <h4>Choose what to copy:</h4>
+  <form action="{% url 'clone_document' document.id %}" enctype="multipart/form-data" method="post" class="form-horizontal">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {% for field in form %}
+        {{ field|bootstrap }}
+      {% endfor %}
+      <input type="submit" value="{% trans 'Copy document' %}" class="btn offset2" />
+  </form>
+</div>
+</div>
+{% endblock %}

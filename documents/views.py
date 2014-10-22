@@ -16,7 +16,7 @@ from haystack.views import SearchView
 from haystack.query import SearchQuerySet
 from haystack.forms import SearchForm
 from models import Document
-from forms import DocumentForm, EditDocumentForm, SearchDocumentForm
+from forms import DocumentForm, EditDocumentForm, SearchDocumentForm, CloneForm
 
 from django_zotero.forms import get_tag_formset
 
@@ -382,8 +382,17 @@ def autocomplete_taggit_tags_all(request):
 def clone_document(request, pk):
     """ Clone a document """
     document = Document.objects.get(pk=pk)
-    document.clone(request.user.username)
-    return HttpResponseRedirect(reverse('documents.views.list_documents'))
+    form = CloneForm()
+    if request.method == 'POST':
+        form = CloneForm(request.POST)
+        if form.is_valid():
+            document.clone(request.user.username, form.cleaned_data)
+            return HttpResponseRedirect(reverse('documents.views.list_documents'))
+    
+    return render_to_response('clone_document.html', {
+        'document': document,
+        'form': form,
+    }, context_instance=RequestContext(request))
 
 
 def progress(request):

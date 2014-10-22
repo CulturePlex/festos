@@ -91,6 +91,34 @@ class DocumentForm(Docviewer_DocumentForm):
         return self.cleaned_data
 
 
+class CloneForm(forms.Form):
+    collaborators = forms.BooleanField(
+        label=_('Collaborators'),
+        required=False,
+#        help_text='Copy the collaborators to the new document',
+    )
+    tags = forms.BooleanField(
+        label=_('Tags'),
+        required=False,
+#        help_text='Copy the tags to the new document',
+    )
+    annotations = forms.BooleanField(
+        label=_('Annotations'),
+        required=False,
+#        help_text='Copy the annotations to the new document',
+    )
+    editions = forms.BooleanField(
+        label=_('Edition history'),
+        required=False,
+#        help_text='Copy the edition history to the new document',
+    )
+    zotero = forms.BooleanField(
+        label=_('Zotero metadata'),
+        required=False,
+#        help_text='Copy Zotero metadata to the new document',
+    )
+
+
 def upload_file_from_url(url):
     filefield_name = u'docfile'
     file_type = u'application/pdf'
