@@ -1,1 +1,10 @@
-Forbidden error (403): access denied
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <h4>Access denied</h4>
+    Please, check you have permission to do this action.
+{% else %}
+    <meta http-equiv="REFRESH" content="0;url={{ LOGIN_URL }}?next={{ request.META.PATH_INFO }}">
+{% endif %}
+{% endblock %}
