@@ -5,11 +5,12 @@ from django.db.models.signals import post_save
 from docviewer.models import document_save
 from django_zotero.models import Tag
 from guardian.shortcuts import assign_perm
-from documents.utils import rename_files_recursively
+from documents.utils import dup_dirs_and_files
 
 from django.db import models
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 from docviewer.models import (
     Document as Docviewer_Document, Page, Annotation, Edition)
 from guardian.shortcuts import get_users_with_perms
@@ -92,13 +93,21 @@ class Document(Docviewer_Document):
             for tag in t_tags:
                 new.taggit_tags.add(tag.name)
         # Duplicate directories and files
-        old_dir = self.get_root_path()
-        new_dir = new.get_root_path()
-        shutil.copytree(old_dir, new_dir)
-        path = os.path.join('media', new_dir)
-        old_slug = self.slug
-        new_slug = new.slug
-        rename_files_recursively(path, old_slug, new_slug)
+        fs = FileSystemStorage()
+        orig_dir_path = self.get_root_path()
+        dest_dir_path = new.get_root_path()
+        orig_slug = self.slug
+        dest_slug = new.slug
+        dup_dirs_and_files(
+            fs,
+            orig_dir_path,
+            dest_dir_path,
+            orig_slug,
+            dest_slug
+        )
+#        shutil.copytree(old_dir, new_dir)
+#        path = os.path.join('media', new_dir)
+#        rename_files_recursively(path, old_slug, new_slug)
 
     class Meta:
         permissions = (
