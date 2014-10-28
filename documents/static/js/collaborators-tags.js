@@ -219,7 +219,8 @@ $(document).ready(function(){
   })
   
     var paginate = function() {
-        var items = $("tr.document-row").removeClass("hidden-by-pagination")
+        var items = $("tr.document-row")
+        items.removeClass("hidden-by-pagination")
         items = items.not(".hidden-by-filter-doc").not(".hidden-by-filter-collab").not(".hidden-by-filter-tag")
         var perPage = 2
         items.slice(perPage).addClass("hidden-by-pagination")
@@ -232,7 +233,11 @@ $(document).ready(function(){
                 var showFrom = perPage * (pageNumber - 1)
                 var showTo = showFrom + perPage
                 items.addClass("hidden-by-pagination").slice(showFrom, showTo).removeClass("hidden-by-pagination")
-            }
+            },
+            displayedPages: 3,
+            edges: 1,
+            prevText: "<",
+            nextText: ">"
         });
     }
     
@@ -310,6 +315,7 @@ $(document).ready(function(){
                 $(this).removeClass("hidden-by-filter-collab")
             }
         })
+        paginate()
     });
     
     $("#filter_tags a.nolink").live("click", function (ev) {
@@ -328,6 +334,7 @@ $(document).ready(function(){
                 $(this).removeClass("hidden-by-filter-tag")
             }
         })
+        paginate()
     });
     
   
