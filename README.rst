@@ -1,4 +1,7 @@
-[![Build Status](https://travis-ci.org/CulturePlex/festos.svg?branch=master)](https://travis-ci.org/CulturePlex/festos) [![Coverage Status](https://img.shields.io/coveralls/CulturePlex/festos.svg)](https://coveralls.io/r/CulturePlex/festos)
+.. image:: https://travis-ci.org/CulturePlex/festos.svg?branch=master
+    :target: https://travis-ci.org/CulturePlex/festos
+.. image:: https://coveralls.io/repos/CulturePlex/festos/badge.png
+   :target: https://coveralls.io/r/CulturePlex/festos
 
 Festos
 ======
