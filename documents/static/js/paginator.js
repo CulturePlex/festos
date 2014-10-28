@@ -12,7 +12,11 @@ $(document).ready(function() {
                 var showFrom = perPage * (pageNumber - 1)
                 var showTo = showFrom + perPage
                 items.addClass("hidden-by-pagination").slice(showFrom, showTo).removeClass("hidden-by-pagination")
-            }
+            },
+            displayedPages: 3,
+            edges: 1,
+            prevText: "<",
+            nextText: ">"
         });
     });
 })
