@@ -1,5 +1,10 @@
 language: python
 python:
   - "2.7"
-install: pip install -r requirements.txt --use-mirrors
-script:  python manage.py test accounts documents
+install:
+  - pip install -r requirements.txt
+  - pip install coverage
+  - pip install coveralls
+script:  coverage run manage.py test accounts documents
+after_success:
+  - coveralls

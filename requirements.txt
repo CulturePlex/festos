@@ -1,5 +1,3 @@
-
--e git://github.com/CulturePlex/django-docviewer.git#egg=django-docviewer
 Django==1.5.4
 Pillow==2.2.1
 amqp==1.0.13
@@ -40,3 +38,4 @@ six==1.4.1
 splinter==0.6.0
 -e git://github.com/robertour/userena-bootstrap.git@7c9ddafa1c940f6ad972551ab5517e0ac9dd9f59#egg=userena_bootstrap-dev
 wsgiref==0.1.2
+-e git://github.com/CulturePlex/django-docviewer.git#egg=django-docviewer
