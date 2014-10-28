@@ -5,6 +5,8 @@
     <h4>Access denied</h4>
     Please, check you have permission to do this action.
 {% else %}
-    <meta http-equiv="REFRESH" content="0;url={{ LOGIN_URL }}?next={{ request.META.PATH_INFO }}">
+    <h4>Access denied</h4>
+    Please, <a href="{{ LOGIN_URL }}">log in</a>.
+    <meta http-equiv="REFRESH" content="2;url={{ LOGIN_URL }}?next={{ request.META.PATH_INFO }}">
 {% endif %}
 {% endblock %}
