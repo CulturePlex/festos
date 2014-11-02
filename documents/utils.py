@@ -1,6 +1,6 @@
 import os
 import re
-from django.core.files.storage import FileSystemStorage
+#from django.core.files.storage import FileSystemStorage
 from haystack.utils import Highlighter
 
 
@@ -67,7 +67,7 @@ def rename_files_recursively(directory, old, new):
             rename_files_recursively(subdir, old, new)
 
 def dup_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
-    os.makedirs(dest_dir_path)
+#    os.makedirs(dest_dir_path)
     listdir = fs.listdir(orig_dir_path)
     
     dir_list = listdir[0]
@@ -89,5 +89,6 @@ def dup_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
         orig_file_path = os.path.join(orig_dir_path, orig_name)
         dest_file_path = os.path.join(dest_dir_path, dest_name)
         orig = fs.open(orig_file_path, 'r')
-        dest = fs.open(dest_file_path, 'w')
-        dest.write(orig.read())
+#        dest = fs.open(dest_file_path, 'w')
+#        dest.write(orig.read())
+        fs.save(dest_file_path, orig)
