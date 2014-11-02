@@ -78,10 +78,10 @@ class Document(Docviewer_Document):
             z_tags = Tag.get_tags(self)
             for tag in z_tags:
                 new_t = deepcopy(tag)
-                new_t.set_object(new)
                 new_t.id = None
                 new_t.pk = None
-                new_t.save()
+                new_t.set_object(new)
+#                new_t.save() not necessary
         # Copy collaborators
         if options['collaborators']:
             collabs = self.get_users_with_perms()

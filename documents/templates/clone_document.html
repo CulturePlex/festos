@@ -3,6 +3,7 @@
 {% load i18n %}
 
 {% block content %}
+{{ form.media }}
 <div class="row">
 <div class="span12"></div>
 <div class="span8 offset1">
@@ -11,7 +12,15 @@
       {% csrf_token %}
       {{ form.non_field_errors }}
       {% for field in form %}
-        {{ field|bootstrap }}
+        {% if field.name != 'pages' and field.name != 'all_fields' %}
+        <div class="clonable-field">
+          {{ field|bootstrap }}
+        </div>
+        {% else %}
+        <div class="non-clonable-field">
+          {{ field|bootstrap }}
+        </div>
+        {% endif %}
       {% endfor %}
       <input type="submit" value="{% trans 'Copy document' %}" class="btn offset2" />
   </form>

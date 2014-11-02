@@ -92,31 +92,44 @@ class DocumentForm(Docviewer_DocumentForm):
 
 
 class CloneForm(forms.Form):
+    pages = forms.BooleanField(
+        label=_('Pages'),
+        required=False,
+        initial=True,
+    )
     collaborators = forms.BooleanField(
         label=_('Collaborators'),
         required=False,
-#        help_text='Copy the collaborators to the new document',
     )
     tags = forms.BooleanField(
         label=_('Tags'),
         required=False,
-#        help_text='Copy the tags to the new document',
     )
     annotations = forms.BooleanField(
         label=_('Annotations'),
         required=False,
-#        help_text='Copy the annotations to the new document',
     )
     editions = forms.BooleanField(
         label=_('Edition history'),
         required=False,
-#        help_text='Copy the edition history to the new document',
     )
     zotero = forms.BooleanField(
         label=_('Zotero metadata'),
         required=False,
-#        help_text='Copy Zotero metadata to the new document',
     )
+    all_fields = forms.BooleanField(
+        label=_('All'),
+        required=False,
+    )
+    
+    def __init__(self, *args, **kwargs):
+        super(CloneForm, self).__init__(*args, **kwargs)
+        self.fields['pages'].widget.attrs['disabled'] = True
+    
+    class Media:
+        js = (
+            'js/clone.js',
+        )
 
 
 def upload_file_from_url(url):
