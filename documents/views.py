@@ -24,7 +24,7 @@ import simplejson as json
 from taggit.models import Tag
 from docviewer.models import Annotation
 from utils import count_processed_pages, count_total_pages
-#from docviewer.utils import format_datetimediff
+from documents.utils import send_email
 
 
 class SearchDocumentView(SearchView):
@@ -283,6 +283,10 @@ def add_sharer(request):
                 raise PermissionDenied
     usr = User.objects.get(username=request.POST['username'])
     assign_perm('documents.access_document', usr, doc)
+    try:
+        send_email(request.user.username, usr, doc)
+    except:
+        pass
     return HttpResponse(
         json.dumps({'status': 'ok'}), content_type="application/json")
 

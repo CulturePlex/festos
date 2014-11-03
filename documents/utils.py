@@ -1,6 +1,12 @@
 import os
 import re
-#from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
+from django.template import Context, loader
+from docviewer.utils import create_email
 from haystack.utils import Highlighter
 
 
@@ -92,3 +98,46 @@ def dup_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
 #        dest = fs.open(dest_file_path, 'w')
 #        dest.write(orig.read())
         fs.save(dest_file_path, orig)
+
+def send_email(author, collaborator, document):
+    email_content = create_email(author, collaborator, document)
+    user_target = User.objects.get(username=collaborator)
+    emails = [collaborator.email]
+    try:
+        send_mail(
+            settings.PROJECT_NAME + \
+                ' - %s has added you as collaborator' % author,
+            email_content,
+            settings.DEFAULT_FROM_EMAIL,
+            emails,
+            fail_silently=False
+        )
+    except Exception as e:
+        'email could not be sent.'
+
+
+def create_email(author, collaborator, document):
+    title = document.title
+    filename = document.docfile_basename
+    doc_url = get_absolute_url(reverse(
+        "docviewer_viewer_view",
+        kwargs={'pk': document.pk, 'slug': document.slug}
+    ))
+    template = loader.get_template('email_add_collaborator.html')
+    context = Context({
+        'username': author,
+        'collaborator': collaborator,
+        'document': '{} - {}'.format(title, filename),
+        'url': doc_url,
+    })
+    message = template.render(context)
+    return message
+
+
+SITE = Site.objects.get_current()
+
+
+def get_absolute_url(relative_url):
+    if relative_url and (relative_url[0:7] == 'http://' or relative_url[0:8] == 'https://'):
+        return relative_url
+    return "http://%s%s" % (SITE.domain, relative_url)
