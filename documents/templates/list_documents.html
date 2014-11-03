@@ -43,7 +43,7 @@
     <tr class="document-row" data-id="{{ document.id }}">
       <td class="document-title">
           <div id="documents_cell">
-          <span class="document" data-href="{{ document.get_absolute_url }}" data-title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{% if document.status == "ready" %}<a href="{{ document.get_absolute_url }}" style="text-decoration:none;">{{ document.title }}</a>{% else %}{{ document.title }}{% endif %}</span> <br/> <span style="color:gray; font-size:75%" data-title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span>
+          <span class="document" data-href="{{ document.get_absolute_url }}" data-title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{% if document.status == "ready" or document.status == "copied" %}<a href="{{ document.get_absolute_url }}" style="text-decoration:none;">{{ document.title }}</a>{% else %}{{ document.title }}{% endif %}</span> <br/> <span style="color:gray; font-size:75%" data-title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span>
           </div></td>
       <td class="document-collaborators">
           <div id="sharers_cell">
@@ -89,9 +89,15 @@
   {% endfor %}
   </tbody>
 </table>
-<a id="document-list-all">Show all</a>
-<a class="hide" id="document-list-latest">Show latest</a>
-<div id="pagination"></div>
+<!--<div id="pagination-container" style="float: left; position:absolute;">-->
+    <div class="light-theme simple-pagination">
+        <ul id="show-all">
+            <li><a class="page-link" id="document-list-all">Show all</a></li>
+            <li><a class="page-link hide" id="document-list-latest">Show newest</a></li>
+        </ul>
+    </div>
+    <div id="pagination"></div>
+<!--</div>-->
 {% endif %}
 
 <a href={% url 'add_document' %} class="btn offset4 span3" > {% trans "Upload a document" %} </a>
