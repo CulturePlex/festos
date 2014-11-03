@@ -1,0 +1,7 @@
+.hide #document-list-all, .hide #document-list-latest {
+  display: none;
+}
+
+#document-list-all:hover, #document-list-latest:hover {
+  cursor: pointer;
+}

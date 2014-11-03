@@ -219,26 +219,32 @@ $(document).ready(function(){
   })
   
     var paginate = function() {
-        var items = $("tr.document-row")
-        items.removeClass("hidden-by-pagination")
-        items = items.not(".hidden-by-filter-doc").not(".hidden-by-filter-collab").not(".hidden-by-filter-tag")
-        var perPage = 2
-        items.slice(perPage).addClass("hidden-by-pagination")
-        $("#pagination").pagination({
-            items: items.length,
-            itemsOnPage: perPage,
-            cssStyle: 'light-theme',
-            onPageClick: function(pageNumber) {
-                items.removeClass("hidden-by-pagination")
-                var showFrom = perPage * (pageNumber - 1)
-                var showTo = showFrom + perPage
-                items.addClass("hidden-by-pagination").slice(showFrom, showTo).removeClass("hidden-by-pagination")
-            },
-            displayedPages: 3,
-            edges: 1,
-            prevText: "<",
-            nextText: ">"
-        });
+        if ($("div#pagination").is(":visible")) {
+            var items = $("tr.document-row")
+            items.removeClass("hidden-by-pagination")
+            items = items.not(".hidden-by-filter-doc").not(".hidden-by-filter-collab").not(".hidden-by-filter-tag")
+            var perPage = 2
+            items.slice(perPage).addClass("hidden-by-pagination")
+            $("#pagination").pagination({
+                items: items.length,
+                itemsOnPage: perPage,
+                cssStyle: 'light-theme',
+                onPageClick: function(pageNumber) {
+                    items.removeClass("hidden-by-pagination")
+                    var showFrom = perPage * (pageNumber - 1)
+                    var showTo = showFrom + perPage
+                    items.addClass("hidden-by-pagination").slice(showFrom, showTo).removeClass("hidden-by-pagination")
+                },
+                displayedPages: 3,
+                edges: 1,
+                prevText: "<",
+                nextText: ">"
+            });
+        }
+        else {
+            var items = $("tr.document-row")
+            items.removeClass("hidden-by-pagination")
+        }
     }
     
     var filter_unfilter_docs_by_doc = function(term) {

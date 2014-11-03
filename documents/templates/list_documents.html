@@ -6,6 +6,7 @@
 <link href="{{ STATIC_PREFIX }}css/document-list.css" rel="stylesheet">
 <link href="{{ STATIC_PREFIX }}css/collaborators-tags.css" rel="stylesheet">
 <link href="{{ STATIC_PREFIX }}css/simplePagination.css" rel="stylesheet">
+<link href="{{ STATIC_PREFIX }}css/paginator.css" rel="stylesheet">
 {% endblock %}
 
 
@@ -88,6 +89,8 @@
   {% endfor %}
   </tbody>
 </table>
+<a id="document-list-all">Show all</a>
+<a class="hide" id="document-list-latest">Show latest</a>
 <div id="pagination"></div>
 {% endif %}
 
