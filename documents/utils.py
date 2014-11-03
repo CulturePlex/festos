@@ -134,10 +134,8 @@ def create_email(author, collaborator, document):
     return message
 
 
-SITE = Site.objects.get_current()
-
-
 def get_absolute_url(relative_url):
+    SITE = Site.objects.get_current()
     if relative_url and (relative_url[0:7] == 'http://' or relative_url[0:8] == 'https://'):
         return relative_url
     return "http://%s%s" % (SITE.domain, relative_url)
