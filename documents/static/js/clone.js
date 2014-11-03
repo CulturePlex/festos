@@ -4,8 +4,10 @@ $(document).ready(function() {
     })
     
     $(".clonable-field input").live("click", function(ev) {
-        if ($(this).not(":checked"))
+        if (!$(this).is(":checked"))
            $(".non-clonable-field #id_all_fields").prop("checked", false);
+        if ($(".clonable-field input").not(":checked").length == 0)
+           $(".non-clonable-field #id_all_fields").prop("checked", true);
     })
 })
 
