@@ -43,6 +43,9 @@ class Document(Docviewer_Document):
         new.pk = None
         new.slug = None
         new.owner = User.objects.get(username=user)
+        new.status = self.STATUS.copied
+        new.task_error = ''
+        new.add_info('cloned', self.get_absolute_url())
         new.save()
         # Clone pages
         pages = self.pages_set.all()
@@ -81,7 +84,7 @@ class Document(Docviewer_Document):
                 new_t.id = None
                 new_t.pk = None
                 new_t.set_object(new)
-#                new_t.save() not necessary
+#                new_t.save() Not necessary - set_object saves the object
         # Copy collaborators
         if options['collaborators']:
             collabs = self.get_users_with_perms()
