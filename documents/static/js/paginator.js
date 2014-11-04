@@ -19,6 +19,8 @@ $(document).ready(function() {
             nextText: ">"
         });
     });
+    if (items.length <= perPage)
+        $("div#paginator").hide()
     
     $("#document-list-all").live("click", function(ev) {
         $(this).addClass("hide")
