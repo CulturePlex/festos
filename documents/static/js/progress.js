@@ -80,6 +80,39 @@ $(document).ready(function(){
                 span_ttl.html('<a href="'+href+'" style="">'+ttl+'</a>');
               }
             }
+            else if(dict["status"] == "copied"){
+              var docSt = doc_st.attr("data-actions-state-machine");
+              if (!(docSt && docSt.indexOf("CANCEL-") == 0))
+                doc_st.attr("data-actions-state-machine", "READY");
+              div_content.addClass("label-info");
+              var doc_error = $(".document-info#"+doc_id);
+              if(dict["error"]) {
+                doc_error.attr("data-original-title", dict["error"]);
+                doc_error.show();
+              }
+              //if(dict["total_time"] > "0") {
+                //var title = doc_error.attr("data-original-title");
+                //if (title)
+                //    title += ". ";
+                //title += "Total processing time: " + dict["total_time"];
+                //doc_error.attr("data-original-title", title);
+                //doc_error.show();
+              //}
+              hookTooltips(doc_error);
+              
+              var tr_document = doc_st.parent();
+              var doc_ttl = tr_document.children(".document-title");
+              var span_ttl = doc_ttl.children().first().children().first();
+              if(span_ttl.has('a').length == 0) {
+                var ttl = span_ttl.data('title');
+                var href = span_ttl.attr('data-href');
+                span_ttl.html('<a href="'+href+'" style="">'+ttl+'</a>');
+              }
+              var sp = doc_st.find("span")
+              var old_html = sp.html()
+              var new_html = '<a href="'+dict["original"]+'">'+old_html+'</a>'
+              sp.html(new_html)
+            }
             else if(dict["status"] == "waiting") {
               var docSt = doc_st.attr("data-actions-state-machine");
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))

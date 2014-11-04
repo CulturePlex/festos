@@ -419,7 +419,8 @@ def progress(request):
             num_pages = count_processed_pages(document)
             total_pages = document.page_count
 #            total_time = 0
-        elif document.status == Document.STATUS.ready:
+        elif document.status == Document.STATUS.ready or \
+                document.status == Document.STATUS.copied:
             num_pages = document.page_count
             total_pages = document.page_count
         else:
@@ -430,8 +431,9 @@ def progress(request):
             'status': document.status,
             'num_pages': num_pages,
             'total_pages': total_pages,
-            'error': document.task_error,
+            'error': document.get_info(),
             'position': get_position(document),
+            'original': document.get_info_dict().get('cloned', ''),
 #            'total_time': total_time,
         }
     
