@@ -6,13 +6,11 @@
   cursor: pointer;
 }
 
-.simple-pagination ul#show-all {
-  float:left;
-  position:absolute;
-  margin-right:5px;
+div.simple-pagination {
+  display: inline-block;
 }
 
 div#pagination {
-  margin-left:74px;
-  margin-top:-5px;
+  display: inline-block;
+  margin-left: -9px;
 }

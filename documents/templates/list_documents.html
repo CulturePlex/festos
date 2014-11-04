@@ -89,15 +89,15 @@
   {% endfor %}
   </tbody>
 </table>
-<!--<div id="pagination-container" style="float: left; position:absolute;">-->
+<div>
     <div class="light-theme simple-pagination">
         <ul id="show-all">
             <li><a class="page-link" id="document-list-all">Show all</a></li>
             <li><a class="page-link hide" id="document-list-latest">Show newest</a></li>
         </ul>
     </div>
-    <div id="pagination"></div>
-<!--</div>-->
+<div id="pagination"></div>
+</div>
 {% endif %}
 
 <a href={% url 'add_document' %} class="btn offset4 span3" > {% trans "Upload a document" %} </a>
