@@ -114,7 +114,7 @@ class CloneForm(forms.Form):
         required=False,
     )
     zotero = forms.BooleanField(
-        label=_('Zotero metadata'),
+        label=_('Zotero tags'),
         required=False,
     )
     all_fields = forms.BooleanField(
