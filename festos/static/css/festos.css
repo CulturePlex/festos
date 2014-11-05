@@ -237,3 +237,9 @@ span.demo:after {
     width: 12px;
   }
 }
+
+.tooltip-inner {
+/*    white-space: pre;*/
+    text-align: left;
+    word-break: keep-all;
+}
