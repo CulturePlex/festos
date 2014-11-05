@@ -239,7 +239,7 @@ span.demo:after {
 }
 
 .tooltip-inner {
-/*    white-space: pre;*/
+    white-space: pre;
     text-align: left;
     word-break: keep-all;
 }
