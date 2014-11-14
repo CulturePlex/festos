@@ -32,6 +32,7 @@ class DocumentAdmin(Docviewer_DocumentAdmin):
     """
     form = DocumentAdminForm
     inlines = (TagInlineAdmin,)
+    list_display = ['title', 'status', 'task_start', 'task_end', 'task_error']
     fieldsets = [
         ('Document details', {'fields': [
             'docfile', 'language', 'public', 'source', 'notes']}),
