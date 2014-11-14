@@ -12,6 +12,19 @@ def task_clone_document(orig, new, options):
         task_clone_document.retry(exc=e)
 
 def clone_document(orig, new, options):
+    # Duplicate directories and files
+    fs = FileSystemStorage()
+    orig_dir_path = orig.get_root_path()
+    dest_dir_path = new.get_root_path()
+    orig_slug = orig.slug
+    dest_slug = new.slug
+    dup_dirs_and_files(
+        fs,
+        orig_dir_path,
+        dest_dir_path,
+        orig_slug,
+        dest_slug
+    )
     # Clone pages
     pages = orig.pages_set.all()
     for page in pages:
@@ -60,16 +73,3 @@ def clone_document(orig, new, options):
         t_tags = orig.taggit_tags.all()
         for tag in t_tags:
             new.taggit_tags.add(tag.name)
-    # Duplicate directories and files
-    fs = FileSystemStorage()
-    orig_dir_path = orig.get_root_path()
-    dest_dir_path = new.get_root_path()
-    orig_slug = orig.slug
-    dest_slug = new.slug
-    dup_dirs_and_files(
-        fs,
-        orig_dir_path,
-        dest_dir_path,
-        orig_slug,
-        dest_slug
-    )
