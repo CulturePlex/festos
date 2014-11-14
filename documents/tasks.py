@@ -1,7 +1,10 @@
+from copy import deepcopy
 from documents.utils import dup_dirs_and_files
 from celery.task import task
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
+from django_zotero.models import Tag
+from guardian.shortcuts import assign_perm
 
 @task(default_retry_delay=10, max_retries=5)
 def task_clone_document(orig, new, options):
@@ -45,15 +48,9 @@ def clone_document(orig, new, options):
             )
     # Clone editions
     if options['editions']:
-        edits = orig.editions_set.all()
-        for edit in edits:
-            new.editions_set.create(
-                date=edit.date,
-                date_string=edit.date_string,
-                modified_pages=edit.modified_pages,
-                comment=edit.comment,
-                author=edit.author,
-            )
+        clone_all_editions(orig, new)
+    else:
+        clone_only_primitive_editions(orig, new)
     # Clone zotero tags
     if options['zotero']:
         z_tags = Tag.get_tags(orig)
@@ -73,3 +70,49 @@ def clone_document(orig, new, options):
         t_tags = orig.taggit_tags.all()
         for tag in t_tags:
             new.taggit_tags.add(tag.name)
+
+
+def clone_all_editions(orig, new):
+    edits = orig.editions_set.all()
+    for edit in edits:
+        new.editions_set.create(
+            date=edit.date,
+            date_string=edit.date_string,
+            modified_pages=clone_modified_pages(
+                edit.modified_pages,
+                orig,
+                new,
+            ),
+            comment=edit.comment,
+            author=edit.author,
+        )
+
+
+def clone_only_primitive_editions(orig, new):
+    original = '0'*20
+    current = '9'*20
+    sql = "date_string='" + original + "' OR date_string='" + current + "'"
+    edits = orig.editions_set.extra(where=[sql])
+    for edit in edits:
+        new.editions_set.create(
+            date=edit.date,
+            date_string=edit.date_string,
+            modified_pages=clone_modified_pages(
+                edit.modified_pages,
+                orig,
+                new,
+            ),
+            comment=edit.comment,
+            author=edit.author,
+        )
+
+
+def clone_modified_pages(modified_pages, orig, new):
+    new_pages = {}
+    for k in modified_pages:
+        orig_url = modified_pages[k]
+        new_url = orig_url.replace(
+            '/' + str(orig.id) + '/', '/' + str(new.id) + '/'
+        )
+        new_pages[k] = new_url
+    return new_pages

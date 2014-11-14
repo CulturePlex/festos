@@ -3,8 +3,6 @@ import shutil
 from copy import deepcopy
 from django.db.models.signals import post_save
 from docviewer.models import document_save
-from django_zotero.models import Tag
-from guardian.shortcuts import assign_perm
 
 from django.db import models
 from django.utils.translation import gettext as _
