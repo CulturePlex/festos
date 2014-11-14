@@ -241,5 +241,6 @@ span.demo:after {
 .tooltip-inner {
     white-space: pre;
     text-align: left;
+    word-wrap: normal;
     word-break: keep-all;
 }
