@@ -14,7 +14,7 @@ from accounts.models import Profile
 def create_user(username):
     return User.objects.create(
         username=username,
-        password='{}_password'.format(username),
+        password=username,
         email='{}@email.com'.format(username),
     )
 
@@ -75,3 +75,63 @@ class AccountTest(TestCase):
         
         self.assertFalse(user_exists)
         self.assertFalse(profile_exists)
+
+
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+from splinter import Browser
+
+
+BASE_URL = 'http://{}'.format(Site.objects.get_current().domain)
+
+
+class BrowserTest(TestCase):
+    def test_signin(self):
+        username = 'festos'
+        password = 'festos'
+        
+        browser = Browser()
+        browser.visit(BASE_URL)
+        browser.click_link_by_partial_href(settings.LOGIN_URL)
+        
+        browser.find_by_id('id_identification').type(username)
+        browser.find_by_id('id_password').type(password)
+        browser.find_by_value('Signin').click()
+        
+        profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
+        profile_link = browser.find_by_xpath(profile_xpath)
+        document_list_link = \
+            BASE_URL + reverse('documents.views.list_documents')
+        
+        self.assertEquals(browser.url, document_list_link)
+        self.assertEquals(profile_link.value, '@{}'.format(username))
+
+#        browser.quit()
+
+    def test_signup(self):
+        username = 'antonio'
+        password = 'antonio'
+        email = 'antonio@email.com'
+        
+        browser = Browser()
+        browser.visit(BASE_URL)
+        browser.click_link_by_partial_href(settings.SIGNUP_URL)
+        
+        browser.find_by_id('id_username').type(username)
+        browser.find_by_id('id_email').type(email)
+        browser.find_by_id('id_password1').type(password)
+        browser.find_by_id('id_password2').type(password)
+        browser.find_by_value('Sign Up').click()
+        
+        profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
+        profile_link = browser.find_by_xpath(profile_xpath)
+        document_list_link = \
+            BASE_URL + reverse('documents.views.list_documents')
+        
+        self.assertEquals(browser.url, document_list_link)
+        self.assertEquals(profile_link.value, '@{}'.format(username))
+
+#        browser.quit()
