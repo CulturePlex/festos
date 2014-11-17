@@ -1,16 +1,21 @@
 from copy import deepcopy
+from datetime import datetime
 from documents.utils import dup_dirs_and_files
 from celery.task import task
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
+from django.utils.timezone import utc
 from django_zotero.models import Tag
 from guardian.shortcuts import assign_perm
 
 @task(default_retry_delay=10, max_retries=5)
 def task_clone_document(orig, new, options):
-    from docviewer.helpers import generate_document
     try:
+        new.task_start = datetime.utcnow().replace(tzinfo=utc)
         clone_document(orig, new, options)
+        new.status = new.STATUS.copied
+        new.task_end = datetime.utcnow().replace(tzinfo=utc)
+        new.save()
     except ObjectDoesNotExist, e:
         task_clone_document.retry(exc=e)
 
@@ -23,6 +28,8 @@ def clone_document(orig, new, options):
     dest_slug = new.slug
     dup_dirs_and_files(
         fs,
+        orig,
+        new,
         orig_dir_path,
         dest_dir_path,
         orig_slug,
