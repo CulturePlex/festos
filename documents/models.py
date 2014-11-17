@@ -41,7 +41,7 @@ class Document(Docviewer_Document):
         new.pk = None
         new.slug = None
         new.owner = User.objects.get(username=user)
-        new.status = self.STATUS.copied
+        new.status = self.STATUS.copying
         new.task_error = ''
         new.add_info('cloned', self.get_absolute_url())
         new.save()

@@ -113,6 +113,13 @@ $(document).ready(function(){
               var new_html = '<a href="'+dict["original"]+'">'+old_html+'</a>'
               sp.html(new_html)
             }
+            else if(dict["status"] == "copying") {
+              var docSt = doc_st.attr("data-actions-state-machine");
+              if (!(docSt && docSt.indexOf("CANCEL-") == 0))
+                doc_st.attr("data-actions-state-machine", "PROCESSING");
+              doc_st.html('<div class="progress progress-striped active"> <div class="bar bar-info" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only demo-no" style="font-weight:bold;">copying</span> </div></div> <span title="" align="right" class="document-info" id="'+doc_id+'" data-toggle="tooltip" data-placement="right" style="display:none;"><i class="icon-info-sign"></i></span>');
+              counter_in_progress_docs++;
+            }
             else if(dict["status"] == "waiting") {
               var docSt = doc_st.attr("data-actions-state-machine");
               if (!(docSt && docSt.indexOf("CANCEL-") == 0))

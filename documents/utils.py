@@ -1,7 +1,9 @@
 import os
 import re
+from datetime import date
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.files import File
 from django.core.mail import send_mail
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
@@ -59,6 +61,7 @@ def count_processed_pages(document):
     elems = [e for e in _total_pages_a(document) if _is_processed(e)]
     return len(elems)
 
+
 def rename_files_recursively(directory, old, new):
 #    import ipdb;ipdb.set_trace()
     for elem in os.listdir(directory):
@@ -72,7 +75,38 @@ def rename_files_recursively(directory, old, new):
             subdir = path
             rename_files_recursively(subdir, old, new)
 
-def dup_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
+
+def dup_dirs_and_files(
+        fs, orig, dest, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
+#    dup_pdf_dirs_and_files(fs, orig, dest, orig_slug, dest_slug)
+    dup_doc_dirs_and_files(
+        fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug
+    )
+
+
+def dup_pdf_dirs_and_files(fs, orig, dest, orig_slug, dest_slug):
+    today = date.today()
+    year = today.year
+    month = today.month
+    day = today.day
+    dest_filename = orig.docfile_basename.replace(orig_slug, dest_slug)
+    print dest_filename
+    dest_file_path = os.path.join(
+        settings.MEDIA_ROOT,
+        'pdf',
+        year,
+        month,
+        day,
+        dest_filename
+    )
+    orig_file_path = orig.docfile.path
+    orig_file = fs.open(orig_file_path, 'r')
+    fs.save(dest_file_path, orig_file)
+    dest.docfile = File(orig_file)
+    dest.save()
+
+
+def dup_doc_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
 #    os.makedirs(dest_dir_path)
     listdir = fs.listdir(orig_dir_path)
     
@@ -80,7 +114,7 @@ def dup_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
     for d in dir_list:
         next_orig_dir_path = os.path.join(orig_dir_path, d)
         next_dest_dir_path = os.path.join(dest_dir_path, d)
-        dup_dirs_and_files(
+        dup_doc_dirs_and_files(
             fs,
             next_orig_dir_path,
             next_dest_dir_path,
@@ -94,10 +128,10 @@ def dup_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
         dest_name = f.replace(orig_slug, dest_slug)
         orig_file_path = os.path.join(orig_dir_path, orig_name)
         dest_file_path = os.path.join(dest_dir_path, dest_name)
-        orig = fs.open(orig_file_path, 'r')
+        orig_file = fs.open(orig_file_path, 'r')
 #        dest = fs.open(dest_file_path, 'w')
 #        dest.write(orig.read())
-        fs.save(dest_file_path, orig)
+        fs.save(dest_file_path, orig_file)
 
 def send_email(author, collaborator, document):
     email_content = create_email(author, collaborator, document)
