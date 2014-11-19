@@ -95,9 +95,9 @@
       <h3 class="media-heading">
         <a href="{{ result.1.document.get_absolute_url }}">
           {% if request.GET.title %}
-            {% highlight result.1.document.title with request.GET.title css_class "highlighted" max_length 5000000 %},
+            {% highlight result.1.document.title_ext with request.GET.title css_class "highlighted" max_length 5000000 %}
           {% else %}
-            {{ result.1.document.title }},
+            {{ result.1.document.title_ext }}
           {% endif %}
           {% if request.GET.author %}
             {% highlight result.1.document.author with request.GET.author max_length 5000 %}
@@ -118,7 +118,7 @@
       <div class="media-body">
         {% if request.GET.title %}
           <p>
-           <strong> title: </strong>{% highlight result.1.document.title with request.GET.title  %}
+           <strong> title: </strong>{% highlight result.1.document.title_ext with request.GET.title  %}
           </p>
         {% endif %}
         {% if request.GET.description %}
