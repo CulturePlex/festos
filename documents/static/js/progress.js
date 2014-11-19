@@ -106,7 +106,7 @@ $(document).ready(function(){
               if(span_ttl.has('a').length == 0) {
                 var ttl = span_ttl.data('title');
                 var href = span_ttl.attr('data-href');
-                span_ttl.html('<a href="'+href+'" style="">'+ttl+'</a>');
+                span_ttl.html('<a href="'+href+'" style="">'+ttl+' [copied]</a>');
               }
               var sp = doc_st.find("span")
               var old_html = sp.html()
