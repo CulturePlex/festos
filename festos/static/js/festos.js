@@ -14,7 +14,8 @@ var set_boostrap_header = function(url, title, author, owner){
   }).append(
   jQuery('<a/>', {
     href: url,
-    text: title + ', ' + author,
+//    text: title + ', ' + author,
+    text: title,
   })).append(
   jQuery('<small/>', {
     text: ' @' + owner,
