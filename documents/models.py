@@ -46,7 +46,7 @@ class Document(Docviewer_Document):
         new.add_info('cloned', self.get_absolute_url())
         new.save()
         # Clone
-        args = [self, new, options]
+        args = [self.id, new.id, options]
         task = task_clone_document.apply_async(args=args, countdown=5)
         new.task_id = task.task_id
         new.save()

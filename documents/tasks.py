@@ -4,13 +4,24 @@ from documents.utils import dup_dirs_and_files
 from celery.task import task
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Q
 from django.utils.timezone import utc
 from django_zotero.models import Tag
 from guardian.shortcuts import assign_perm
 
 @task(default_retry_delay=10, max_retries=5)
-def task_clone_document(orig, new, options):
+def task_clone_document(orig_id, new_id, options):
+    from documents.models import Document
     try:
+        docs = Document.objects.filter(
+            Q(id=orig_id) | Q(id=new_id)
+        )
+        if docs[0].id == orig_id:
+            orig = docs[0]
+            new = docs[1]
+        else:
+            orig = docs[1]
+            new = docs[0]
         new.task_start = datetime.utcnow().replace(tzinfo=utc)
         clone_document(orig, new, options)
         new.status = new.STATUS.copied
