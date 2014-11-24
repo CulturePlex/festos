@@ -223,7 +223,7 @@ $(document).ready(function(){
             var items = $("tr.document-row")
             items.removeClass("hidden-by-pagination")
             items = items.not(".hidden-by-filter-doc").not(".hidden-by-filter-collab").not(".hidden-by-filter-tag")
-            var perPage = 2
+            var perPage = 20
             items.slice(perPage).addClass("hidden-by-pagination")
             $("#pagination").pagination({
                 items: items.length,
