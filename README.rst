@@ -15,7 +15,7 @@ Installation of system dependencies:
 
 1) Install all the packages (the next line has been tried only in Ubuntu 12.04 64b and 12.10 64b)::
 
-    sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spa yui-compressor git python-pip python-dev build-essential npm openjdk-7-jre imagemagick -y
+    sudo apt-get install rabbitmq-server rubygems graphicsmagick poppler-utils pdftk ghostscript tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spa yui-compressor git python-pip python-dev build-essential npm openjdk-7-jre -y
 
 Note: To install rubygems on Ubuntu 14.04::
 
