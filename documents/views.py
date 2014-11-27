@@ -26,6 +26,8 @@ from docviewer.models import Annotation
 from utils import count_processed_pages, count_total_pages
 from documents.utils import send_email
 
+import itertools
+
 
 class SearchDocumentView(SearchView):
     def get_results(self):
@@ -157,7 +159,10 @@ def list_documents(request):
         'documents.access_document',
         Document,
         use_groups=True)
-#    add running value
+    documents = itertools.chain(
+        documents.filter(task_end__isnull=True),
+        documents.filter(task_end__isnull=False),
+    )
     return render_to_response('list_documents.html', {
         'documents': documents,
     }, context_instance=RequestContext(request))

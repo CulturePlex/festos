@@ -54,3 +54,4 @@ class Document(Docviewer_Document):
         permissions = (
             ('access_document', _('Access Document')),
         )
+        ordering = ['-task_end']
