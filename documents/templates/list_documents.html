@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load bootstrap %}
+{% load humanize %}
 
 {% block extra_css %}
 <link href="{{ STATIC_PREFIX }}css/document-list.css" rel="stylesheet">
@@ -43,7 +44,7 @@
     <tr class="document-row" data-id="{{ document.id }}">
       <td class="document-title">
           <div id="documents_cell">
-          <span class="document" data-href="{{ document.get_absolute_url }}" data-title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{% if document.status == "ready" or document.status == "copied" %}<a href="{{ document.get_absolute_url }}" style="text-decoration:none;">{{ document.title_ext }}</a>{% else %}{{ document.title_ext }}{% endif %}</span> <br/> <span style="color:gray; font-size:75%" data-title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span>
+          <span class="document" data-href="{{ document.get_absolute_url }}" data-title="{{ document.title }}" data-toggle="tooltip" data-placement="left">{% if document.status == "ready" or document.status == "copied" %}<a href="{{ document.get_absolute_url }}" style="text-decoration:none;">{{ document.title_ext }}</a>{% else %}{{ document.title_ext }}{% endif %}</span> <br/> <span style="color:gray; font-size:75%" data-title="{{ document.docfile_basename }}" data-toggle="tooltip" data-placement="left">{{ document.docfile_basename }}</span> <br/> <span style="color: darkgray; font-size:75%; font-style:italic;">{{ document.task_end | naturaltime }}</span>
           </div></td>
       <td class="document-collaborators">
           <div id="sharers_cell">
