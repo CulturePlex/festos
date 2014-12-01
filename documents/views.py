@@ -27,6 +27,7 @@ from utils import count_processed_pages, count_total_pages
 from documents.utils import send_email
 
 import itertools
+from django.db import transaction
 
 
 class SearchDocumentView(SearchView):
@@ -182,6 +183,7 @@ jq = False
 
 
 @login_required
+@transaction.commit_on_success
 def add_document(request):
     """ Add a document """
 #    import ipdb; ipdb.set_trace()
@@ -218,6 +220,7 @@ def add_document(request):
 
 @login_required
 @permission_required_or_403('documents.access_document', (Document, 'pk', 'pk'))
+@transaction.commit_on_success
 def edit_document(request, pk):
     """ Edit a document """
     label_options = {'labels': {'item_type': 'Document type'}}
@@ -250,6 +253,7 @@ def edit_document(request, pk):
 
 @login_required
 @permission_required_or_403('documents.access_document', (Document, 'pk', 'pk'))
+@transaction.commit_on_success
 def remove_document(request, pk):
     """ Remove a document """
 #    try:
@@ -388,6 +392,7 @@ def autocomplete_taggit_tags_all(request):
 
 
 @login_required
+@transaction.commit_on_success
 def clone_document(request, pk):
     """ Clone a document """
     document = Document.objects.get(pk=pk)
@@ -456,3 +461,12 @@ def get_position(document):
     else:
         position = None
     return position
+
+
+#@transaction.commit_on_success
+#@transaction.atomic
+def atomic(request):
+    User.objects.create(username='atomic1', password='123')
+    4/0
+    User.objects.create(username='atomic2', password='123')
+    return HttpResponse()

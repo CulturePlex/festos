@@ -39,4 +39,5 @@ urlpatterns = patterns(
     url(r'^clone/(?P<pk>\d+)/', 'documents.views.clone_document',
         name='clone_document'),
     url(r'^progress/$', 'documents.views.progress', {}, 'documents_progress'),
+    url(r'^atomic/$', 'documents.views.atomic', {}, 'documents_atomic'),
 )
