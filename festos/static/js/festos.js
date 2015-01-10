@@ -20,6 +20,15 @@ var set_boostrap_header = function(url, title, author, owner){
   jQuery('<small/>', {
     text: ' @' + owner,
     href: '/accounts/' + owner
+  })).append(
+  jQuery('<i/>', {
+    class: "icon-fullscreen",
+  })).append(
+  jQuery('<img/>', {
+    class: "icon-fullscreen-exit",
+    src: mydocviewer.schema.document.resources.static_url + "docviewer/img/fullscreen_exit.png",
+    id: "exit-fullscreen",
+    css: {"display": "none"}
   })).appendTo($('.docviewer-title').empty());
   if (typeof afterLoad !== "undefined" && afterLoad){
     afterLoad();
