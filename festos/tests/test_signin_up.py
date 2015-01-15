@@ -1,16 +1,21 @@
+import time
+
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.core.urlresolvers import reverse
-#from django.test import TestCase
-from django.test import LiveServerTestCase
+#from django.test import LiveServerTestCase
 from splinter import Browser
 
+from utils import create_user, create_profile
 
-class BrowserTest(LiveServerTestCase):
+class BrowserTest(StaticLiveServerTestCase):
+    def setUp(self):
+        user = create_user('antonio')
+        profile = create_profile(user)
+    
     def test_signin(self):
-        username = 'festos'
-        password = 'festos'
+        username = 'antonio'
+        password = 'antonio'
         
         browser = Browser()
         browser.visit(self.live_server_url)
@@ -27,13 +32,14 @@ class BrowserTest(LiveServerTestCase):
         
         self.assertEquals(browser.url, document_list_url)
         self.assertEquals(profile_link.value, '@{}'.format(username))
-
+        
+        time.sleep(3)
         browser.quit()
 
     def test_signup(self):
-        username = 'antonio'
-        password = 'antonio'
-        email = 'antonio@email.com'
+        username = 'andres'
+        password = 'andres'
+        email = 'andres@email.com'
         
         browser = Browser()
         browser.visit(self.live_server_url)
@@ -52,5 +58,6 @@ class BrowserTest(LiveServerTestCase):
         
         self.assertEquals(browser.url, document_list_url)
         self.assertEquals(profile_link.value, '@{}'.format(username))
-
+        
+        time.sleep(3)
         browser.quit()
