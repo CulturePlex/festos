@@ -1,47 +1,19 @@
-from django.contrib.auth.models import User
 from django.test import TestCase
 
-from accounts.models import Profile
-
-
-#class SimpleTest(TestCase):
-#    def test_basic_addition(self):
-#        """
-#        Tests that 1 + 1 always equals 2.
-#        """
-#        self.assertEqual(1 + 1, 2)
-
-def create_user(username):
-    return User.objects.create(
-        username=username,
-        password=username,
-        email='{}@email.com'.format(username),
-    )
-
-def create_profile(user):
-    return Profile.objects.create(user=user)
-
-def get_user(username):
-    return User.objects.get(username=username)
-
-def get_profile(username):
-    return Profile.objects.get(user__username=username)
-
-def exists_user(username):
-    return User.objects.filter(username=username).exists()
-
-def exists_profile(username):
-    return Profile.objects.filter(user__username=username).exists()
+from festos.tests.utils import (
+    create_user, create_profile, get_user, get_profile, exists_user,
+    exists_profile
+)
 
 
 class AccountTest(TestCase):
     def setUp(self):
         user = create_user('antonio')
-        profile = create_profile(user)
+        profile = create_profile('antonio')
     
     def test_account_creation(self):
-        user = get_user('antonio')
-        profile = get_profile('antonio')
+        user = create_user('andres')
+        profile = create_profile(user)
         
         self.assertIsNotNone(user)
         self.assertIsNotNone(user.id)
@@ -66,9 +38,6 @@ class AccountTest(TestCase):
         profile = get_profile('antonio')
         user.delete()
         profile.delete()
-        
-        self.assertIsNone(user.id)
-        self.assertIsNone(profile.id)
         
         user_exists = exists_user('antonio')
         profile_exists = exists_profile('antonio')

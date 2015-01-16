@@ -1,29 +1,19 @@
+import uuid
+
+from django.db.models.signals import post_delete, post_save
 from django.test import TestCase
-from django.contrib.auth.models import User
+from docviewer.models import document_delete, document_save
 
-from accounts.tests import create_user, exists_user, get_user
-from documents.models import Document
-
-
-def create_document(title, username):
-    if exists_user(username):
-        user = get_user(username)
-    else:
-        user = create_user(username)
-    return Document.objects.create(
-        title=title,
-        owner=user,
-    )
-
-def get_document(title):
-    return Document.objects.get(title=title)
-
-def exists_document(title):
-    return Document.objects.filter(title=title).exists()
+from festos.tests.utils import (
+    create_user, exists_user, get_user, create_document, exists_document,
+    get_document
+)
 
 
 class DocumentTest(TestCase):
     def setUp(self):
+        dispatch_uid = recover_dispatch_uid(post_save, document_save)
+        post_save.disconnect(document_save, dispatch_uid=dispatch_uid)
         doc = create_document('doc', 'antonio')
     
     def test_document_creation(self):
@@ -34,7 +24,7 @@ class DocumentTest(TestCase):
         self.assertIsNotNone(doc.id)
         self.assertIsNotNone(doc.title)
         self.assertIsNotNone(doc.owner)
-        self.assertEqual(doc.user, user)
+        self.assertEqual(doc.owner, user)
     
     def test_document_edition(self):
         doc = get_document('doc')
@@ -48,8 +38,15 @@ class DocumentTest(TestCase):
         doc = get_document('doc')
         doc.delete()
         
-        self.assertIsNone(user.id)
-        
         doc_exists = exists_document('doc')
         
         self.assertFalse(doc_exists)
+
+
+def recover_dispatch_uid(signal, function):
+    dispatch_uid = None
+    for (ide, weakref) in signal.receivers:
+        if weakref() == function:
+            dispatch_uid = ide[0]
+            break
+    return dispatch_uid
