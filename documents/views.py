@@ -470,3 +470,18 @@ def atomic(request):
     4/0
     User.objects.create(username='atomic2', password='123')
     return HttpResponse()
+
+
+from django.template import loader, Context
+from django import template as t
+from django.http import HttpResponseServerError
+import sys
+import traceback
+def custom_500(request):
+    t = loader.get_template('500.html')
+    type, value, tb = sys.exc_info()
+    print >> sys.stderr,  type.__name__, ":", value
+    print >> sys.stderr, '\n'.join(traceback.format_tb(tb))
+    return HttpResponseServerError(t.render(Context({
+        'exception_value': value,
+})))

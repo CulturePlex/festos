@@ -7,6 +7,7 @@ from documents.views import search_document
 
 admin.autodiscover()
 
+handler500 = 'documents.views.custom_500'
 urlpatterns = patterns(
     '',
     url(r'^admin/', include(admin.site.urls)),
