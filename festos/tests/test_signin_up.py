@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 #from django.test import LiveServerTestCase
 #from django.test.utils import override_settings
 from splinter import Browser
+from userena.managers import UserenaManager
 
 from utils import create_user, create_profile
 
@@ -16,6 +17,7 @@ class SignInUpTest(StaticLiveServerTestCase):
     def setUp(self):
         user = create_user('antonio')
         profile = create_profile('antonio')
+        check_permissions()
     
     def test_signin(self):
         username = 'antonio'
@@ -48,7 +50,6 @@ class SignInUpTest(StaticLiveServerTestCase):
         browser = Browser()
         browser.visit(self.live_server_url)
         browser.click_link_by_partial_href(settings.SIGNUP_URL)
-#        import ipdb;ipdb.set_trace()
         
         browser.find_by_id('id_username').type(username)
         browser.find_by_id('id_email').type(email)
@@ -64,5 +65,10 @@ class SignInUpTest(StaticLiveServerTestCase):
         self.assertEquals(browser.url, document_list_url)
         self.assertEquals(profile_link.value, '@{}'.format(username))
         
-        time.sleep(3)
+#        time.sleep(3)
         browser.quit()
+
+
+def check_permissions():
+    um = UserenaManager()
+    um.check_permissions()
