@@ -15,21 +15,22 @@ class SignInUpTest(StaticLiveServerTestCase):
 #    @override_settings(DEBUG=True)
 #    
     def setUp(self):
+        check_permissions()
         user = create_user('antonio')
         profile = create_profile('antonio')
-        check_permissions()
     
     def test_signin(self):
         username = 'antonio'
         password = 'antonio'
         
         browser = Browser()
-        browser.visit(self.live_server_url)
-        browser.click_link_by_partial_href(settings.LOGIN_URL)
-        
-        browser.find_by_id('id_identification').type(username)
-        browser.find_by_id('id_password').type(password)
-        browser.find_by_value('Signin').click()
+        login(
+            browser,
+            self.live_server_url,
+            settings.LOGIN_URL,
+            username,
+            password,
+        )
         
         profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
         profile_link = browser.find_by_xpath(profile_xpath)
@@ -48,14 +49,14 @@ class SignInUpTest(StaticLiveServerTestCase):
         email = 'andres@email.com'
         
         browser = Browser()
-        browser.visit(self.live_server_url)
-        browser.click_link_by_partial_href(settings.SIGNUP_URL)
-        
-        browser.find_by_id('id_username').type(username)
-        browser.find_by_id('id_email').type(email)
-        browser.find_by_id('id_password1').type(password)
-        browser.find_by_id('id_password2').type(password)
-        browser.find_by_value('Sign Up').click()
+        signup(
+            browser,
+            self.live_server_url,
+            settings.SIGNUP_URL,
+            username,
+            password,
+            email,
+        )
         
         profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
         profile_link = browser.find_by_xpath(profile_xpath)
@@ -72,3 +73,23 @@ class SignInUpTest(StaticLiveServerTestCase):
 def check_permissions():
     um = UserenaManager()
     um.check_permissions()
+
+
+def login(browser, global_url, login_url, username, password):
+    browser.visit(global_url)
+    browser.click_link_by_partial_href(login_url)
+    
+    browser.find_by_id('id_identification').type(username)
+    browser.find_by_id('id_password').type(password)
+    browser.find_by_value('Signin').click()
+
+
+def signup(browser, global_url, signup_url, username, password, email):
+    browser.visit(global_url)
+    browser.click_link_by_partial_href(signup_url)
+    
+    browser.find_by_id('id_username').type(username)
+    browser.find_by_id('id_email').type(email)
+    browser.find_by_id('id_password1').type(password)
+    browser.find_by_id('id_password2').type(password)
+    browser.find_by_value('Sign Up').click()
