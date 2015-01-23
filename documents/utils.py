@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 from datetime import date
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -63,11 +64,9 @@ def count_processed_pages(document):
 
 
 def rename_files_recursively(directory, old, new):
-#    import ipdb;ipdb.set_trace()
     for elem in os.listdir(directory):
         path = os.path.join(directory, elem)
         if os.path.isfile(path):
-#            import ipdb;ipdb.set_trace()
             old_name = path
             new_name = old_name.replace(old, new)
             os.rename(old_name, new_name)
@@ -132,6 +131,7 @@ def dup_doc_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slu
 #        dest = fs.open(dest_file_path, 'w')
 #        dest.write(orig.read())
         fs.save(dest_file_path, orig_file)
+
 
 def send_email(author, collaborator, document):
     email_content = create_email(author, collaborator, document)
