@@ -1,5 +1,4 @@
 import os
-import shutil
 from copy import deepcopy
 from docviewer.models import document_save
 

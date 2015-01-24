@@ -1,10 +1,9 @@
 from copy import deepcopy
 from datetime import datetime
-from documents.utils import dup_dirs_and_files
+#from documents.utils import dup_dirs_and_files
+from documents import fss
 from celery.task import task
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.files.storage import FileSystemStorage
-from django.db.models import Q
 from django.utils.timezone import utc
 from django_zotero.models import Tag
 from guardian.shortcuts import assign_perm
@@ -13,17 +12,9 @@ from guardian.shortcuts import assign_perm
 def task_clone_document(orig_id, new_id, options):
     from documents.models import Document
     try:
-        docs = Document.objects.filter(
-            Q(id=orig_id) | Q(id=new_id)
-        )
-        if docs[0].id == orig_id:
-            orig = docs[0]
-            new = docs[1]
-        else:
-            orig = docs[1]
-            new = docs[0]
+        new = Document.objects.get(id=new_id)
         new.task_start = datetime.utcnow().replace(tzinfo=utc)
-        clone_document(orig, new, options)
+        clone_document(orig_id, new_id, options)
         new.status = new.STATUS.copied
         new.task_end = datetime.utcnow().replace(tzinfo=utc)
         new.save()
@@ -32,15 +23,18 @@ def task_clone_document(orig_id, new_id, options):
 
 def clone_document(orig, new, options):
     # Duplicate directories and files
-    fs = FileSystemStorage()
+    orig = Document.objects.get(id=orig_id)
+    new = Document.objects.get(id=new_id)
+    
+    orig_docfile_name = orig.docfile_basename
+    orig_docfile_path = orig.docfile.name
     orig_dir_path = orig.get_root_path()
     dest_dir_path = new.get_root_path()
     orig_slug = orig.slug
     dest_slug = new.slug
-    dup_dirs_and_files(
-        fs,
-        orig,
-        new,
+    fss.clone_tree(
+        orig_docfile_name,
+        orig_docfile_path,
         orig_dir_path,
         dest_dir_path,
         orig_slug,

@@ -1,6 +1,5 @@
 import os
 import re
-import shutil
 from datetime import date
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -11,6 +10,8 @@ from django.core.urlresolvers import reverse
 from django.template import Context, loader
 from docviewer.utils import create_email
 from haystack.utils import Highlighter
+
+from documents import fss
 
 
 class CompleteHighlighter(Highlighter):
@@ -27,7 +28,7 @@ def _total_pages_a(document):
     version_re = re.compile(r'^.*-([0-9]{20})\.txt$')
     path = document.get_root_path()
     elems = [
-        path+'/'+e for e in os.listdir(path)
+        path+'/'+e for e in fss.listdir(path)
             if e[-4:] == '.txt' and
                e != "%s.txt" % document.slug and
                not version_re.match(e)
@@ -38,10 +39,10 @@ def _total_pages_a(document):
 def _total_pages_b(document):
     try:
         path = document.get_root_path() + '/700x'
-        elems = os.listdir(path)
+        elems = fss.listdir(path)
     except OSError:
         path = document.get_root_path() + '/normal'
-        elems = os.listdir(path)
+        elems = fss.listdir(path)
     except:
         elems = []
     return elems
@@ -61,76 +62,6 @@ def count_processed_pages(document):
 #    elems = [e for e in _total_pages(document) if _is_processed(e)]
     elems = [e for e in _total_pages_a(document) if _is_processed(e)]
     return len(elems)
-
-
-def rename_files_recursively(directory, old, new):
-    for elem in os.listdir(directory):
-        path = os.path.join(directory, elem)
-        if os.path.isfile(path):
-            old_name = path
-            new_name = old_name.replace(old, new)
-            os.rename(old_name, new_name)
-        elif os.path.isdir(path) and not elem.startswith('.'):
-            subdir = path
-            rename_files_recursively(subdir, old, new)
-
-
-def dup_dirs_and_files(
-        fs, orig, dest, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
-#    dup_pdf_dirs_and_files(fs, orig, dest, orig_slug, dest_slug)
-    dup_doc_dirs_and_files(
-        fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug
-    )
-
-
-def dup_pdf_dirs_and_files(fs, orig, dest, orig_slug, dest_slug):
-    today = date.today()
-    year = today.year
-    month = today.month
-    day = today.day
-    dest_filename = orig.docfile_basename.replace(orig_slug, dest_slug)
-    print dest_filename
-    dest_file_path = os.path.join(
-        settings.MEDIA_ROOT,
-        'pdf',
-        year,
-        month,
-        day,
-        dest_filename
-    )
-    orig_file_path = orig.docfile.path
-    orig_file = fs.open(orig_file_path, 'r')
-    fs.save(dest_file_path, orig_file)
-    dest.docfile = File(orig_file)
-    dest.save()
-
-
-def dup_doc_dirs_and_files(fs, orig_dir_path, dest_dir_path, orig_slug, dest_slug):
-#    os.makedirs(dest_dir_path)
-    listdir = fs.listdir(orig_dir_path)
-    
-    dir_list = listdir[0]
-    for d in dir_list:
-        next_orig_dir_path = os.path.join(orig_dir_path, d)
-        next_dest_dir_path = os.path.join(dest_dir_path, d)
-        dup_doc_dirs_and_files(
-            fs,
-            next_orig_dir_path,
-            next_dest_dir_path,
-            orig_slug,
-            dest_slug
-        )
-    
-    file_list = listdir[1]
-    for f in file_list:
-        orig_name = f
-        dest_name = f.replace(orig_slug, dest_slug)
-        orig_file_path = os.path.join(orig_dir_path, orig_name)
-        dest_file_path = os.path.join(dest_dir_path, dest_name)
-        orig_file = fs.open(orig_file_path, 'r')
-#        dest = fs.open(dest_file_path, 'w')
-#        dest.write(orig.read())
-        fs.save(dest_file_path, orig_file)
 
 
 def send_email(author, collaborator, document):
