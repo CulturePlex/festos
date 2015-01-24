@@ -12,7 +12,7 @@ django-celery==3.0.23
 django-celery-transactions==0.1.3
 -e git+https://github.com/CulturePlex/django-docviewer.git#egg=django-docviewer
 django-guardian==1.2.5
-django-haystack==2.1.0
+django-haystack==2.2.0
 django-jsonfield==0.9.10
 django-model-utils==2.2
 django-pdb==0.4.1
@@ -22,6 +22,7 @@ django-taggit==0.10
 django-userena==1.3.1
 django-zotero==0.4
 easy-thumbnails==2.2
+elasticsearch==1.3.0
 futures==2.1.4
 html2text==2014.12.29
 ipdb==0.8
@@ -37,4 +38,5 @@ selenium==2.44.0
 simplejson==3.3.1
 six==1.9.0
 splinter==0.7.0
+urllib3==1.10
 -e git://github.com/robertour/userena-bootstrap.git@7c9ddafa1c940f6ad972551ab5517e0ac9dd9f59#egg=userena_bootstrap-master
