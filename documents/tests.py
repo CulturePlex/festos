@@ -10,10 +10,8 @@ from festos.tests.utils import (
 
 class DocumentTest(TestCase):
     def setUp(self):
-        dispatch_uid_ps = recover_dispatch_uid(post_save, document_save)
-        post_save.disconnect(document_save, dispatch_uid=dispatch_uid_ps)
-        dispatch_uid_pd = recover_dispatch_uid(post_delete, document_delete)
-        post_delete.disconnect(document_delete, dispatch_uid=dispatch_uid_pd)
+        disconnect(post_save, document_save)
+        disconnect(post_delete, document_delete)
         
         doc = create_document('doc', 'antonio')
     
@@ -44,10 +42,14 @@ class DocumentTest(TestCase):
         self.assertFalse(doc_exists)
 
 
-def recover_dispatch_uid(signal, function):
-    dispatch_uid = None
-    for (ide, weakref) in signal.receivers:
-        if weakref() == function:
-            dispatch_uid = ide[0]
-            break
-    return dispatch_uid
+def disconnect(signal, function):
+    def recover_dispatch_uid(signal, function):
+        dispatch_uid = None
+        for (ide, weakref) in signal.receivers:
+            if weakref() == function:
+                dispatch_uid = ide[0]
+                break
+        return dispatch_uid
+    
+    dispatch_uid = recover_dispatch_uid(signal, function)
+    signal.disconnect(function, dispatch_uid=dispatch_uid)
