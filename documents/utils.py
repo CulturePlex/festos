@@ -11,7 +11,7 @@ from django.template import Context, loader
 from docviewer.utils import create_email
 from haystack.utils import Highlighter
 
-from documents import fss
+from documents import fss_utils as fss
 
 
 class CompleteHighlighter(Highlighter):

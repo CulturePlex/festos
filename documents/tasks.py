@@ -1,7 +1,6 @@
 from copy import deepcopy
 from datetime import datetime
-#from documents.utils import dup_dirs_and_files
-from documents import fss
+from documents import fss_utils as fss
 from celery.task import task
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.timezone import utc
