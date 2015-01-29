@@ -85,8 +85,12 @@ class UploadTest(StaticLiveServerTestCase):
         
         status_xpath = '/html/body/div/div[2]/table/tbody/tr/td[5]/div'
         status_div = self.browser.find_by_xpath(status_xpath)
+        
         self.assertEquals(status_div.value, 'ready')
         self.assertEquals(document.status, 'ready')
+        
+#        for f in fss.listdir(document.get_root_path()):
+#            
         
 #        import time; time.sleep(3)
         self.browser.quit()
@@ -97,7 +101,7 @@ class UploadTest(StaticLiveServerTestCase):
 
 
 def set_url_site(url):
-    site = Site.objects.get(id=1)
+    site = Site.objects.get_current()
     site.domain = url
     site.name = url
     site.save()
