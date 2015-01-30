@@ -1,3 +1,4 @@
+import itertools
 import os
 import uuid
 
@@ -63,17 +64,7 @@ class UploadTest(StaticLiveServerTestCase):
         
         document_list_url = \
             self.live_server_url + reverse('documents.views.list_documents')
-        document_title_xpath = '//*[@id="documents_cell"]/span[1]'
-        document_title_elems = self.browser.find_by_xpath(document_title_xpath)
-        document_title_first = document_title_elems.first
-        profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
-        profile_link = self.browser.find_by_xpath(profile_xpath)
-        owner_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[4]/a'
-        owner_link = self.browser.find_by_xpath(owner_xpath)
-        
         self.assertEquals(self.browser.url, document_list_url)
-        self.assertEquals(document_title_first.value, title)
-        self.assertEquals(profile_link.value, owner_link.value)
         
         document_xpath = '/html/body/div/div[2]/table/tbody/tr[1]'
         document_tr = self.browser.find_by_xpath(document_xpath)
@@ -83,14 +74,42 @@ class UploadTest(StaticLiveServerTestCase):
         
         self.browser.is_element_present_by_value('ready', 10)
         
+        self.assertEquals(document.public, public)
+        self.assertEquals(document.title, title)
+        self.assertEquals(document.notes, notes)
+        
+        document_title_xpath = '//*[@id="documents_cell"]/span[1]'
+        document_title_elems = self.browser.find_by_xpath(document_title_xpath)
+        document_title_first = document_title_elems.first
+        profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
+        profile_link = self.browser.find_by_xpath(profile_xpath)
+        owner_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[4]/a'
+        owner_link = self.browser.find_by_xpath(owner_xpath)
         status_xpath = '/html/body/div/div[2]/table/tbody/tr/td[5]/div'
         status_div = self.browser.find_by_xpath(status_xpath)
+        numpages_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[6]/div'
+        numpages_div = self.browser.find_by_xpath(numpages_xpath)
+        privacy_icon_xpath = '//*[@id="privacy"]/i'
+        privacy_icon_elems = self.browser.find_by_xpath(privacy_icon_xpath)
+        privacy_icon_first = privacy_icon_elems.first
         
+        self.assertEquals(document_title_first.value, title)
+        self.assertEquals(profile_link.value, owner_link.value)
         self.assertEquals(status_div.value, 'ready')
         self.assertEquals(document.status, 'ready')
+        self.assertEquals(int(numpages_div.value), document.page_count)
+        self.assertTrue(privacy_icon_first.has_class('icon-eye-close'))
         
-#        for f in fss.listdir(document.get_root_path()):
-#            
+        structure = create_structure(document)
+        root_path = document.get_root_path()
+        dirs = fss.listdir(root_path)[0]
+        files = fss.listdir(root_path)[1]
+        for d in dirs:
+            dir_path = os.path.join(root_path, d)
+            for f in structure['dirs'][d]:
+                self.assertIn(f, fss.listdir(dir_path)[1])
+        for f in structure['files']:
+            self.assertIn(f, fss.listdir(root_path)[1])
         
 #        import time; time.sleep(3)
         self.browser.quit()
@@ -133,3 +152,28 @@ def process_document(doc_id):
     fss.copy_file(src, dst)
     
     generate_document(doc_id)
+
+
+def create_structure(document):
+    def create_file_list(document):
+        file_tuples = [(
+                document.slug + '_' + str(p) + '.txt',
+                document.slug + '_' + str(p) + '-' + '0' * 20 + '.txt',
+            )
+            for p in range(1, document.page_count + 1)
+        ]
+        files = [f for f in itertools.chain(*file_tuples)]
+        return files
+    
+    def create_dir_list(document):
+        files = [
+            document.slug + '_' + str(p) + '.png'
+            for p in range(1, document.page_count + 1)]
+        dirs = {'large': files, 'normal': files, 'small': files}
+        return dirs
+    
+    structure = {
+        'files': create_file_list(document),
+        'dirs': create_dir_list(document),
+    }
+    return structure
