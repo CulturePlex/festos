@@ -3,10 +3,9 @@ from settings import *
 MEDIA_ROOT = '/tmp/media'
 DOCVIEWER_DOCUMENT_ROOT = join(MEDIA_ROOT, 'docs/')
 
-DATABASES['default']['NAME'] = 'test-festos.sqlite3'
+DATABASES['default']['TEST_NAME'] = ':memory:'
 
 
-#STATICFILES_STORAGE = 'django_pipeline_forgiving.storages.PipelineForgivingStorage'
 STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineStorage'
 PIPELINE_ENABLED = False
 
