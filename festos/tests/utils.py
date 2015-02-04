@@ -1,5 +1,6 @@
 from accounts.models import Profile
 from django.contrib.auth.models import User
+from taggit.models import Tag
 
 from documents.models import Document
 
@@ -38,10 +39,7 @@ def exists_profile(username):
 
 # Documents
 def create_document(title, username):
-    if exists_user(username):
-        user = get_user(username)
-    else:
-        user = create_user(username)
+    user = get_user(username)
     return Document.objects.create(
         title=title,
         owner=user,
@@ -55,3 +53,8 @@ def get_document(title):
 
 def exists_document(title):
     return Document.objects.filter(title=title).exists()
+
+
+# Tags
+def exists_tag(text):
+    return Tag.objects.filter(name=text).exists()
