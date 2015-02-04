@@ -13,29 +13,32 @@ class DocumentTest(TestCase):
         disconnect(post_save, document_save)
         disconnect(post_delete, document_delete)
         
-        doc = create_document('doc', 'antonio')
+        self.user = create_user('antonio')
+        self.doc = create_document('doc', 'antonio')
     
-    def test_document_creation(self):
-        user = get_user('antonio')
-        doc = get_document('doc')
+    def test_document_create(self):
+        doc = create_document('other', 'antonio')
         
         self.assertIsNotNone(doc)
         self.assertIsNotNone(doc.id)
         self.assertIsNotNone(doc.title)
         self.assertIsNotNone(doc.owner)
-        self.assertEqual(doc.owner, user)
+        self.assertEqual(doc.owner, self.user)
     
-    def test_document_edition(self):
+    def test_document_read(self):
         doc = get_document('doc')
-        new_title = 'story'
-        doc.title = new_title
-        doc.save()
         
-        self.assertEqual(doc.title, new_title)
+        self.assertIsNotNone(doc)
     
-    def test_document_deletion(self):
-        doc = get_document('doc')
-        doc.delete()
+    def test_document_update(self):
+        new_title = 'story'
+        self.doc.title = new_title
+        self.doc.save()
+        
+        self.assertEqual(self.doc.title, new_title)
+    
+    def test_document_delete(self):
+        self.doc.delete()
         
         doc_exists = exists_document('doc')
         
