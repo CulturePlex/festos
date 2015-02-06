@@ -5,15 +5,16 @@ from django.core.urlresolvers import reverse
 from splinter import Browser
 from userena.managers import UserenaManager
 
-from utils import create_user, create_profile
+from utils import create_user, exists_user
 
 
 class UserTest(StaticLiveServerTestCase):
     def setUp(self):
         check_permissions()
         
-        create_user('antonio')
-        create_profile('antonio')
+        self.username = 'antonio'
+        create_user(self.username)
+        
         self.browser = Browser()
 
     def test_signup(self):
@@ -31,6 +32,10 @@ class UserTest(StaticLiveServerTestCase):
             email,
         )
         
+        user_exists = exists_user(username)
+        
+        self.assertTrue(user_exists)
+        
         profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
         profile_link = self.browser.find_by_xpath(profile_xpath)
         document_list_url = \
@@ -45,8 +50,8 @@ class UserTest(StaticLiveServerTestCase):
     def test_signin(self):
         self.browser.visit(self.live_server_url)
         
-        username = 'antonio'
-        password = 'antonio'
+        username = self.username
+        password = self.username
         
         login(
             self.browser,

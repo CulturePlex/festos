@@ -106,23 +106,6 @@
 ##        self.browser.quit()
 
 
-#def edit(browser, list_url, public, title, notes):
-#    browser.click_link_by_partial_href(list_url)
-#    
-#    edit_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[7]/a[3]/i'
-#    edit_icon = browser.find_by_xpath(edit_xpath)
-#    edit_icon.click()
-#    
-#    if public:
-#        browser.check('public')
-#    else:
-#        browser.uncheck('public')
-#    browser.fill('title', title)
-#    browser.fill('notes', notes)
-#    #ToDo Zotero tags
-#    browser.find_by_value('Save Document').click()
-
-
 #def add_tag(browser, list_url, tag):
 #    browser.click_link_by_partial_href(list_url)
 #    

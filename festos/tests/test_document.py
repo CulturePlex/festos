@@ -62,49 +62,29 @@ class DocTest(StaticLiveServerTestCase):
         document = get_document(title)
         process_document(document.id)
         self.browser.is_element_present_by_value('ready', 10)
+        
+        self.public = public
+        self.title = title
+        self.notes = notes
+        self.document = get_document(title)
     
-    def test_upload_local(self):
+    def test_upload_local(self): #Create
         self.browser.visit(self.live_server_url)
         
-        source = 'local'
-        docfile = get_abs_path('doctest.pdf')
-        language = 'eng'
-        public = True
-        title = 'other'
-        notes = 'other notes'
-        
-        upload(
-            self.browser,
-            reverse('documents.views.add_document'),
-            source,
-            docfile,
-            language,
-            public,
-            title,
-            notes,
-        )
-        
-        document = get_document(title)
-        
-        self.assertEquals(document.public, public)
-        self.assertEquals(document.title, title)
-        self.assertEquals(document.notes, notes)
-        
+        self.assertEquals(self.document.public, self.public)
+        self.assertEquals(self.document.title, self.title)
+        self.assertEquals(self.document.notes, self.notes)
+        SEGUIR REESCRIBIENDO POR AQUI
         document_list_url = \
             self.live_server_url + reverse('documents.views.list_documents')
         
         self.assertEquals(self.browser.url, document_list_url)
         
-        process_document(document.id)
-        document = get_document(title) # status and page_count have changed
-        self.browser.is_element_present_by_value('ready', 10)
-        
         document_xpath = '/html/body/div/div[2]/table/tbody/tr[1]'
         document_tr = self.browser.find_by_xpath(document_xpath)
         document_id = document_tr['data-id']
         document_title_xpath = '//*[@id="documents_cell"]/span[1]'
-        document_title_elems = self.browser.find_by_xpath(document_title_xpath)
-        document_title_first = document_title_elems.first
+        document_title = self.browser.find_by_xpath(document_title_xpath)
         profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
         profile_link = self.browser.find_by_xpath(profile_xpath)
         owner_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[4]/a'
@@ -114,16 +94,15 @@ class DocTest(StaticLiveServerTestCase):
         numpages_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[6]/div'
         numpages_div = self.browser.find_by_xpath(numpages_xpath)
         privacy_icon_xpath = '//*[@id="privacy"]/i'
-        privacy_icon_elems = self.browser.find_by_xpath(privacy_icon_xpath)
-        privacy_icon_first = privacy_icon_elems.first
+        privacy_icon = self.browser.find_by_xpath(privacy_icon_xpath)
         
         self.assertEquals(int(document_id), document.id)
-        self.assertEquals(document_title_first.value, title)
+        self.assertEquals(document_title.value, title)
         self.assertEquals(profile_link.value, owner_link.value)
         self.assertEquals(status_div.value, 'ready')
         self.assertEquals(document.status, 'ready')
         self.assertEquals(int(numpages_div.value), document.page_count)
-        self.assertTrue(privacy_icon_first.has_class('icon-eye-open'))
+        self.assertTrue(privacy_icon.has_class('icon-eye-open'))
         
         structure = create_structure(document)
         root_path = document.get_root_path()
@@ -142,14 +121,14 @@ class DocTest(StaticLiveServerTestCase):
 #    def test_upload_dropbox(self):
 #        pass
     
-#    def test_access_viewer(self):
+#    def test_access_viewer(self): #Read
 #        pass
 #        #Just check we have access to docviewer
     
-    def test_edit(self):
+    def test_edit(self): #Update
         self.browser.visit(self.live_server_url)
         
-        public = True
+        public = False
         title = 'new title'
         notes = 'new notes'
         
@@ -161,28 +140,49 @@ class DocTest(StaticLiveServerTestCase):
             notes,
         )
         
-        document_list_url = \
-            self.live_server_url + reverse('documents.views.list_documents')
-        self.assertEquals(self.browser.url, document_list_url)
-        
-        document_xpath = '/html/body/div/div[2]/table/tbody/tr[1]'
-        document_tr = self.browser.find_by_xpath(document_xpath)
-        document_id = document_tr['data-id']
-        document = Document.objects.get(id=document_id)
+        document = get_document(title)
         
         self.assertEquals(document.public, public)
         self.assertEquals(document.title, title)
         self.assertEquals(document.notes, notes)
         
-        document_title_xpath = '//*[@id="documents_cell"]/span[1]'
-        document_title_elems = self.browser.find_by_xpath(document_title_xpath)
-        document_title_first = document_title_elems.first
-        privacy_icon_xpath = '//*[@id="privacy"]/i'
-        privacy_icon_elems = self.browser.find_by_xpath(privacy_icon_xpath)
-        privacy_icon_first = privacy_icon_elems.first
+        document_list_url = \
+            self.live_server_url + reverse('documents.views.list_documents')
         
-        self.assertEquals(document_title_first.value, title)
-        self.assertTrue(privacy_icon_first.has_class('icon-eye-open'))
+        self.assertEquals(self.browser.url, document_list_url)
+        
+        document_title_xpath = '//*[@id="documents_cell"]/span[1]'
+        document_title = self.browser.find_by_xpath(document_title_xpath)
+        privacy_icon_xpath = '//*[@id="privacy"]/i'
+        privacy_icon = self.browser.find_by_xpath(privacy_icon_xpath)
+        
+        self.assertEquals(document_title.value, title)
+        self.assertTrue(privacy_icon.has_class('icon-eye-close'))
+        
+#        import time; time.sleep(3)
+        self.browser.quit()
+    
+    def test_remove(self): #Delete
+        self.browser.visit(self.live_server_url)
+        self.browser.click_link_by_partial_href(
+            reverse('documents.views.list_documents')
+        )
+        
+        old_doc_num = len(self.browser.find_by_css('tr.document-row'))
+        
+        remove(
+            self.browser,
+            reverse('documents.views.list_documents'),
+        )
+        
+        new_doc_num = len(self.browser.find_by_css('tr.document-row'))
+        
+        self.assertEquals(new_doc_num, old_doc_num - 1)
+        
+        document_list_url = \
+            self.live_server_url + reverse('documents.views.list_documents')
+        
+        self.assertEquals(self.browser.url, document_list_url)
         
 #        import time; time.sleep(3)
         self.browser.quit()
@@ -257,3 +257,49 @@ def get_abs_path(filename):
         'files',
         filename
     )
+
+
+#def view(browser, list_url, public, title, notes):
+#    browser.click_link_by_partial_href(list_url)
+#    
+#    edit_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[7]/a[3]/i'
+#    edit_icon = browser.find_by_xpath(edit_xpath)
+#    edit_icon.click()
+#    
+#    if public:
+#        browser.check('public')
+#    else:
+#        browser.uncheck('public')
+#    browser.fill('title', title)
+#    browser.fill('notes', notes)
+#    #ToDo Zotero tags
+#    browser.find_by_value('Save Document').click()
+
+
+def edit(browser, list_url, public, title, notes):
+    browser.click_link_by_partial_href(list_url)
+    
+    edit_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[7]/a[3]/i'
+    edit_icon = browser.find_by_xpath(edit_xpath)
+    edit_icon.click()
+    
+    if public:
+        browser.check('public')
+    else:
+        browser.uncheck('public')
+    browser.fill('title', title)
+    browser.fill('notes', notes)
+    #ToDo Zotero tags
+    browser.find_by_value('Save Document').click()
+
+
+def remove(browser, list_url):
+    browser.click_link_by_partial_href(list_url)
+    
+    remove_xpath = '//*[@id="remove"]/i'
+    remove_icon = browser.find_by_xpath(remove_xpath)
+    remove_icon.click()
+    
+    confirm_xpath = '//*[@id="confirm-remove"]/i'
+    confirm_icon = browser.find_by_xpath(confirm_xpath)
+    confirm_icon.click()
