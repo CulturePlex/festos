@@ -8,25 +8,24 @@ from festos.tests.utils import (
 
 class AccountTest(TestCase):
     def setUp(self):
-        self.user = create_user('antonio')
-        self.profile = create_profile('antonio')
+        self.username = 'antonio'
+        self.user = create_user(self.username)
+        self.profile = create_profile(self.username)
     
     def test_account_create(self):
-        user = create_user('andres')
-        profile = create_profile(user)
-        
-        self.assertIsNotNone(user)
-        self.assertIsNotNone(user.id)
-        self.assertIsNotNone(user.username)
-        self.assertIsNotNone(user.password)
-        self.assertIsNotNone(user.email)
-        self.assertIsNotNone(profile)
-        self.assertIsNotNone(profile.id)
-        self.assertEqual(profile.user, user)
+        self.assertIsNotNone(self.user)
+        self.assertIsNotNone(self.user.id)
+        self.assertIsNotNone(self.user.username)
+        self.assertEqual(self.user.username, self.username)
+        self.assertIsNotNone(self.user.password)
+        self.assertIsNotNone(self.user.email)
+        self.assertIsNotNone(self.profile)
+        self.assertIsNotNone(self.profile.id)
+        self.assertEqual(self.profile.user, self.user)
     
     def test_account_read(self):
-        user = get_user('antonio')
-        profile = get_profile('antonio')
+        user = get_user(self.username)
+        profile = get_profile(self.username)
         
         self.assertIsNotNone(user)
         self.assertIsNotNone(profile)
@@ -42,8 +41,8 @@ class AccountTest(TestCase):
         self.user.delete()
         self.profile.delete()
         
-        user_exists = exists_user('antonio')
-        profile_exists = exists_profile('antonio')
+        user_exists = exists_user(self.username)
+        profile_exists = exists_profile(self.username)
         
         self.assertFalse(user_exists)
         self.assertFalse(profile_exists)

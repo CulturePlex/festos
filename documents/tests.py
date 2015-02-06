@@ -13,34 +13,35 @@ class DocumentTest(TestCase):
         disconnect(post_save, document_save)
         disconnect(post_delete, document_delete)
         
-        self.user = create_user('antonio')
-        self.doc = create_document('doc', 'antonio')
+        self.username = 'antonio'
+        self.title = 'test'
+        self.user = create_user(self.username)
+        self.document = create_document(self.title, self.username)
     
     def test_document_create(self):
-        doc = create_document('other', 'antonio')
-        
-        self.assertIsNotNone(doc)
-        self.assertIsNotNone(doc.id)
-        self.assertIsNotNone(doc.title)
-        self.assertIsNotNone(doc.owner)
-        self.assertEqual(doc.owner, self.user)
+        self.assertIsNotNone(self.document)
+        self.assertIsNotNone(self.document.id)
+        self.assertIsNotNone(self.document.title)
+        self.assertEqual(self.document.title, self.title)
+        self.assertIsNotNone(self.document.owner)
+        self.assertEqual(self.document.owner, self.user)
     
     def test_document_read(self):
-        doc = get_document('doc')
+        doc = get_document(self.title)
         
         self.assertIsNotNone(doc)
     
     def test_document_update(self):
         new_title = 'story'
-        self.doc.title = new_title
-        self.doc.save()
+        self.document.title = new_title
+        self.document.save()
         
-        self.assertEqual(self.doc.title, new_title)
+        self.assertEqual(self.document.title, new_title)
     
     def test_document_delete(self):
-        self.doc.delete()
+        self.document.delete()
         
-        doc_exists = exists_document('doc')
+        doc_exists = exists_document(self.title)
         
         self.assertFalse(doc_exists)
 
