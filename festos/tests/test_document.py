@@ -71,7 +71,7 @@ class DocTest(StaticLiveServerTestCase):
         self.notes = notes
         self.document = get_document(title)
     
-    def test_upload_local(self): #Create
+    def test_upload_doc_local(self): #Create
         self.assertEquals(self.document.public, self.public)
         self.assertEquals(self.document.title, self.title)
         self.assertEquals(self.document.notes, self.notes)
@@ -118,10 +118,10 @@ class DocTest(StaticLiveServerTestCase):
 #        import time; time.sleep(3)
         self.browser.quit()
 #    
-#    def test_upload_dropbox(self): #Create
+#    def test_upload_doc_dropbox(self): #Create
 #        pass
     
-    def test_access_viewer(self): #Read
+    def test_view_doc(self): #Read
         link_title_xpath = '//*[@id="documents_cell"]/span[1]/a'
         link_title = self.browser.find_by_xpath(link_title_xpath).click()
         viewer_title_xpath = (
@@ -135,7 +135,7 @@ class DocTest(StaticLiveServerTestCase):
 #        import time; time.sleep(3)
         self.browser.quit()
     
-    def test_edit(self): #Update
+    def test_edit_doc(self): #Update
         public = False
         title = 'new title'
         notes = 'new notes'
@@ -171,7 +171,7 @@ class DocTest(StaticLiveServerTestCase):
 #        import time; time.sleep(3)
         self.browser.quit()
     
-    def test_remove(self): #Delete
+    def test_remove_doc(self): #Delete
         old_doc_num = len(self.browser.find_by_css('tr.document-row'))
         
         remove_xpath = '//*[@id="remove"]/i'
