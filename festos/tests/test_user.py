@@ -16,17 +16,17 @@ class UserTest(StaticLiveServerTestCase):
         create_user(self.username)
         
         self.browser = Browser()
+        self.browser.visit(self.live_server_url)
 
     def test_signup(self):
-        self.browser.visit(self.live_server_url)
-        
         username = 'andres'
         password = 'andres'
         email = 'andres@email.com'
         
+        signup_url = settings.SIGNUP_URL
+        self.browser.click_link_by_partial_href(signup_url)
         signup(
             self.browser,
-            settings.SIGNUP_URL,
             username,
             password,
             email,
@@ -48,14 +48,13 @@ class UserTest(StaticLiveServerTestCase):
         self.browser.quit()
     
     def test_signin(self):
-        self.browser.visit(self.live_server_url)
-        
         username = self.username
         password = self.username
         
+        login_url = settings.LOGIN_URL
+        self.browser.click_link_by_partial_href(login_url)
         login(
             self.browser,
-            settings.LOGIN_URL,
             username,
             password,
         )
@@ -77,9 +76,7 @@ def check_permissions():
     um.check_permissions()
 
 
-def signup(browser, signup_url, username, password, email):
-    browser.click_link_by_partial_href(signup_url)
-    
+def signup(browser, username, password, email):
     browser.find_by_id('id_username').type(username)
     browser.find_by_id('id_email').type(email)
     browser.find_by_id('id_password1').type(password)
@@ -87,9 +84,7 @@ def signup(browser, signup_url, username, password, email):
     browser.find_by_value('Sign Up').click()
 
 
-def login(browser, login_url, username, password):
-    browser.click_link_by_partial_href(login_url)
-    
+def login(browser,  username, password):
     browser.find_by_id('id_identification').type(username)
     browser.find_by_id('id_password').type(password)
     browser.find_by_value('Signin').click()
