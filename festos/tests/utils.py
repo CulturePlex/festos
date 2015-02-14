@@ -56,5 +56,9 @@ def exists_document(title):
 
 
 # Tags
+def get_tag(text):
+    return Tag.objects.get(name=text)
+
+
 def exists_tag(text):
     return Tag.objects.filter(name=text).exists()
