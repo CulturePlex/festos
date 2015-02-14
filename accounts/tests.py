@@ -25,16 +25,15 @@ class AccountTest(TestCase):
     
     def test_account_read(self):
         user = get_user(self.username)
-        profile = get_profile(self.username)
-        
         self.assertIsNotNone(user)
+        
+        profile = get_profile(self.username)
         self.assertIsNotNone(profile)
     
     def test_account_update(self):
         new_email = 'new@email.com'
         self.user.email = new_email
         self.user.save()
-        
         self.assertEqual(self.user.email, new_email)
     
     def test_account_delete(self):
@@ -42,7 +41,7 @@ class AccountTest(TestCase):
         self.profile.delete()
         
         user_exists = exists_user(self.username)
-        profile_exists = exists_profile(self.username)
-        
         self.assertFalse(user_exists)
+        
+        profile_exists = exists_profile(self.username)
         self.assertFalse(profile_exists)

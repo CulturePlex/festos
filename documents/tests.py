@@ -28,21 +28,18 @@ class DocumentTest(TestCase):
     
     def test_document_read(self):
         doc = get_document(self.title)
-        
         self.assertIsNotNone(doc)
     
     def test_document_update(self):
         new_title = 'story'
         self.document.title = new_title
         self.document.save()
-        
         self.assertEqual(self.document.title, new_title)
     
     def test_document_delete(self):
         self.document.delete()
         
         doc_exists = exists_document(self.title)
-        
         self.assertFalse(doc_exists)
 
 

@@ -16,7 +16,7 @@ from documents.models import Document
 from documents.tests import disconnect
 from docviewer.helpers import generate_document
 from docviewer.models import document_delete, document_save
-from utils import create_user, create_profile, get_document
+from utils import create_user, get_document, exists_document
 from test_user import check_permissions, login
 
 
@@ -27,21 +27,23 @@ class DocTest(StaticLiveServerTestCase):
         check_permissions()
         set_site(self.live_server_url)
         
-        username = 'antonio'
-        password = 'antonio'
-        create_user(username)
-        create_profile(username)
-        
         self.browser = Browser()
         self.browser.visit(self.live_server_url)
         
         login_url = settings.LOGIN_URL
         self.browser.click_link_by_partial_href(login_url)
+        
+        username = 'antonio'
+        password = 'antonio'
+        create_user(username)
         login(
             self.browser,
             username,
             password,
         )
+        
+        upload_url = reverse('documents.views.add_document')
+        self.browser.click_link_by_partial_href(upload_url)
         
         source = 'local'
         docfile = get_abs_path('doctest.pdf')
@@ -49,9 +51,6 @@ class DocTest(StaticLiveServerTestCase):
         public = True
         title = 'test'
         notes = 'test notes'
-        
-        upload_url = reverse('documents.views.add_document')
-        self.browser.click_link_by_partial_href(upload_url)
         upload(
             self.browser,
             source,
@@ -64,7 +63,7 @@ class DocTest(StaticLiveServerTestCase):
         
         document = get_document(title)
         process_document(document.id)
-        self.browser.is_element_present_by_value('ready', 10)
+        self.browser.is_element_not_present_by_value('ready', 10)
         
         self.public = public
         self.title = title
@@ -72,36 +71,41 @@ class DocTest(StaticLiveServerTestCase):
         self.document = get_document(title)
     
     def test_upload_doc_local(self): #Create
+        document_exists = exists_document(self.title)
+        self.assertTrue(document_exists)
         self.assertEquals(self.document.public, self.public)
         self.assertEquals(self.document.title, self.title)
         self.assertEquals(self.document.notes, self.notes)
         
         document_list_url = \
             self.live_server_url + reverse('documents.views.list_documents')
-        
         self.assertEquals(self.browser.url, document_list_url)
         
         document_xpath = '/html/body/div/div[2]/table/tbody/tr[1]'
         document_tr = self.browser.find_by_xpath(document_xpath)
         document_id = document_tr['data-id']
+        self.assertEquals(int(document_id), self.document.id)
+        
         document_title_xpath = '//*[@id="documents_cell"]/span[1]'
         document_title = self.browser.find_by_xpath(document_title_xpath)
+        self.assertEquals(document_title.value, self.title)
+        
         profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
         profile_link = self.browser.find_by_xpath(profile_xpath)
         owner_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[4]/a'
         owner_link = self.browser.find_by_xpath(owner_xpath)
+        self.assertEquals(profile_link.value, owner_link.value)
+        
         status_xpath = '/html/body/div/div[2]/table/tbody/tr/td[5]/div'
         status_div = self.browser.find_by_xpath(status_xpath)
+        self.assertEquals(status_div.value, self.document.status)
+        
         numpages_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[6]/div'
         numpages_div = self.browser.find_by_xpath(numpages_xpath)
+        self.assertEquals(int(numpages_div.value), self.document.page_count)
+        
         privacy_icon_xpath = '//*[@id="privacy"]/i'
         privacy_icon = self.browser.find_by_xpath(privacy_icon_xpath)
-        
-        self.assertEquals(int(document_id), self.document.id)
-        self.assertEquals(document_title.value, self.title)
-        self.assertEquals(profile_link.value, owner_link.value)
-        self.assertEquals(status_div.value, self.document.status)
-        self.assertEquals(int(numpages_div.value), self.document.page_count)
         self.assertTrue(privacy_icon.has_class('icon-eye-open'))
         
         structure = create_structure(self.document)
@@ -123,25 +127,24 @@ class DocTest(StaticLiveServerTestCase):
     
     def test_view_doc(self): #Read
         link_title_xpath = '//*[@id="documents_cell"]/span[1]/a'
-        link_title = self.browser.find_by_xpath(link_title_xpath).click()
+        self.browser.find_by_xpath(link_title_xpath).click()
         viewer_title_xpath = (
             '//*[@id="documentviewer-container"]'
             '/div/div[1]/div[1]/div[1]/div[2]/h4/a'
         )
         viewer_title = self.browser.find_by_xpath(viewer_title_xpath)
-        
         self.assertEquals(viewer_title.value, self.title)
         
 #        import time; time.sleep(3)
         self.browser.quit()
     
     def test_edit_doc(self): #Update
+        edit_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[7]/a[3]/i'
+        self.browser.find_by_xpath(edit_xpath).click()
+        
         public = False
         title = 'new title'
         notes = 'new notes'
-        
-        edit_xpath = '/html/body/div/div[2]/table/tbody/tr[1]/td[7]/a[3]/i'
-        self.browser.find_by_xpath(edit_xpath).click()
         edit(
             self.browser,
             public,
@@ -150,22 +153,20 @@ class DocTest(StaticLiveServerTestCase):
         )
         
         document = get_document(title)
-        
         self.assertEquals(document.public, public)
         self.assertEquals(document.title, title)
         self.assertEquals(document.notes, notes)
         
         document_list_url = \
             self.live_server_url + reverse('documents.views.list_documents')
-        
         self.assertEquals(self.browser.url, document_list_url)
         
         document_title_xpath = '//*[@id="documents_cell"]/span[1]'
         document_title = self.browser.find_by_xpath(document_title_xpath)
+        self.assertEquals(document_title.value, title)
+        
         privacy_icon_xpath = '//*[@id="privacy"]/i'
         privacy_icon = self.browser.find_by_xpath(privacy_icon_xpath)
-        
-        self.assertEquals(document_title.value, title)
         self.assertTrue(privacy_icon.has_class('icon-eye-close'))
         
 #        import time; time.sleep(3)
@@ -181,11 +182,9 @@ class DocTest(StaticLiveServerTestCase):
         
         document_list_url = \
             self.live_server_url + reverse('documents.views.list_documents')
-        
         self.assertEquals(self.browser.url, document_list_url)
         
         new_doc_num = len(self.browser.find_by_css('tr.document-row'))
-        
         self.assertEquals(new_doc_num, old_doc_num - 1)
         
 #        import time; time.sleep(3)
