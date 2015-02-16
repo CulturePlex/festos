@@ -1,6 +1,5 @@
 import itertools
 import os
-import uuid
 from urlparse import urlsplit
 
 from django.conf import settings
@@ -23,7 +22,6 @@ from test_user import check_permissions, login
 class DocTest(StaticLiveServerTestCase):
     def setUp(self):
         fss.remove_tree(settings.MEDIA_ROOT)
-        disconnect(post_save, document_save)
         check_permissions()
         set_site(self.live_server_url)
         
@@ -61,8 +59,6 @@ class DocTest(StaticLiveServerTestCase):
             notes,
         )
         
-        document = get_document(title)
-        process_document(document.id)
         self.browser.is_element_not_present_by_value('ready', 10)
         
         self.public = public
