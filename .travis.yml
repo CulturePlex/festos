@@ -27,7 +27,6 @@ before_script:
   - mkdir /tmp/media
   - sudo ln -s /usr/local/bin/docsplit /usr/bin/docsplit
   - sudo ln -s /usr/bin/yui-compressor /usr/local/bin/yuicompressor
-  - /usr/local/bin/docsplit
   - sudo npm config set registry http://registry.npmjs.org/
   - sudo npm -g install yuglify
 script: coverage run manage.py test --settings=festos.test_settings --verbosity=2
