@@ -12,7 +12,7 @@ install:
   - sudo apt-get install rubygems graphicsmagick poppler-utils pdftk ghostscript -y
   - sudo apt-get install tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spa -y
   - sudo apt-get install yui-compressor build-essential npm openjdk-7-jre -y
-  - sudo gem install docsplit
+  - gem install docsplit
   - sudo dpkg -i --force-confnew elasticsearch-0.20.5.deb
   - pip install -r requirements.txt
   - pip install Django==$DJANGO
@@ -25,7 +25,6 @@ before_script:
   - mkdir /tmp/media
   - sudo ln -s /usr/local/bin/docsplit /usr/bin/docsplit
   - sudo ln -s /usr/bin/yui-compressor /usr/local/bin/yuicompressor
-  - /usr/bin/docsplit
   - /usr/local/bin/docsplit
   - sudo npm config set registry http://registry.npmjs.org/
   - sudo npm -g install yuglify
