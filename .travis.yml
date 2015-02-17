@@ -6,14 +6,14 @@ env:
 services:
   - rabbitmq
 before_install:
-  - gem update --system 1.9.3
-  - gem --version
   - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.5.deb
   - sudo apt-get update
 install:
   - sudo apt-get install rubygems graphicsmagick poppler-utils pdftk ghostscript -y
   - sudo apt-get install tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spa -y
   - sudo apt-get install yui-compressor build-essential npm openjdk-7-jre -y
+  - gem update --system 1.9.3
+  - gem --version
   - gem install docsplit
   - sudo dpkg -i --force-confnew elasticsearch-0.20.5.deb
   - pip install -r requirements.txt
