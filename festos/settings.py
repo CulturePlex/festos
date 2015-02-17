@@ -265,3 +265,7 @@ DOCVIEWER_DOCUMENT_URL = '/media/docs/'
 DOCVIEWER_IMAGE_FORMAT = 'png'
 
 from docviewer.pipeline import *
+
+
+#DOCSPLIT = '/usr/bin/docsplit'
+DOCSPLIT = 'docsplit'
