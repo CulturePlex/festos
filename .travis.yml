@@ -3,7 +3,17 @@ python:
   - "2.7"
 env:
   - DJANGO="1.7.2"
+services:
+  - rabbitmq
+  - elasticsearch
+before_install:
+  - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.5.deb
 install:
+  - sudo apt-get install rubygems graphicsmagick poppler-utils pdftk ghostscript
+  - sudo apt-get install tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spa
+  - sudo apt-get install yui-compressor build-essential npm openjdk-7-jre -y
+  - sudo gem install docsplit
+  - sudo dpkg -i --force-confnew elasticsearch-0.20.5.deb
   - pip install -r requirements.txt
   - pip install Django==$DJANGO
   - pip install coverage
@@ -11,7 +21,11 @@ install:
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - "mkdir /tmp/media"
+  - mkdir /tmp/media
+  - sudo ln -s /usr/local/bin/docsplit /usr/bin/docsplit
+  - sudo ln -s /usr/bin/yui-compressor /usr/local/bin/yuicompressor
+  - sudo npm config set registry http://registry.npmjs.org/
+  - sudo npm -g install yuglify
 script: coverage run manage.py test --settings=festos.test_settings --verbosity=2
 after_success:
   - coveralls
