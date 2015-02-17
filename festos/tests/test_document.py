@@ -209,18 +209,6 @@ def upload(browser, src, docfile, lang, public, title, notes):
     browser.find_by_value('Add Document').click()
 
 
-def process_document(doc_id):
-    doc = Document.objects.get(id=doc_id)
-    src = os.path.join(settings.MEDIA_ROOT, doc.docfile.name)
-    dst = "%s/%s.%s" % (
-        doc.get_root_path(),
-        doc.slug,
-        doc.docfile_basename.split('.')[-1].lower())
-    fss.copy_file(src, dst)
-    
-    generate_document(doc_id)
-
-
 def create_structure(document):
     def create_file_list(document):
         file_tuples = [(

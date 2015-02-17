@@ -14,13 +14,12 @@ from documents.tests import disconnect
 from docviewer.models import document_delete, document_save
 from utils import create_user, exists_tag, get_document, get_tag
 from test_user import check_permissions, login
-from test_document import upload, set_site, process_document, get_abs_path
+from test_document import upload, set_site, get_abs_path
 
 
 class TagTest(StaticLiveServerTestCase):
     def setUp(self):
         fss.remove_tree(settings.MEDIA_ROOT)
-        disconnect(post_save, document_save)
         check_permissions()
         set_site(self.live_server_url)
         
@@ -58,8 +57,6 @@ class TagTest(StaticLiveServerTestCase):
             notes,
         )
         
-        document = get_document(title)
-        process_document(document.id)
         self.browser.is_element_not_present_by_value('ready', 10)
         
         tag = 'tag'
