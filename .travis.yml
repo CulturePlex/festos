@@ -8,10 +8,11 @@ services:
   - elasticsearch
 before_install:
   - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.5.deb
+  - sudo apt-get update
 install:
   - sudo apt-get install rubygems graphicsmagick poppler-utils pdftk ghostscript
   - sudo apt-get install tesseract-ocr tesseract-ocr-eng tesseract-ocr-spa-old tesseract-ocr-spa
-  - sudo apt-get install yui-compressor build-essential npm openjdk-7-jre -y
+  - sudo apt-get install yui-compressor npm openjdk-7-jre -y
   - sudo gem install docsplit
   - sudo dpkg -i --force-confnew elasticsearch-0.20.5.deb
   - pip install -r requirements.txt
