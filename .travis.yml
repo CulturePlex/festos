@@ -6,6 +6,8 @@ env:
 services:
   - rabbitmq
 before_install:
+  - gem update --system 1.9.3
+  - gem --version
   - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.20.5.deb
   - sudo apt-get update
 install:
