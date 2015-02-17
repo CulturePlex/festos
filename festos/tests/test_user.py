@@ -11,16 +11,19 @@ from utils import create_user, exists_user, get_user
 class UserTest(StaticLiveServerTestCase):
     def setUp(self):
         check_permissions()
-        
+        print 1
         self.username = 'antonio'
         create_user(self.username)
+        print 2
         
         self.browser = Browser()
         self.browser.visit(self.live_server_url)
+        print 3
 
     def test_signup(self):
         signup_url = settings.SIGNUP_URL
         self.browser.click_link_by_partial_href(signup_url)
+        print 4
         
         username = 'andres'
         password = 'andres'
@@ -31,25 +34,31 @@ class UserTest(StaticLiveServerTestCase):
             password,
             email,
         )
+        print 5
         
         user_exists = exists_user(username)
         self.assertTrue(user_exists)
+        print 6
         
         user = get_user(username)
         self.assertEquals(user.username, username)
         #self.assertEquals(user.password, password)
         self.assertEquals(user.email, email)
+        print 7
         
         document_list_url = \
             self.live_server_url + reverse('documents.views.list_documents')
         self.assertEquals(self.browser.url, document_list_url)
+        print 8
         
         profile_xpath = '/html/body/div/div[1]/div/ul[2]/li[4]/a'
         profile_link = self.browser.find_by_xpath(profile_xpath)
         self.assertEquals(profile_link.value, '@{}'.format(username))
+        print 9
         
 #        import time; time.sleep(3)
         self.browser.quit()
+        print 10
     
     def test_signin(self):
         login_url = settings.LOGIN_URL
